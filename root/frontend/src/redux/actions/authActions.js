@@ -48,6 +48,7 @@ export const studentSignUp = (student_data) => dispatch => {
                             'message': response.data,
                             'error_message': "",
                         }
+                        
                     });
                 }
             },
