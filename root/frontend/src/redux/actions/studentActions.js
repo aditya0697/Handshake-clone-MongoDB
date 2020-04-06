@@ -4,7 +4,7 @@ import {
     UPDATE_STUDENT_OBJECTIVE, ADD_SKILL, DELETE_SKILL, UPDATE_STUDENT_PHONENUMBER, UPDATE_STUDENT_PROFILE_PIC
 } from './../actionTypes';
 
-
+const jwt_decode = require('jwt-decode');
 const ROOT_URL = "http://52.8.254.75:3001/student";
 const HOST_URL = "http://52.8.254.75:3001";
 

@@ -1,47 +1,46 @@
-var Student = require('./../../models/student/StudentModel');
-var StudentAuth = require('./../../models/student/StudentAuthModel');
+var Employer = require('./../../models/employer/EmployerModel');
+var EmployerAuth = require('./../../models/employer/EmployerAuthModel');
 var bcrypt = require("bcrypt");
 
 function handle_request(msg, callback) {
     console.log("In createCourse kafka backend");
-    if(!msg.password){
+    if (!msg.password) {
         callback("No Password", "no password");
         return;
     }
-    var education = {
-        school: msg.school,
-        Major: msg.major,
-        Level: msg.level,
-        GradDate: new Date(),
-        GPA: msg.gpa,
+    var address = {
+        Street: msg.street,
+        Apt: msg.apt_name,
+        City: msg.city,
+        State: msg.state,
+        Zipcode: msg.zip_code,
     };
 
-    var newStudent = new Student({
+    var newEmployer = new EmployerAuth({
         Email: msg.email,
-        FirstName: msg.firstName,
-        LastName: msg.lastName,
-        Educations: [education],
+        EmployerName: msg.comapnay_name,
+        Address: address,
     });
-    var newStudentAuth = new StudentAuth({
+    var newEmployerAuth = new EmployerAuth({
         Email: msg.email,
         Password: bcrypt.hashSync(msg.password, 10),
     })
 
-    Student.findOne({ "Email": newStudent.Email }, (error, student) => {
+    Employer.findOne({ "Email": newEmployer.Email }, (error, employer) => {
         if (error) {
             callback(error, error)
         }
         if (student) {
-            console.log("Student: ", JSON.stringify(student));
-            callback("Student already exists", "Student already exists");
+            console.log("Employer: ", JSON.stringify(employer));
+            callback("Employer already exists", "Employer already exists");
         }
         else {
-            newStudent.save((error, studentData) => {
+            newEmployer.save((error, employerData) => {
                 if (error) {
                     callback(error, error)
                 }
                 else {
-                    newStudentAuth.save((err, loginData) => {
+                    newEmployerAuth.save((err, loginData) => {
                         if (err) {
                             callback(err, err)
                         }

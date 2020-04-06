@@ -1,114 +1,204 @@
 var express = require('express');
 var router = express.Router();
+var kafka = require('./../kafka/client');
 var Student = require('./../models/student/StudentModel');
 var StudentAuth = require('../models/student/StudentAuthModel');
 var bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const { HOST_URL } = require('./../utils/config');
+const { checkAuth, auth } = require('./../utils/passport');
+const { secret } = require('./../utils/config')
+var bcrypt = require("bcrypt");
+var multer = require('multer');
+const path = require("path");
+auth();
 
+const profile_storage = multer.diskStorage({
+  destination: "./public/uploads/profile_pictures/",
+  filename: function (req, file, cb) {
+    cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
+  }
+});
 
-var education_1 = {
-  school: "San Jose State University",
-  Major: "Computer Engineering",
-  Level: "Masters",
-  GradDate: new Date(),
-  GPA: 3.58,
-};
-
-var experience_1 = {
-  Employer: "Ultra Infotech",
-  Title: "Software Developer",
-  Description: "Hii there",
-  StartDate: new Date(),
-  EndDate: new Date,
-
-};
-
-const student_1 = {
-  Email: "aditya0697@gmail.com",
-  FirstName: "Aditya",
-  LastName: "Patel",
-  PhoneNumber: "4086809213",
-  ProfileUrl: "",
-  CareerObjective: "Hi there",
-  Skills: [],
-  Educations: [],
-  Experiences: [],
-}
+const profilePicUpload = multer({
+  storage: profile_storage,
+  limits: { fileSize: 1000000 },
+}).single('profileImage');
 
 /* GET users listing. */
-router.post('/signup', function (req, res, next) {
-  console.log("Inside Student Signup");
-  var education = {
-    school: req.body.school,
-    Major: req.body.major,
-    Level: req.body.level,
-    GradDate: new Date(),
-    GPA: req.body.gpa,
-  };
+router.post('/signin', function (req, res) {
+  console.log("Inside student signin", JSON.stringify(req.body), " Secret: ", secret);
 
-  var newStudent = new Student({
-    Email: req.body.email,
-    FirstName: req.body.firstName,
-    LastName: req.body.lastName,
-    Educations: [education],
-  });
-  var newStudentAuth = new StudentAuth({
-    Email: req.body.email,
-    Password: bcrypt.hashSync(req.body.password, 10),
-  })
-
-  Student.findOne({ "Email": newStudent.Email }, (error, student) => {
+  StudentAuth.findOne({ Email: req.body.username }, (error, studentAuth) => {
     if (error) {
-      res.writeHead(500, {
-        'Content-Type': 'text/plain'
+      res.status(500).end("Error Occured");
+    }
+    if (studentAuth) {
+      if (bcrypt.compareSync(req.body.password, studentAuth.Password)) {
+        const payload = {
+          email: studentAuth.Email,
+          type: "student"
+        };
+        const token = jwt.sign(payload, secret, {
+          expiresIn: 1008000
+        });
+        res.status(200).end("JWT " + token);
+        return;
+      } else {
+        res.status(401).end("Invalid Credentials");
+        return;
+      }
+    }
+    else {
+      res.status(401).end("Invalid Credentials");
+      return;
+    }
+  });
+});
+
+router.post('/signup', function (req, res) {
+  console.log("Inside Student Signup");
+  kafka.make_request('student_signup', req.body, function (err, results) {
+    console.log('in result');
+    console.log(results);
+    console.log(err);
+    if (err) {
+      console.log("Inside err");
+      res.json({
+        status: "error",
+        msg: err,
       })
       res.end();
       return;
-    }
-    if (student) {
-      console.log("Student: ", JSON.stringify(student));
-      res.writeHead(400, {
-        'Content-Type': 'text/plain'
-      })
-      res.end("student already exists");
+    } else {
+      console.log("Inside data");
+      console.log("Data:", JSON.stringify(results));
+      const payload = {
+        email: results.Email,
+        type: "student"
+      };
+      const token = jwt.sign(payload, secret, {
+        expiresIn: 1008000
+      });
+      res.status(200).end("JWT " + token);
+      res.end();
       return;
     }
-    else {
-      newStudent.save((error, studentData) => {
-        if (error) {
-          res.writeHead(500, {
-            'Content-Type': 'text/plain'
-          })
-          res.end();
-          return;
-        }
-        else {
-
-          newStudentAuth.save((err, loginData) => {
-            if (err) {
-              res.writeHead(500, {
-                'Content-Type': 'text/plain'
-              })
-              res.end();
-              return;
-            }
-            else {
-              console.log("studentData: ", JSON.stringify(studentData));
-              console.log("loginData: ", JSON.stringify(loginData));
-              res.writeHead(200, {
-                'Content-Type': 'text/plain'
-              })
-              res.end(JSON.stringify(loginData));
-              return;
-            }
-          })
-        }
-      });
-    }
-
   });
 });
 
 
+router.get("/:student_email", checkAuth, function (req, res) {
+  console.log("Inside Student Details: ", req.params.student_email);
+  kafka.make_request('get_student_details', req.params.student_email, function (err, results) {
+    console.log('in result');
+    if (err) {
+      console.log("Inside err");
+      res.json({
+        status: "error",
+        msg: err,
+      })
+      res.end();
+    } else {
+      console.log("Inside data");
+      console.log("Data:", JSON.stringify(results));
+      // const payload = {student: results};
+      res.json({
+        data: results,
+      })
+      res.status(200).end();
+      res.end();
+      return;
+    }
+  });
+});
 
+router.post("/update_profile", checkAuth, function (req, res) {
+  console.log("data: ", JSON.stringify(req.body.data));
+  kafka.make_request('update_student_profile', req.body.data, function (err, results) {
+    console.log('in result');
+    if (err) {
+      console.log("Inside err");
+      res.json({
+        status: "error",
+        msg: err,
+      })
+      res.end();
+    } else {
+      console.log("Inside data");
+      console.log("Data:", JSON.stringify(results));
+      res.json({
+        data: results,
+      })
+      res.end();
+      return;
+    }
+  });
+});
+
+// router.post("/update_experience", checkAuth, function (req, res) {
+// });
+
+// router.post("/add_education",checkAuth,  function (req, res) {   
+// });
+
+// router.post("/add_experience", checkAuth, function (req, res) {
+// });
+
+// router.post("/update_objective", checkAuth, function (req, res) {
+
+// });
+
+// router.post("/add_objective", checkAuth, function (req, res) {
+// });
+
+router.get("/get_profile_picture/:student_email", checkAuth, function (req, res) {
+  console.log("Inside Student get_profile_picture: ", req.params.student_email);
+  Student.findOne({ Email: req.params.student_email }).exec((err, results) => {
+    if (err) {
+      console.log("Inside err");
+      res.json({
+        status: "error",
+        msg: err,
+      })
+      res.end();
+    } else {
+      console.log("Inside data");
+      console.log("Data:", JSON.stringify(results.ProfileUrl));
+      res.json({
+        data: results.ProfileUrl,
+      })
+      res.end();
+      return;
+    }
+  });
+});
+
+router.post('/upload-profile', checkAuth ,profilePicUpload, (req, res, next) => {
+  console.log("Request ---", JSON.stringify(req.body));
+  // const path = req.file.path;
+  // const user_type = req.body.user_type;
+  const email = req.body.email;
+  const profile_url = HOST_URL + "/uploads/profile_pictures/" + req.file.filename;
+  console.log("profile_url: " + profile_url);
+  Student.updateOne({ Email: email }, { $set: { "ProfileUrl": profile_url } }).exec((err, results) => {
+    if (err) {
+      res.json({
+        status: "error",
+        msg: err,
+      })
+    } else {
+      res.status(200).json({ 'message': 'Upload was  Successful', 'profile_url': profile_url });
+    }
+  });
+}
+);
+
+
+
+router.get('/get_students',checkAuth,(req, res) => {
+  
+});
 
 module.exports = router;

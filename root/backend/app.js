@@ -3,7 +3,6 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
 var studentRouter = require('./routes/student');
@@ -11,11 +10,18 @@ var employerRouter = require('./routes/employer');
 var eventRouter = require('./routes/event');
 var jobRouter = require('./routes/job');
 var messageRouter = require('./routes/message');
+var applicationRouter = require('./routes/application');
 var session = require('express-session');
 const { mongoDB, frontendURL } = require('./Utils/config');
+const passport = require('passport');
+const { auth } = require("./utils/passport");
+const mongoose = require('mongoose'); 
 var cors = require('cors');
-
 var app = express();
+    
+// Passport middleware
+// app.use(passport.initialize());
+ 
 
 //use express session to maintain session data
 app.use(session({
@@ -39,7 +45,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const mongoose = require('mongoose');
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', frontendURL);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
+  res.setHeader('Cache-Control', 'no-cache');
+  next();
+});
 
 var options = {
     useNewUrlParser: true,
@@ -68,7 +81,7 @@ app.use('/employer', employerRouter);
 app.use('/event', eventRouter);
 app.use('/job', jobRouter);
 app.use('/message', messageRouter);
-
+app.use('/application', applicationRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

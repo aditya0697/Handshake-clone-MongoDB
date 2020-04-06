@@ -42,8 +42,8 @@ class CompanySignup extends Component {
             return;
         }
         const data = {
-            email: this.state.email,
-            password: this.state.password,
+            "email": this.state.email,
+            "password": this.state.password,
             "comapnay_name": this.state.comapnay_name,
             "phone_number": "",
             "profile_picture": "",

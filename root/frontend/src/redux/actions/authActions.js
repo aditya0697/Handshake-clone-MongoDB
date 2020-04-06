@@ -2,13 +2,18 @@ import axios from "axios";
 import {AUTHENTICATE_STUDENT, AUTHENTICATE_EMPLOYER, SIGN_OUT} from './../actionTypes';
 import storage from 'redux-persist/lib/storage';
 import store from './../store'
-const ROOT_URL = "http://52.8.254.75:3001";
-// const ROOT_URL = "http://localhost:3001";
+const jwt_decode = require('jwt-decode');
+
+// const ROOT_URL = "http://52.8.254.75:3001";
+const ROOT_URL = "http://localhost:3001";
 export const studentSignIn = (credentials) => dispatch => {
     axios.defaults.withCredentials = true
-    axios.post(`${ROOT_URL}/student_signin`, credentials)
+    axios.post(`${ROOT_URL}/student/signin`, credentials)
         .then(response => {
-            console.log("studentSignIn Status:", JSON.stringify(response.data))
+            console.log("studentSignIn Status:", JSON.stringify(response.data));
+            var token = response.data;
+            var decoded = jwt_decode(token.split(' ')[1]);
+            console.log("Data: ", JSON.stringify(decoded));
             if (response.status === 200) {
                 console.log("Data in actions", response.data.msg)
                 dispatch({
