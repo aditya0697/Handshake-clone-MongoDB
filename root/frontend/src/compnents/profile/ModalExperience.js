@@ -5,8 +5,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { getExperienceByID } from './../../redux/selectors';
-import { updateExperienceById } from './../../redux/actions/studentActions';
+import { getExperienceByID, getExperience } from './../../redux/selectors';
+import {  updateStudentProfile } from './../../redux/actions/studentActions';
 
 const Styles = styled.div`
     .profile-experienceCard-card {
@@ -88,12 +88,12 @@ class ModelExperience extends Component {
 
     getUpdatedState = () => {
         const experience = {
-            "exp_id": this.props.experience.exp_id,
-            "employer": this.props.experience.employer,
-            "title": this.props.experience.title,
-            "start_date": this.props.experience.start_date,
-            "end_date": this.props.experience.end_date,
-            "discription": this.props.experience.discription,
+            "_id": this.props.experience.exp_id,
+            "Employer": this.props.experience.employer,
+            "Title": this.props.experience.title,
+            "StartDate": this.props.experience.start_date,
+            "EndDate": this.props.experience.end_date,
+            "Description": this.props.experience.discription,
         }
 
         if (this.state.employer) {
@@ -111,7 +111,8 @@ class ModelExperience extends Component {
         if (this.state.discription) {
             experience.discription = this.state.discription;
         }
-        return experience;
+        this.props.experiences[this.props.id] = experience;
+        return {Experiences: this.props.experiences};
     }
 
     saveChangeHandler = (e) => {
@@ -120,7 +121,8 @@ class ModelExperience extends Component {
             show: false,
         })
         console.log("getUpdatedState: " + JSON.stringify(this.getUpdatedState()));
-        this.props.updateExperienceById(this.getUpdatedState(), this.props.id);
+        this.props.updateStudentProfile(this.props.studentData,this.getUpdatedState());
+        // this.props.updateExperienceById(this.getUpdatedState(), this.props.id);
     }
 
     getProcessedDate = (date) => {
@@ -189,13 +191,13 @@ class ModelExperience extends Component {
                             Save Changes
                         </Button>
                     </Modal.Footer>
-                </Modal>
+                </Modal>           
                 <div>
                     <div className="profile-experience-card">
                         <div className="profile-education-school">
                             <Row>
                                 <Col xs={11} md={11}>
-                                    {this.props.experience.employer}
+                                    {this.props.experience.Employer}
                                 </Col>
                                 <Col xs={1} md={1}>
                                     <Icon type="edit" onClick={this.handleShow}></Icon>
@@ -203,16 +205,16 @@ class ModelExperience extends Component {
                             </Row>
                         </div>
                         <div className="profile-experience-title">
-                            {this.props.experience.title}
+                            {this.props.experience.Title}
                         </div>
                         <div className="profile-experience-date">
-                            {"Start date: " + this.getProcessedDate(this.props.experience.start_date)}
+                            {"Start date: " + this.getProcessedDate(this.props.experience.StartDate)}
                         </div>
                         <div className="profile-experience-date">
-                            {"End date: " + this.getProcessedDate(this.props.experience.end_date)}
+                            {"End date: " + this.getProcessedDate(this.props.experience.EndDate)}
                         </div>
                         <div className="profile-experience-discription">
-                            {this.props.experience.discription}
+                            {this.props.experience.Description}
                         </div>
                     </div>
                     <div className="profile-experience-card-divider"></div>
@@ -227,7 +229,9 @@ const mapStateToProps = (state, ownProps) => {
     // console.log("Inside mapStateToProps of ModalEducattion: "+ JSON.stringify(ownProps));
     return {
         experience: getExperienceByID(state.student.studentData, id),
+        experiences: getExperience(state.student.studentData),
+        studentData: state.student.studentData
     };
 };
 
-export default connect(mapStateToProps, { updateExperienceById })(ModelExperience);
+export default connect(mapStateToProps, {  updateStudentProfile })(ModelExperience);

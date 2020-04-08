@@ -6,6 +6,7 @@ import jobReducer from './jobReducer';
 import applicationReducer from './applicationReducer';
 import eventReducer from './eventReducer';
 import profilPictureReducer from './profilePicturesReducer';
+import studentTabReducer from './studentTabReducer';
 import {combineReducers} from 'redux';
 import {SIGN_OUT} from './../actionTypes';
 import storage from 'redux-persist/lib/storage';
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
     application: applicationReducer,
     profilePicture:profilPictureReducer,
     event: eventReducer,
+    allStudents: studentTabReducer,
 });
 const allReducers = (state, action) => {
     if (action.type === SIGN_OUT) {

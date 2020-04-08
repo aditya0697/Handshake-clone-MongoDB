@@ -118,7 +118,7 @@ class Navbar extends Component {
                             <Nav.Link href="/Jobs">Jobs</Nav.Link>
                             <Nav.Link href="/application">Application</Nav.Link>
                             <Nav.Link href="/event">Events</Nav.Link>
-                            <Nav.Link href="#Students">Students</Nav.Link>
+                            <Nav.Link href="/students">Students</Nav.Link>
                         </Nav>
                         {/* </Nbar.Collapse> */}
                         <div className="avatar">

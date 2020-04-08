@@ -1,3 +1,5 @@
+const { EMPLOYER_SIGNUP, GET_EMPLOYER_DETAILS, UPDATE_EMPLOYER_PROFILE} = require('./../kafka/topics/topic_names');
+
 var express = require('express');
 var router = express.Router();
 var kafka = require('./../kafka/client');
@@ -28,7 +30,7 @@ const profilePicUpload = multer({
 /* GET users listing. */
 
 
-router.post('/employer_signin', function (req, res) {
+router.post('/signin', function (req, res) {
     console.log("Inside Employer signin", JSON.stringify(req.body), " Secret: ", secret);
 
     EmployerAuth.findOne({ Email: req.body.username }, (error, employerAuth) => {
@@ -39,7 +41,7 @@ router.post('/employer_signin', function (req, res) {
             if (bcrypt.compareSync(req.body.password, employerAuth.Password)) {
                 const payload = {
                     email: employerAuth.Email,
-                    type: "employer"
+                    type: "employer" 
                 };
                 const token = jwt.sign(payload, secret, {
                     expiresIn: 1008000
@@ -60,7 +62,7 @@ router.post('/employer_signin', function (req, res) {
 
 router.post('/signup', function (req, res) {
     console.log("Inside Employer Signup");
-    kafka.make_request('employer_signup', req.body, function (err, results) {
+    kafka.make_request( EMPLOYER_SIGNUP, req.body, function (err, results) {
         console.log('in result');
         console.log(results);
         console.log(err);
@@ -84,7 +86,7 @@ router.post('/signup', function (req, res) {
             });
             res.status(200).end("JWT " + token);
             res.end();
-            return;
+            return;  
         }
     }); 
 });
@@ -93,13 +95,13 @@ router.get("/:employer_email", function (req, res) {
 
     console.log("Inside employer Details: ", req.params.employer_email);
 
-    kafka.make_request('get_employer_details', req.params.employer_email, function (err, results) {
+    kafka.make_request( GET_EMPLOYER_DETAILS, req.params.employer_email, function (err, results) {
         console.log('in result');
         if (err) {
             console.log("Inside err");
             res.json({
                 status: "error",
-                msg: err,  
+                msg: err,    
             })
             res.end();
         } else {
@@ -118,7 +120,7 @@ router.get("/:employer_email", function (req, res) {
 
 router.post("/update_profile", checkAuth, function (req, res) {
     console.log("data: ", JSON.stringify(req.body.data));
-    kafka.make_request('update_employer_profile', req.body.data, function (err, results) {
+    kafka.make_request( UPDATE_EMPLOYER_PROFILE, req.body.data, function (err, results) {
         console.log('in result');
         if (err) {
             console.log("Inside err");
@@ -139,9 +141,9 @@ router.post("/update_profile", checkAuth, function (req, res) {
     });
 });
 
-router.get("/get_profile_picture/:employer_email", function (req, res) {
-    console.log("Inside Employer get_profile_picture: ", req.params.employer_email);
-    Employer.findOne({ Email: req.params.employer_email }).exec((err, results) => {
+router.get("/get_profile_picture/:_id", function (req, res) {
+    console.log("Inside Employer get_profile_picture: ", req.params._id);
+    Employer.findOne({ _id: req.params._id }).exec((err, results) => {
         if (err) {
             console.log("Inside err");
             res.json({
@@ -169,14 +171,14 @@ router.post('/upload-profile', checkAuth ,profilePicUpload, (req, res, next) => 
     const email = req.body.email;
     const profile_url = HOST_URL + "/uploads/profile_pictures/" + req.file.filename;
     console.log("profile_url: " + profile_url);
-    Student.updateOne({ Email: email }, { $set: { "ProfileUrl": profile_url } }).exec((err, results) => {
+    Employer.updateOne({ Email: email }, { $set: { "ProfileUrl": profile_url } }).exec((err, results) => {
       if (err) {
         res.json({
           status: "error",
           msg: err,
         })
       } else {
-        res.status(200).json({ 'message': 'Upload was  Successful', 'profile_url': profile_url });
+        res.status(200).json({ 'message': 'Upload was  Successful', 'ProfileUrl': profile_url });
       }
     });
   }

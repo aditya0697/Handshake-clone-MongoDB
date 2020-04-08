@@ -1,6 +1,6 @@
 import {
     EMPLOYER_DETAILS, UPDATE_EMPLOYER_ADDRESS, UPDATE_EMPLOYER_DISCRIPTION, ADD_EMPLOYER_DISCRIPTION,
-    UPDATE_EMPLOYER_PHONENUMBER, UPDATE_EMPLOYER_NAME, UPDATE_EMPLOYER_PROFILE_PIC, FETCH_EMPLOPYER_PROFILE_PIC
+    UPDATE_EMPLOYER_PHONENUMBER, UPDATE_EMPLOYER_NAME, UPDATE_EMPLOYER_PROFILE_PIC, FETCH_EMPLOPYER_PROFILE_PIC, UPDATE_EMPLOYER_PROFILE
 } from './../actionTypes';
 import update from 'react-addons-update'; // ES6
 
@@ -12,6 +12,13 @@ const employerReducer = (state = initialState, action) => {
     switch (action.type) {
         case EMPLOYER_DETAILS:
             console.log("Details Payload:")
+            console.log(action.payload)
+            return {
+                ...state,
+                employerData: action.payload
+            }
+        case UPDATE_EMPLOYER_PROFILE:
+            console.log("Payload:")
             console.log(action.payload)
             return {
                 ...state,
@@ -59,7 +66,7 @@ const employerReducer = (state = initialState, action) => {
         case UPDATE_EMPLOYER_PROFILE_PIC:
             return update(state, {
                 employerData: {
-                    profile_picture: { $set: action.payload }
+                    ProfileUrl: { $set: action.payload }
                 }
             });
 

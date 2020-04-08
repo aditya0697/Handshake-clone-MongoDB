@@ -8,8 +8,9 @@ var addressSchema = new Schema({
 });
 
 var jobSchema = new Schema({
-    JobID: {type: String, required: true},
     EmployerID: {type: String, required: true},
+    EmployerName: {type: String, required: true},
+    EmployerProfileUrl: {type: String},
     Postion: {type: String, required: true},
     Salary: {type: Number, required: true},
     Type: {type: String, required: true},

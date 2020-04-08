@@ -74,24 +74,47 @@ const Styles = styled.div`
 class JobDiscription extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            show: false,
-            apply_show: false,
-            application_confirmation_show: false,
-            job_id: this.props.job.job_id,
-            employer: this.props.job.employer,
-            job_title: this.props.job.job_title,
-            job_city: this.props.job.job_city,
-            job_state: this.props.job.job_state,
-            job_zip_code: this.props.job.job_zip_code,
-            job_type: this.props.job.job_type,
-            salary: this.props.job.salary,
-            post_date: new Date(),
-            deadline: new Date(),
-            job_discription: this.props.job.job_discription,
-            resume_file: null,
-            apply_button_state: "primary",
-            apply_button_text: "Apply",
+        if (this.props.job._id) {
+            this.state = {
+                show: false,
+                apply_show: false,
+                application_confirmation_show: false,
+                _id: this.props.job._id,
+                EmployerID: this.props.job.EmployerID,
+                EmployerName: this.props.job.EmployerName,
+                Postion: this.props.job.Postion,
+                City: this.props.job.Address.City,
+                State: this.props.job.Address.State,
+                Zipcode: this.props.job.Address.Zipcode,
+                Type: this.props.job.Type,
+                Salary: this.props.job.Salary,
+                PostDate: new Date(),
+                Deadline: new Date(),
+                Description: this.props.job.Description,
+                resume_file: null,
+                apply_button_state: "primary",
+                apply_button_text: "Apply",
+            }
+        }else{
+            this.state = {
+                show: false,
+                apply_show: false,
+                application_confirmation_show: false,
+                _id: "",
+                EmployerID: "",
+                Postion: "",
+                City: "",
+                State: "",
+                Zipcode: "",
+                Type: "",
+                Salary: "",
+                PostDate: new Date(),
+                Deadline: new Date(),
+                Description: "",
+                resume_file: null,
+                apply_button_state: "primary",
+                apply_button_text: "Apply",
+            }
         }
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -109,7 +132,7 @@ class JobDiscription extends Component {
 
     }
     getJobTypeOtionId = () => {
-        switch (this.state.job_type) {
+        switch (this.state.Type) {
             case "Full Time":
                 return 0;
             case "Part Time":
@@ -131,14 +154,14 @@ class JobDiscription extends Component {
     postDateChangeHandler = (date) => {
         console.log(date);
         this.setState({
-            post_date: date,
+            PostDate: date,
         })
     };
 
     deadlineDateChangeHandler = (date) => {
         console.log(date);
         this.setState({
-            deadline: date,
+            Deadline: date,
         })
     };
     applyHandleClose = (e) => {
@@ -193,23 +216,30 @@ class JobDiscription extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.job) {
             console.log("Job Discription Updated!!")
+
             this.setState({
-                job_id: nextProps.job.job_id,
-                employer: nextProps.job.employer,
-                job_title: nextProps.job.job_title,
-                job_city: nextProps.job.job_city,
-                job_state: nextProps.job.job_state,
-                job_zip_code: nextProps.job.job_zip_code,
-                job_type: nextProps.job.job_type,
-                salary: nextProps.job.salary,
-                post_date: new Date(nextProps.job.post_date),
-                deadline: new Date(nextProps.job.deadline),
-                job_discription: nextProps.job.job_discription,
+                _id: nextProps.job._id,
+                EmployerID: nextProps.job.EmployerID,
+                Postion: nextProps.job.Postion,
+                City: nextProps.job.Address.City,
+                State: nextProps.job.Address.State,
+                Zipcode: nextProps.job.Address.Zipcode,
+                Type: nextProps.job.Type,
+                Salary: nextProps.job.Salary,
+                PostDate: new Date(nextProps.job.PostDate),
+                Deadline: new Date(nextProps.job.Deadline),
+                Description: nextProps.job.Description,
             });
         }
     }
 
     render() {
+        if(!this.props.job){
+            return(
+                <div>
+                </div>
+            );
+        }
         return (
             <Styles>
                 <Container className="job-discription-container">
@@ -230,37 +260,37 @@ class JobDiscription extends Component {
                         {/* --------------------------------------------------------------------------------------------------------------------------------- */}
                         <Modal show={this.state.show} onHide={this.handleClose} >
                             <Modal.Header closeButton>
-                                <Modal.Title>Create Job</Modal.Title>
+                                <Modal.Title>Edit Job</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
                                 <Form>
                                     <Form.Group controlId="employer">
-                                        <Form.Label className="signup-form-lable">Job Title</Form.Label>
-                                        <Form.Control onChange={this.onValueChangeHandler} name="job_title" placeholder="job_title" defaultValue={this.state.job_title} />
+                                        <Form.Label className="signup-form-lable">Job Postion</Form.Label>
+                                        <Form.Control onChange={this.onValueChangeHandler} name="Postion" placeholder="Postion" defaultValue={this.state.Postion} />
                                     </Form.Group>
                                     <Form.Row>
                                         <Form.Group as={Col} >
                                             <Form.Label className="signup-form-lable">Post Date</Form.Label>
                                             <br />
-                                            <DatePicker selected={this.state.post_date} name="post_date" className="date_picker" onChange={this.postDateChangeHandler} />
+                                            <DatePicker selected={this.state.PostDate} name="PostDate" className="date_picker" onChange={this.postDateChangeHandler} />
                                             <br />
                                         </Form.Group>
                                         <Form.Group as={Col} controlId="salary">
                                             <Form.Label className="signup-form-lable">Salary</Form.Label>
-                                            <Form.Control onChange={this.onChangeHandeler} name="salary" type="number" placeholder="salary" defaultValue={this.state.salary} />
+                                            <Form.Control onChange={this.onChangeHandeler} name="Salary" type="number" placeholder="salary" defaultValue={this.state.Salary} />
                                         </Form.Group>
                                     </Form.Row>
                                     <Form.Row>
                                         <Form.Group as={Col}>
-                                            <Form.Label className="signup-form-lable">Application Deadline,</Form.Label>
+                                            <Form.Label className="signup-form-lable">Application Deadline</Form.Label>
                                             <br />
-                                            <DatePicker selected={this.state.deadline} name="deadline" className="date_picker" onChange={this.deadlineDateChangeHandler} />
+                                            <DatePicker selected={this.state.Deadline} name="Deadline" className="date_picker" onChange={this.deadlineDateChangeHandler} />
                                             <br />
                                         </Form.Group>
 
                                         <Form.Group as={Col} controlId="exampleForm.ControlSelect1">
                                             <Form.Label>Job Category </Form.Label>
-                                            <Form.Control as="select" name="job_category" defaultValue={this.getJobTypeOtionId()} >
+                                            <Form.Control as="select" name="Type" defaultValue={this.getJobTypeOtionId()} >
                                                 <option>Full Time</option>
                                                 <option>Part Time</option>
                                                 <option>Intern</option>
@@ -271,21 +301,21 @@ class JobDiscription extends Component {
                                     <Form.Row>
                                         <Form.Group as={Col} controlId="formGridCity">
                                             <Form.Label>City</Form.Label>
-                                            <Form.Control name="city" placeholder="San Jose" onChange={this.onChangeHandeler} defaultValue={this.state.job_city} />
+                                            <Form.Control name="City" placeholder="San Jose" onChange={this.onChangeHandeler} defaultValue={this.state.City} />
                                         </Form.Group>
 
                                         <Form.Group as={Col} controlId="formGridCity">
                                             <Form.Label>State</Form.Label>
-                                            <Form.Control name="state" placeholder="CA" onChange={this.onChangeHandeler} defaultValue={this.state.job_state} />
+                                            <Form.Control name="State" placeholder="CA" onChange={this.onChangeHandeler} defaultValue={this.state.State} />
                                         </Form.Group>
                                         <Form.Group as={Col} controlId="formGridCity">
                                             <Form.Label>Zip Code</Form.Label>
-                                            <Form.Control name="zip_code" placeholder="12345" onChange={this.onChangeHandeler} defaultValue={this.state.job_zip_code} />
+                                            <Form.Control name="Zipcode" placeholder="12345" onChange={this.onChangeHandeler} defaultValue={this.state.Zipcode} />
                                         </Form.Group>
                                     </Form.Row>
                                     <Form.Row>
                                         <Form.Label>Discription</Form.Label>
-                                        <Form.Control name="job_discription" as="textarea" placeholder="Discription..." defaultValue={this.state.job_discription} />
+                                        <Form.Control name="Discription" as="textarea" placeholder="Discription..." defaultValue={this.state.Discription} />
                                     </Form.Row>
                                 </Form>
                             </Modal.Body>
@@ -310,7 +340,7 @@ class JobDiscription extends Component {
                             <div className="job-discription-job-title">
                                 <Row>
                                     <Col xs={11} md={11}>
-                                        {this.state.job_title}
+                                        {this.state.Postion}
                                     </Col>
                                     {
                                         this.props.user.user_type === "employer" &&
@@ -318,12 +348,11 @@ class JobDiscription extends Component {
                                             <Icon style={{ fontSize: '16px', color: '#08c' }} type="edit" onClick={this.handleShow}></Icon>
                                         </Col>
                                     }
-
                                 </Row>
                                 <Row>
                                     <Col xs={11} md={11}>
                                         <div className="job-discription-job-employer">
-                                            {this.state.employer}
+                                            {this.state.EmployerName}
                                         </div>
                                     </Col>
                                 </Row>
@@ -335,7 +364,7 @@ class JobDiscription extends Component {
                                     </Col>
                                     <Col xs={2} md={2}>
                                         <div className="job-discription-subheading">
-                                            {this.state.job_type}
+                                            {this.state.Type}
                                         </div>
                                     </Col>
                                     <Col xs={0.1} md={0.1}>
@@ -343,7 +372,7 @@ class JobDiscription extends Component {
                                     </Col>
                                     <Col xs={2} md={2}>
                                         <div className="job-discription-subheading">
-                                            ${this.state.salary}
+                                            ${this.state.Salary}
                                         </div>
                                     </Col>
                                     <Col xs={0.1} md={0.1}>
@@ -351,7 +380,7 @@ class JobDiscription extends Component {
                                     </Col>
                                     <Col xs={2} md={2}>
                                         <div className="job-discription-subheading">
-                                            {this.state.job_city}
+                                            {this.state.City}
                                         </div>
                                     </Col>
                                     <Col xs={0.1} md={0.1}>
@@ -359,7 +388,7 @@ class JobDiscription extends Component {
                                     </Col>
                                     <Col xs={4} md={4}>
                                         <div className="job-discription-subheading">
-                                            Posted on {(new Date(this.state.post_date)).toDateString()}
+                                            Posted on {(new Date(this.state.PostDate)).toDateString()}
                                         </div>
                                     </Col>
                                 </Row>
@@ -368,7 +397,7 @@ class JobDiscription extends Component {
                         <div className="job-discription-apply-box">
                             <Row>
                                 <Col xs={10} md={10}>
-                                    Applications close on <b>{(new Date(this.state.deadline)).toDateString()} </b>
+                                    Applications close on <b>{(new Date(this.state.Deadline)).toDateString()} </b>
                                 </Col>
                                 {this.props.user.user_type === "student" &&
                                     <Col xs={2} md={2}>
@@ -382,7 +411,7 @@ class JobDiscription extends Component {
                             Job Responsibilities:
                         </div>
                         <div className="job-discription-discription">
-                            {this.state.job_discription}
+                            {this.state.Description}
                         </div>
                     </div>
                     <div className="profile-experience-card-divider"></div>

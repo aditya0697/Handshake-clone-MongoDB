@@ -15,7 +15,7 @@ var employerSchema = new Schema({
     PhoneNumber: {type: String, required: false},
     ProfileUrl: {type: String, required: false},
     EmployerDescription: {type: String, required: false},
-    Address: {addressSchema},
+    Address: addressSchema,
 });
 
 const employerModel = mongoose.model('employer', employerSchema);

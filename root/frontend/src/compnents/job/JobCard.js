@@ -4,7 +4,7 @@ import { Row, Col, Card, CardGroup, Container } from 'react-bootstrap';
 import Avatar from 'react-avatar';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import {getProfileUrlForEmployer} from './../../redux/actions/profilePictureActions';
+import { getProfileUrlForEmployer } from './../../redux/actions/profilePictureActions';
 import { getProfilePicture } from '../../redux/selectors';
 
 const Styles = styled.div`
@@ -26,20 +26,23 @@ class JobCard extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            show: false,
-            apply_show: false,
-            job_id: this.props.job.job_id,
-            employer: this.props.job.employer,
-            job_title: this.props.job.job_title,
-            job_city: this.props.job.job_city,
-            job_state: this.props.job.job_state,
-            job_zip_code: this.props.job.job_zip_code,
-            job_type: this.props.job.job_type,
-            salary: this.props.job.salary,
-            post_date: this.props.job.post_date,
-            deadline: this.props.job.deadline,
-            job_discription: this.props.job.job_discription
+        if (this.props.job) {
+            this.state = {
+                show: false,
+                apply_show: false,
+                _id: this.props.job._id,
+                EmployerName: this.props.job.EmployerName,
+                Postion: this.props.job.Postion,
+                City: this.props.job.Address.City,
+                State: this.props.job.Address.State,
+                Zipcode: this.props.job.Address.Zipcode,
+                Type: this.props.job.Type,
+                Salary: this.props.job.Salary,
+                PostDate: this.props.job.PostDate,
+                Deadline: this.props.job.Deadline,
+                Description: this.props.job.Description,
+                EmployerProfileUrl: this.props.job.EmployerProfileUrl,
+            }
         }
         this.clickHandler = this.clickHandler.bind();
     }
@@ -47,42 +50,39 @@ class JobCard extends Component {
         e.preventDefault();
         this.props.jobCardClickHandler(this.props.id);
     }
-    componentDidMount(){
-        if(this.props.job.employer_email){
-            
-            this.props.getProfileUrlForEmployer(this.props.job.employer_email);
-        }
-    }
-        render() {
-           
+    render() {
+        if (!this.props.job) {
             return (
-                <Container onClick={this.clickHandler}>
-                    <Row>
-                        <Col sd={4} md={4}>
-                            <Avatar name={this.state.employer} src={this.props.job_profile_pic} size={50} round={true} />
-                        </Col>
-                        <Col sd={8} md={8}>
-                            <div className="job-card-postion-name">
-                                <span><b>{this.state.job_title}</b></span>
-                            </div>
-                            <div className="job-card-company-name">
-                                <span><a href="">{this.state.employer} - {this.state.job_city}, {this.state.job_state}</a></span>
-                            </div>
-                            <div className="job-card-jobtype">
-                                <span>{this.state.job_type}</span>
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
-            )
+                <div></div>
+            );
         }
+        return (
+            <Container onClick={this.clickHandler}>
+                <Row>
+                    <Col sd={4} md={4}>
+                        <Avatar name={this.state.EmployerName} src={this.state.EmployerProfileUrl} size={50} round={true} />
+                    </Col>
+                    <Col sd={8} md={8}>
+                        <div className="job-card-postion-name">
+                            <span><b>{this.state.Postion}</b></span>
+                        </div>
+                        <div className="job-card-company-name">
+                            <span><a href="">{this.state.EmployerName} - {this.state.City}, {this.state.State}</a></span>
+                        </div>
+                        <div className="job-card-jobtype">
+                            <span>{this.state.Type}</span>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
+        )
     }
+}
 
-    const mapStateToProps = (state, ownProps) => {
-        return {
-            user: state.auth,
-            job_profile_pic:  getProfilePicture(state,"employer",ownProps.job.employer_email)
-        };
+const mapStateToProps = (state) => {
+    return {
+        user: state.auth,
     };
-    
-    export default connect(mapStateToProps, {getProfileUrlForEmployer})(JobCard);
+};
+
+export default connect(mapStateToProps, { getProfileUrlForEmployer })(JobCard);

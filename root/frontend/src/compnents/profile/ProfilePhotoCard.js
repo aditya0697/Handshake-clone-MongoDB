@@ -6,8 +6,8 @@ import Avatar from 'react-avatar';
 import styled from 'styled-components';
 import axios from "axios";
 import { connect } from 'react-redux';
-import { updateStudentFirstName, updateStudentLastName, updateStudentProfilePicture } from './../../redux/actions/studentActions'
-import { updateEmployerName , updateEmployerProfilePicture} from './../../redux/actions/employerActions';
+import { updateStudentProfile, updateStudentProfilePicture } from './../../redux/actions/studentActions'
+import { updateEmployerProfile , updateEmployerProfilePicture} from './../../redux/actions/employerActions';
 import { getPhoneNumber, getEmail, getProfileUrl, getName, getLastEducation, getFirstName, getLastName, getAddress } from './../../redux/selectors';
 
 
@@ -150,7 +150,7 @@ class ProfilePhotoCard extends Component {
         }
         if (this.props.user.user_type === "employer") {
             if (this.state.comapnay_name) {
-                this.props.updateEmployerName(this.state.comapnay_name);
+                this.props.updateEmployerProfile(this.props.employerData,{ EmployerName: this.state.comapnay_name});
             }
         }
     }
@@ -241,13 +241,13 @@ class ProfilePhotoCard extends Component {
                                 {this.props.address &&
                                     <div>
                                         <div className="profile-university-text">
-                                            {this.props.address.street}
+                                            {this.props.address.Street}
                                         </div>
                                         <div className="profile-university-text">
-                                            {this.props.address.apt_name}
+                                            {this.props.address.Apt}
                                         </div>
                                         <div className="profile-university-text">
-                                            {this.props.address.city}, {this.props.address.state}, {this.props.address.zip_code}
+                                            {this.props.address.City}, {this.props.address.State}, {this.props.address.Zipcode}
                                         </div>
                                     </div>
                                 }
@@ -258,10 +258,10 @@ class ProfilePhotoCard extends Component {
                         {this.props.user.user_type === "student" &&
                             <div class="profile-centered-div">
                                 <div className="profile-name-text">{this.props.name}<br /></div>
-                                {this.props.education && <div className="profile-university-text">{this.props.education.school}<br /></div>}
-                                {this.props.education && <div className="profile-university-text">{this.props.education.level}  •  {this.props.education.edu_major}<br /></div>}
-                                {this.props.education && <div className="profile-graduates-text">Graduates on {this.getProcessedDate(this.props.education.grad_date)}<br /></div>}
-                                {this.props.education && <div className="profile-graduates-text">{this.props.education.level}  • {this.props.education.gpa}<br /></div>}
+                                {this.props.education && <div className="profile-university-text">{this.props.education.School}<br /></div>}
+                                {this.props.education && <div className="profile-university-text">{this.props.education.Level}  •  {this.props.education.Major}<br /></div>}
+                                {this.props.education && <div className="profile-graduates-text">Graduates on {this.getProcessedDate(this.props.education.GradDate)}<br /></div>}
+                                {this.props.education && <div className="profile-graduates-text">{this.props.education.Level}  • {this.props.education.GPA}<br /></div>}
 
                             </div>
                         }
@@ -282,7 +282,9 @@ const mapStateToProps = state => {
         phoneNumber: getPhoneNumber(state),
         profileUrl: getProfileUrl(state),
         address: getAddress(state.employer.employerData),
+        studentData: state.student.studentData,
+        employerData: state.employer.employerData,
     };
 };
 
-export default connect(mapStateToProps, { updateStudentFirstName, updateStudentLastName, updateEmployerName, updateEmployerProfilePicture, updateStudentProfilePicture })(ProfilePhotoCard);
+export default connect(mapStateToProps, { updateStudentProfile, updateEmployerProfile, updateEmployerProfilePicture, updateStudentProfilePicture })(ProfilePhotoCard);

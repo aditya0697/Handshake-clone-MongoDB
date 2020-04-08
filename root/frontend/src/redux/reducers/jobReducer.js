@@ -11,9 +11,7 @@ const jobReducer = (state = initialState, action) => {
             console.log(action.payload)
             return {
                 ...state,
-                jobData: {
-                    jobs: action.payload
-                }
+                jobData:  action.payload,
             }
         case ADD_JOB:
             console.log("Payload in ADD_EXPERIENCE: " + JSON.stringify(action.payload));

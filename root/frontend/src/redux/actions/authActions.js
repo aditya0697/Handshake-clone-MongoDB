@@ -1,5 +1,5 @@
 import axios from "axios";
-import {AUTHENTICATE_STUDENT, AUTHENTICATE_EMPLOYER, SIGN_OUT} from './../actionTypes';
+import { AUTHENTICATE_STUDENT, AUTHENTICATE_EMPLOYER, SIGN_OUT } from './../actionTypes';
 import storage from 'redux-persist/lib/storage';
 import store from './../store'
 const jwt_decode = require('jwt-decode');
@@ -11,124 +11,137 @@ export const studentSignIn = (credentials) => dispatch => {
     axios.post(`${ROOT_URL}/student/signin`, credentials)
         .then(response => {
             console.log("studentSignIn Status:", JSON.stringify(response.data));
-            var token = response.data;
-            var decoded = jwt_decode(token.split(' ')[1]);
-            console.log("Data: ", JSON.stringify(decoded));
             if (response.status === 200) {
-                console.log("Data in actions", response.data.msg)
+                var token = response.data.split(' ')[1];
+                var decoded = jwt_decode(token);
+                console.log("Data: ", JSON.stringify(decoded));
+                localStorage.setItem("token", token);
+                console.log("Data in actions")
                 dispatch({
                     type: AUTHENTICATE_STUDENT,
                     payload: {
-                        'email':credentials.username,
-                        'message': response.data,
+                        'email': credentials.username,
+                        'message': "login successful",
                         'error_message': "",
                     }
                 })
             }
         },
-        error => {
-            console.log("studentSignIn error:", JSON.stringify(error));
-            dispatch({
-                type: AUTHENTICATE_STUDENT,
-                payload: {
-                    'email':credentials.username,
-                    'message': "Invalid Username or Password",
-                    'error_message': "Login Failed",
-                }
-                
-            })
-        });
+            error => {
+                console.log("studentSignIn error:", JSON.stringify(error));
+                dispatch({
+                    type: AUTHENTICATE_STUDENT,
+                    payload: {
+                        'email': credentials.username,
+                        'message': "Invalid Username or Password",
+                        'error_message': "Login Failed",
+                    }
+
+                })
+            });
 };
 
 export const studentSignUp = (student_data) => dispatch => {
     axios.defaults.withCredentials = true
     axios.post(`${ROOT_URL}/student_signup`, student_data)
-            .then((response) => {
-                console.log("Status Code : ", response.status);
-                if (response.status === 200) {
-                    dispatch({
-                        type: AUTHENTICATE_STUDENT,
-                        payload: {
-                            'email':student_data.email,
-                            'message': response.data,
-                            'error_message': "",
-                        }
-                        
-                    });
-                }
-            },
-                (error) => {
-                    dispatch({
-                        type: AUTHENTICATE_STUDENT,
-                        payload: {
-                            'email':"",
-                            'message': "",
-                            'message': "Invalid Username or Password",
-                            'error_message': error.response.data.errMessage,
+        .then((response) => {
+            console.log("Status Code : ", response.status);
+            if (response.status === 200) {
+                var token = response.data.split(' ')[1];
+                var decoded = jwt_decode(token);
+                console.log("Data: ", JSON.stringify(decoded));
+                localStorage.setItem("token", response.JWT);
+                dispatch({
+                    type: AUTHENTICATE_STUDENT,
+                    payload: {
+                        'email': student_data.email,
+                        'message': response.data,
+                        'error_message': "",
+                    }
 
-                        }
-                    });
                 });
+            }
+        },
+            (error) => {
+                dispatch({
+                    type: AUTHENTICATE_STUDENT,
+                    payload: {
+                        'email': "",
+                        'message': "",
+                        'message': "Invalid Username or Password",
+                        'error_message': error.response.data.errMessage,
+
+                    }
+                });
+            });
 }
 
 export const employerSignIn = (credentials) => dispatch => {
     axios.defaults.withCredentials = true
-    axios.post(`${ROOT_URL}/employer_signin`, credentials)
+    axios.post(`${ROOT_URL}/employer/signin`, credentials)
         .then(response => {
             console.log("employerSignIn Status:", JSON.stringify(response.data))
             if (response.status == 200) {
-                console.log("Data in actions", response.data.msg)
+                var token = response.data.split(' ')[1];
+                var decoded = jwt_decode(token);
+                console.log("Data: ", JSON.stringify(decoded));
+                localStorage.setItem("token", token);
+                console.log("Data in actions")
                 dispatch({
                     type: AUTHENTICATE_EMPLOYER,
                     payload: {
-                        'email':credentials.username,
-                        'message': response.data.message,
+                        'email': credentials.username,
+                        'message': "login successful",
                         'error_message': "",
                     }
                 })
             }
         },
-        error => {
-            console.log("employerSignIn error:", JSON.stringify(error));
-            dispatch({
-                type: AUTHENTICATE_EMPLOYER,
-                payload: {
-                    'email':credentials.username,
-                    'message': "Invalid Username or Password",
-                    'error_message': error.response.data.message,
-                }
-            })
-        });
+            error => {
+                console.log("employerSignIn error:", JSON.stringify(error));
+                dispatch({
+                    type: AUTHENTICATE_EMPLOYER,
+                    payload: {
+                        'email': credentials.username,
+                        'message': "Invalid Username or Password",
+                        'error_message': error.response.data.message,
+                    }
+                })
+            });
 };
 
 
 export const employerSignUp = (employer_data) => dispatch => {
     axios.defaults.withCredentials = true
-    axios.post(`${ROOT_URL}/employer_signup`, employer_data)
-            .then((response) => {
-                console.log("Status Code : ", response.status);
-                if (response.status === 200) {
-                    dispatch({
-                        type: AUTHENTICATE_EMPLOYER,
-                        payload: {
-                            'email':employer_data.email,
-                            'message': response.data,
-                            'error_message': "",
-                        }
-                    });
-                }
-            },
-                (error) => {
-                    dispatch({
-                        type: AUTHENTICATE_EMPLOYER,
-                        payload: {
-                            'email':"",
-                            'message': "",
-                            'message': "Invalid Username or Password",
-                            'error_message': error.response.data.errMessage,
-                        }
-                    });
+    axios.post(`${ROOT_URL}/employer/signup`, employer_data)
+        .then((response) => {
+            console.log("Status Code : ", response.status);
+            if (response.status === 200) {
+                var token = response.data.split(' ')[1];
+                var decoded = jwt_decode(token);
+                console.log("Data: ", JSON.stringify(decoded));
+                localStorage.setItem("token", token);
+                dispatch({
+                    type: AUTHENTICATE_EMPLOYER,
+                    payload: {
+                        'email': employer_data.email,
+                        'message': response.data,
+                        'error_message': "",
+                    }
                 });
+            }
+        },
+            (error) => {
+                dispatch({
+                    type: AUTHENTICATE_EMPLOYER,
+                    payload: {
+                        'email': "",
+                        'message': "",
+                        'message': "Invalid Username or Password",
+                        'error_message': error.response.data.errMessage,
+                    }
+                });
+            });
 }
 
 export const signout = () => dispatch => {
@@ -136,7 +149,7 @@ export const signout = () => dispatch => {
     storage.removeItem('persist:root');
     store.persistor.flush();
     console.log("Signout !!")
-        dispatch({
+    dispatch({
         type: SIGN_OUT
     })
 };

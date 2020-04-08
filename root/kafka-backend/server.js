@@ -1,3 +1,7 @@
+const {STUDENT_SIGNIN, STUDENT_SIGNUP, GET_STUDENT_DETAILS, UPDATE_STUDENT_PROFILE, GET_STUDENTS,
+    EMPLOYER_SIGNIN, EMPLOYER_SIGNUP, GET_EMPLOYER_DETAILS, UPDATE_EMPLOYER_PROFILE,
+    CREATE_JOB, UPDATE_JOB, GET_JOBS_EMPLOYER, GET_JOBS_STUDENT,  } =  require('./topics/topic_names');
+
 var connection = new require('./kafka/Connection');
 const { mongoDB } = require('./Utils/config');
 var mongoose = require('mongoose');
@@ -5,7 +9,14 @@ var topicsToCreate =  require('./topics/topic');
 var StudentSignup = require('./services/studentServices/signup');
 var GetStudentDetails = require('./services/studentServices/getStudentDetails');
 var UpdateStudentProfile = require('./services/studentServices/updateProfile');
-var EmployerSignup = 
+var EmployerSignup = require('./services/employerServices/signup');
+var GetEmployerDetails = require('./services/employerServices/getEmployerDetails');
+var UpdateEmployerDetails = require('./services/employerServices/updateProfile');
+var CreateJob = require('./services/jobServices/createJob');
+var UpdateJob = require('./services/jobServices/updateJob');
+var GetJobsForStudent = require('./services/jobServices/getJobsStudent');
+var GetJobsForEmployer = require('./services/jobServices/getJobsEmployer');
+var GetStudents = require('./services/studentServices/getStudents');
 
 // const producer = connection.getProducer();
 // const consumer = connection.getConsumer();
@@ -79,6 +90,14 @@ function handleTopicRequest(topic_name, fname) {
 }
 
 
-handleTopicRequest("student_signup",StudentSignup);
-handleTopicRequest("get_student_details", GetStudentDetails);
-handleTopicRequest("update_student_profile", UpdateStudentProfile);
+handleTopicRequest(STUDENT_SIGNUP,StudentSignup);
+handleTopicRequest(GET_STUDENT_DETAILS, GetStudentDetails);
+handleTopicRequest(UPDATE_STUDENT_PROFILE, UpdateStudentProfile);
+handleTopicRequest(EMPLOYER_SIGNUP,EmployerSignup);
+handleTopicRequest(GET_EMPLOYER_DETAILS, GetEmployerDetails);
+handleTopicRequest(UPDATE_EMPLOYER_PROFILE, UpdateEmployerDetails); 
+handleTopicRequest(CREATE_JOB, CreateJob);
+handleTopicRequest(UPDATE_JOB, UpdateJob);
+handleTopicRequest(GET_JOBS_STUDENT, GetJobsForStudent);
+handleTopicRequest(GET_JOBS_EMPLOYER, GetJobsForEmployer)
+handleTopicRequest(GET_STUDENTS,GetStudents);

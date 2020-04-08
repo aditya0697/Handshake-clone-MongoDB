@@ -70,27 +70,26 @@ class JobDashboard extends Component {
 
     constructor(props) {
         super(props);
-        const initial_job = {
-            job_id: "",
-            employer: "",
-            job_title: "",
-            job_city: "",
-            job_state: "",
-            job_zip_code: "",
-            job_type: "",
-            salary: "",
-            post_date: new Date(),
-            deadline: new Date(),
-            job_discription: "",
-            addJobModalAlertFlag: false,
-        }
+        // const initial_job = {
+        //     Postion: "",
+        //     EmployerName: "",
+        //     City: "",
+        //     State: "",
+        //     Zipcode: "",
+        //     Type: "",
+        //     Salary: "",
+        //     PostDate: new Date(),
+        //     Deadline: new Date(),
+        //     Description: "",
+        //     addJobModalAlertFlag: false,
+        // }
         this.state = {
             show: false,
             alertFlag: false,
-            job_type: "Full Time",
-            deadline: new Date(),
-            post_date: new Date(),
-            discription_job: initial_job,
+            Type: "Full Time",
+            Deadline: new Date(),
+            PostDate: new Date(),
+            // discription_job: initial_job,
         }
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -130,31 +129,33 @@ class JobDashboard extends Component {
     postDateChangeHandler = (date) => {
         console.log(date);
         this.setState({
-            post_date: date,
+            PostDate: date,
         })
     };
 
     deadlineDateChangeHandler = (date) => {
         console.log(date);
         this.setState({
-            deadline: date,
+            Deadline: date,
         })
     };
 
     getUpdatedState = () => ({
-        employer: this.props.name,
-        job_title: this.state.job_title,
-        job_city: this.state.job_city,
-        job_state: this.state.job_state,
-        job_zip_code: this.state.job_zip_code,
-        job_type: this.state.job_type,
-        salary: this.state.salary,
-        post_date: this.state.post_date,
-        deadline: this.state.deadline,
-        job_discription: this.state.job_discription,
+        EmployerID: this.props.EmployerID,
+        Postion: this.state.Postion,
+        Type: this.state.Type,
+        Salary: this.state.Salary,
+        PostDate: this.state.PostDate,
+        Deadline: this.state.Deadline,
+        Description: this.state.Description,
+        Address: {
+            City: this.state.City,
+            State: this.state.State,
+            Zipcode: this.state.Zipcode,
+        },
     });
     validation = () => {
-        if (this.state.job_title && this.state.job_type && this.state.job_city && this.state.job_state && this.state.job_zip_code && this.state.salary && this.state.job_discription) {
+        if (this.state.Postion && this.state.Type && this.state.City && this.state.State && this.state.Zipcode && this.state.Salary && this.state.Description) {
             return true;
         }
         return false;
@@ -174,7 +175,7 @@ class JobDashboard extends Component {
         })
         if (this.props.user.user_type === "employer") {
             console.log("getUpdatedState: " + JSON.stringify(this.getUpdatedState()));
-            this.props.addJob(this.getUpdatedState(), this.props.user.email);
+            this.props.addJob(this.getUpdatedState(), this.props.employerData);
         }
     }
 
@@ -190,20 +191,20 @@ class JobDashboard extends Component {
             show: false,
         })
         console.log("getUpdatedState: " + JSON.stringify(this.getUpdatedState()));
-        this.props.addEducation(this.getUpdatedState(), this.props.user.email);
+        this.props.addJob(this.getUpdatedState(), this.props.user.email);
 
     }
     componentDidMount() {
         if (!this.props.jobs || this.props.jobs === []) {
             this.props.fetchJobs(this.props.user);
-            
+
         }
         if (this.props.jobs) {
-            if(this.props.jobs.length > 0){
+            if (this.props.jobs.length > 0) {
                 this.setState({
                     discription_job: this.props.jobs[0],
                 })
-            } 
+            }
             // this.props.jobs.map( job => {
             //     this.props.fetchProfileUrlForEmployerForJob(job.job_id);
             // })
@@ -246,32 +247,32 @@ class JobDashboard extends Component {
                             {this.state.addJobModalAlertFlag && <Alert variant="danger">Insert all values</Alert>}
                             <Form>
                                 <Form.Group controlId="employer">
-                                    <Form.Label className="signup-form-lable">Job Title</Form.Label>
-                                    <Form.Control onChange={this.onChangeHandeler} name="job_title" placeholder="Job Title" />
+                                    <Form.Label className="signup-form-lable">Job Postion</Form.Label>
+                                    <Form.Control onChange={this.onChangeHandeler} name="Postion" placeholder="Job Postion" />
                                 </Form.Group>
                                 <Form.Row>
                                     <Form.Group as={Col} controlId="start_date">
                                         <Form.Label className="signup-form-lable">Post Date</Form.Label>
                                         <br />
-                                        <DatePicker selected={this.state.post_date} name="post_date" className="date_picker" onChange={this.postDateChangeHandler} />
+                                        <DatePicker selected={this.state.PostDate} name="PostDate" className="date_picker" onChange={this.postDateChangeHandler} />
                                         <br />
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="salary">
                                         <Form.Label className="signup-form-lable">Salary</Form.Label>
-                                        <Form.Control onChange={this.onChangeHandeler} name="salary" type="number" placeholder="salary" />
+                                        <Form.Control onChange={this.onChangeHandeler} name="Salary" type="number" placeholder="salary" />
                                     </Form.Group>
                                 </Form.Row>
                                 <Form.Row>
                                     <Form.Group as={Col} controlId="end_date">
                                         <Form.Label className="signup-form-lable">Application Deadline,</Form.Label>
                                         <br />
-                                        <DatePicker selected={this.state.deadline} name="deadline" className="date_picker" onChange={this.deadlineDateChangeHandler} />
+                                        <DatePicker selected={this.state.Deadline} name="Deadline" className="date_picker" onChange={this.deadlineDateChangeHandler} />
                                         <br />
                                     </Form.Group>
 
                                     <Form.Group as={Col} controlId="exampleForm.ControlSelect1">
                                         <Form.Label>Job Category </Form.Label>
-                                        <Form.Control as="select" name="job_type" onChange={this.onChangeHandeler} defaultValue={1}>
+                                        <Form.Control as="select" name="Type" onChange={this.onChangeHandeler} defaultValue={1}>
                                             <option>Full Time</option>
                                             <option>Part Time</option>
                                             <option>Intern</option>
@@ -282,21 +283,21 @@ class JobDashboard extends Component {
                                 <Form.Row>
                                     <Form.Group as={Col} controlId="formGridCity">
                                         <Form.Label>City</Form.Label>
-                                        <Form.Control name="job_city" placeholder="San Jose" onChange={this.onChangeHandeler} />
+                                        <Form.Control name="City" placeholder="San Jose" onChange={this.onChangeHandeler} />
                                     </Form.Group>
 
                                     <Form.Group as={Col} controlId="formGridCity">
                                         <Form.Label>State</Form.Label>
-                                        <Form.Control name="job_state" placeholder="CA" onChange={this.onChangeHandeler} />
+                                        <Form.Control name="State" placeholder="CA" onChange={this.onChangeHandeler} />
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="formGridCity">
                                         <Form.Label>Zip Code</Form.Label>
-                                        <Form.Control name="job_zip_code" placeholder="12345" onChange={this.onChangeHandeler} />
+                                        <Form.Control name="Zipcode" placeholder="12345" onChange={this.onChangeHandeler} />
                                     </Form.Group>
                                 </Form.Row>
                                 <Form.Row>
                                     <Form.Label>Discription</Form.Label>
-                                    <Form.Control name="job_discription" as="textarea" placeholder="Discription..." onChange={this.onChangeHandeler} />
+                                    <Form.Control name="Description" as="textarea" placeholder="Discription..." onChange={this.onChangeHandeler} />
                                 </Form.Row>
                             </Form>
                         </Modal.Body>
@@ -361,6 +362,8 @@ const mapStateToProps = state => {
         jobs: getJobs(state),
         user: state.auth,
         name: getName(state),
+        employerData: state.employer.employerData,
+        studentData: state.student.studentData,
     };
 };
-export default connect(mapStateToProps, { addJob, fetchJobs , fetchProfileUrlForEmployerForJob})(JobDashboard);
+export default connect(mapStateToProps, { addJob, fetchJobs, fetchProfileUrlForEmployerForJob })(JobDashboard);

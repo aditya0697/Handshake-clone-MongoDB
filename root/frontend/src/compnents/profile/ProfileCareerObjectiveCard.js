@@ -7,8 +7,8 @@ import { List } from 'antd';
 import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import { getObjective, getEmployerDiscription, getName, getFirstName } from './../../redux/selectors';
-import { updateObjective } from './../../redux/actions/studentActions';
-import {updateEmployerDiscription} from './../../redux/actions/employerActions';
+import { updateStudentProfile } from './../../redux/actions/studentActions';
+import {updateEmployerProfile} from './../../redux/actions/employerActions';
 
 const Styles = styled.div`
    .profile-objective-card {
@@ -65,12 +65,18 @@ class ProfileCareerObjectiveCard extends Component {
         })
         if(this.props.user.user_type === "student") {
             if (this.state.objective) {
-                this.props.updateObjective(this.state.objective);
+                const data = {
+                    CareerObjective: this.state.objective,
+                }
+                this.props.updateStudentProfile(this.props.studentData, data);
             }
         }
         if(this.props.user.user_type === "employer"){
             if (this.state.discription) {
-                this.props.updateEmployerDiscription(this.state.discription);
+                const data = {
+                    EmployerDescription: this.state.discription,
+                }
+                this.props.updateEmployerProfile(this.props.employerData, data);
             }
         }
         
@@ -158,13 +164,14 @@ class ProfileCareerObjectiveCard extends Component {
 }
 const mapStateToProps = state => {
     return {
-
         careerObjective: getObjective(state.student.studentData),
         user: state.auth,
         name: getName(state),
         first_name: getFirstName(state),
-        discription: getEmployerDiscription(state.employer.employerData)
+        discription: getEmployerDiscription(state.employer.employerData),
+        studentData: state.student.studentData,
+        employerData: state.employer.employerData,
     };
 };
 
-export default connect(mapStateToProps, { updateObjective, updateEmployerDiscription })(ProfileCareerObjectiveCard);
+export default connect(mapStateToProps, { updateStudentProfile, updateEmployerProfile })(ProfileCareerObjectiveCard);

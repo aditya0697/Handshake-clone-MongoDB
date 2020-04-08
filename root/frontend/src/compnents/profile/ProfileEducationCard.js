@@ -9,7 +9,7 @@ import ModelEducation from './ModelEducation';
 import { Icon } from 'antd';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { addEducation } from './../../redux/actions/studentActions'
+import { updateStudentProfile } from './../../redux/actions/studentActions'
 
 const Styles = styled.div`
     .profile-eductionCard-card {
@@ -113,12 +113,13 @@ class ProfileEducationCard extends Component {
         }
         return false;
     }
+
     getUpdatedState = () => ({
-        school: this.state.school,
-        level: this.state.level,
-        edu_major: this.state.edu_major,
-        grad_date: this.state.grad_date.toISOString(),
-        gpa: this.state.gpa,
+        School: this.state.school,
+        Level: this.state.level,
+        Major: this.state.edu_major,
+        GradDate: this.state.grad_date.toISOString(),
+        GPA: this.state.gpa,
     });
 
     saveChangeHandler = (e) => {
@@ -133,88 +134,19 @@ class ProfileEducationCard extends Component {
             show: false,
         })
         console.log("getUpdatedState: " + JSON.stringify(this.getUpdatedState()));
-        this.props.addEducation(this.getUpdatedState(), this.props.user.email);
-
+        this.props.educations.push(this.getUpdatedState());
+        this.props.updateStudentProfile(this.props.studentData, this.props.educations);
+        // this.props.addEducation(this.getUpdatedState(), this.props.user.email);
     }
 
     render() {
         let eductionDetails = [];
-        if (this.props.education) {
-            eductionDetails = this.props.education.map((education, id) => {
+        if (this.props.educations) {
+            eductionDetails = this.props.educations.map((education, id) => {
                 if (!education) {
                     return;
                 }
                 return (
-                    // <div>
-                    //     <Modal show={this.state.show} onHide={this.handleClose}>
-                    //         <Modal.Header closeButton>
-                    //             <Modal.Title>Modal heading</Modal.Title>
-                    //         </Modal.Header>
-                    //         <Modal.Body>
-                    //             <Form>
-                    //                 <Form.Group controlId="school">
-                    //                     <Form.Label className="signup-form-lable">School</Form.Label>
-                    //                     <Form.Control onChange={this.schoolChangeHandler} placeholder={education.school} />
-                    //                 </Form.Group>
-                    //                 <Form.Row>
-                    //                     <Form.Group as={Col} controlId="major">
-                    //                         <Form.Label className="signup-form-lable">Major</Form.Label>
-                    //                         <Form.Control onChange={this.majorChangeHandler} placeholder={education.edu_major} />
-                    //                     </Form.Group>
-                    //                     <Form.Group as={Col} controlId="level">
-                    //                         <Form.Label className="signup-form-lable">Degree Level</Form.Label>
-                    //                         <Form.Control onChange={this.levelChangeHandler} placeholder={education.level} />
-                    //                     </Form.Group>
-                    //                 </Form.Row>
-                    //                 <Form.Row>
-                    //                     <Form.Group as={Col} controlId="gradDate">
-                    //                         <Form.Label className="signup-form-lable">Grad Date</Form.Label>
-                    //                         <br />
-                    //                         <DatePicker onChange={this.handleChange} className="date_picker" onChange={this.gradDateChangeHandler} placeholder="Select date" />
-                    //                         <br />
-                    //                     </Form.Group>
-                    //                     <Form.Group as={Col} controlId="gpa">
-                    //                         <Form.Label className="signup-form-lable">GPA</Form.Label>
-                    //                         <Form.Control onChange={this.levelChangeHandler} type="number" placeholder={education.gpa} />
-                    //                     </Form.Group>
-                    //                 </Form.Row>
-                    //             </Form>
-                    //         </Modal.Body>
-                    //         <Modal.Footer>
-                    //             <Button variant="secondary" onClick={this.handleClose}>
-                    //                 Close
-                    //                 </Button>
-                    //             <Button variant="primary" onClick={this.handleClose}>
-                    //                 Save Changes
-                    //                 </Button>
-                    //         </Modal.Footer>
-                    //     </Modal>
-                    //     <div className="profile-education-card">
-                    //         <div className="profile-education-school">
-                    //             <Row>
-                    //                 <Col xs={11} md={11}>
-                    //                     {education.school}
-                    //                 </Col>
-                    //                 <Col xs={1} md={1}>
-                    //                     <Icon type="edit" onClick={this.handleShow}></Icon>
-                    //                 </Col>
-                    //             </Row>
-                    //         </div>
-                    //         <div className="profile-education-level">
-                    //             {education.level}
-                    //         </div>
-                    //         <div className="profile-education-major">
-                    //             {"Major in " + education.edu_major}
-                    //         </div>
-                    //         <div className="profile-education-date">
-                    //             {"Graduation date: " + education.grad_date}
-                    //         </div>
-                    //         <div className="profile-education-gpa">
-                    //             {"Cumulative GPA: " + education.gpa}
-                    //         </div>
-                    //     </div>
-                    //     <div className="profile-education-card-divider"></div>
-                    // </div> education ={education}
                     <ModelEducation id={id} />
                 )
             })
@@ -288,8 +220,10 @@ class ProfileEducationCard extends Component {
 const mapStateToProps = state => {
     return {
         user: state.auth,
-        education: getEducation(state.student.studentData)
+        educations: getEducation(state.student.studentData),
+        studentData: state.student.studentData,
+
     };
 };
 
-export default connect(mapStateToProps, { addEducation })(ProfileEducationCard);
+export default connect(mapStateToProps, { updateStudentProfile })(ProfileEducationCard);

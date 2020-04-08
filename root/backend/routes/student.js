@@ -1,3 +1,5 @@
+const { STUDENT_SIGNUP, GET_STUDENT_DETAILS, UPDATE_STUDENT_PROFILE, GET_STUDENTS } = require('./../kafka/topics/topic_names');
+
 var express = require('express');
 var router = express.Router();
 var kafka = require('./../kafka/client');
@@ -59,12 +61,13 @@ router.post('/signin', function (req, res) {
 
 router.post('/signup', function (req, res) {
   console.log("Inside Student Signup");
-  kafka.make_request('student_signup', req.body, function (err, results) {
+  kafka.make_request(STUDENT_SIGNUP, req.body, function (err, results) {
     console.log('in result');
-    console.log(results);
-    console.log(err);
+    // console.log(results);
+    // console.log(err);
     if (err) {
-      console.log("Inside err");
+      // console.log("Inside err");
+      res.status(404);
       res.json({
         status: "error",
         msg: err,
@@ -72,8 +75,8 @@ router.post('/signup', function (req, res) {
       res.end();
       return;
     } else {
-      console.log("Inside data");
-      console.log("Data:", JSON.stringify(results));
+      // console.log("Inside data");
+      // console.log("Data:", JSON.stringify(results));
       const payload = {
         email: results.Email,
         type: "student"
@@ -89,24 +92,23 @@ router.post('/signup', function (req, res) {
 });
 
 
-router.get("/:student_email", checkAuth, function (req, res) {
+router.get("/email/:student_email", checkAuth, function (req, res) {
   console.log("Inside Student Details: ", req.params.student_email);
-  kafka.make_request('get_student_details', req.params.student_email, function (err, results) {
-    console.log('in result');
+  kafka.make_request(GET_STUDENT_DETAILS, req.params.student_email, function (err, results) {
+    // console.log('in result');
     if (err) {
-      console.log("Inside err");
+      // console.log("Inside err");
+      res.status(404);
       res.json({
         status: "error",
         msg: err,
       })
       res.end();
     } else {
-      console.log("Inside data");
-      console.log("Data:", JSON.stringify(results));
+      // console.log("Inside data");
+      // console.log("Data:", JSON.stringify(results));
       // const payload = {student: results};
-      res.json({
-        data: results,
-      })
+      res.json(results)
       res.status(200).end();
       res.end();
       return;
@@ -116,21 +118,20 @@ router.get("/:student_email", checkAuth, function (req, res) {
 
 router.post("/update_profile", checkAuth, function (req, res) {
   console.log("data: ", JSON.stringify(req.body.data));
-  kafka.make_request('update_student_profile', req.body.data, function (err, results) {
-    console.log('in result');
+  kafka.make_request(UPDATE_STUDENT_PROFILE, req.body.data, function (err, results) {
+    // console.log('in result', JSON.stringify(err));
     if (err) {
       console.log("Inside err");
+      res.status(404);
       res.json({
         status: "error",
         msg: err,
       })
       res.end();
     } else {
-      console.log("Inside data");
-      console.log("Data:", JSON.stringify(results));
-      res.json({
-        data: results,
-      })
+      // console.log("Inside data");
+      // console.log("Data:", JSON.stringify(results));
+      res.json(results)
       res.end();
       return;
     }
@@ -157,25 +158,24 @@ router.get("/get_profile_picture/:student_email", checkAuth, function (req, res)
   console.log("Inside Student get_profile_picture: ", req.params.student_email);
   Student.findOne({ Email: req.params.student_email }).exec((err, results) => {
     if (err) {
-      console.log("Inside err");
+      // console.log("Inside err");
+      res.status(404);
       res.json({
         status: "error",
         msg: err,
       })
       res.end();
     } else {
-      console.log("Inside data");
-      console.log("Data:", JSON.stringify(results.ProfileUrl));
-      res.json({
-        data: results.ProfileUrl,
-      })
+      // console.log("Inside data");
+      // console.log("Data:", JSON.stringify(results.ProfileUrl));
+      res.json(results)
       res.end();
       return;
     }
   });
 });
 
-router.post('/upload-profile', checkAuth ,profilePicUpload, (req, res, next) => {
+router.post('/upload-profile', checkAuth, profilePicUpload, (req, res, next) => {
   console.log("Request ---", JSON.stringify(req.body));
   // const path = req.file.path;
   // const user_type = req.body.user_type;
@@ -184,6 +184,7 @@ router.post('/upload-profile', checkAuth ,profilePicUpload, (req, res, next) => 
   console.log("profile_url: " + profile_url);
   Student.updateOne({ Email: email }, { $set: { "ProfileUrl": profile_url } }).exec((err, results) => {
     if (err) {
+      res.status(404);
       res.json({
         status: "error",
         msg: err,
@@ -195,10 +196,34 @@ router.post('/upload-profile', checkAuth ,profilePicUpload, (req, res, next) => 
 }
 );
 
-
-
-router.get('/get_students',checkAuth,(req, res) => {
-  
+router.get('/students', (req, res) => {
+  // console.log("page: ", JSON.stringify(req.query.page));
+  // console.log("limit: ", JSON.stringify(req.query.limit));
+  // console.log("Inside get_students: ");
+  const data = {
+    page: req.query.page,
+    limit: req.query.limit,
+  }
+  console.log("Data: ", JSON.stringify(req.query));
+  kafka.make_request(GET_STUDENTS, data, function (err, results) {
+    // console.log('in result', JSON.stringify(err));
+    if (err) {
+      console.log("Inside err");
+      res.status(404);
+      res.json({
+        status: "error",
+        msg: err,
+      })
+      res.end();
+    } else {
+      console.log("Inside data");
+      // console.log("Data:", JSON.stringify(results));
+      res.status(200);
+      res.json(results)
+      res.end();
+      return;
+    }
+  });
 });
 
 module.exports = router;

@@ -1,7 +1,7 @@
 import {
     STUDENT_DETAILS, EDIT_STUDENT_DETAILS, UPDATE_EDUCATION_BY_ID, ADD_EDUCATION, UPDATE_EXPERIENCE_BY_ID, ADD_EXPERIENCE,
     UPDATE_STUDENT_FIRST_NAME, UPDATE_STUDENT_LAST_NAME, UPDATE_STUDENT_OBJECTIVE, ADD_SKILL, DELETE_SKILL, UPDATE_STUDENT_PHONENUMBER, 
-    UPDATE_STUDENT_PROFILE_PIC, FETCH_STUDENT_PROFILE_PIC
+    UPDATE_STUDENT_PROFILE_PIC, FETCH_STUDENT_PROFILE_PIC, UPDATE_STUDENT_PROFILE
 } from './../actionTypes'
 import update from 'react-addons-update'; // ES6
 
@@ -17,7 +17,7 @@ const studentReducer = (state = initialState, action) => {
                 ...state,
                 studentData: action.payload
             }
-        case EDIT_STUDENT_DETAILS:
+        case UPDATE_STUDENT_PROFILE:
             console.log("Payload:")
             console.log(action.payload)
             return {
@@ -30,7 +30,7 @@ const studentReducer = (state = initialState, action) => {
             // console.log(action.payload.education)
             return update(state, {
                 studentData: {
-                    education: {
+                    Educations: {
                         [action.payload.index]: { $set: action.payload.education }
                     }
                 }
@@ -39,7 +39,7 @@ const studentReducer = (state = initialState, action) => {
             console.log("Payload in ADD_EDUCATION: " + JSON.stringify(action.payload));
             return update(state, {
                 studentData: {
-                    education: { $push: [action.payload] }
+                    Educations: { $push: [action.payload] }
                 }
             });
         case UPDATE_EXPERIENCE_BY_ID:
@@ -48,7 +48,7 @@ const studentReducer = (state = initialState, action) => {
             // console.log(action.payload.education)
             return update(state, {
                 studentData: {
-                    experience: {
+                    Experiences: {
                         [action.payload.index]: { $set: action.payload.experience }
                     }
                 }
@@ -57,37 +57,37 @@ const studentReducer = (state = initialState, action) => {
             console.log("Payload in ADD_EXPERIENCE: " + JSON.stringify(action.payload));
             return update(state, {
                 studentData: {
-                    experience: { $push: [action.payload] }
+                    Experiences: { $push: [action.payload] }
                 }
             });
         case UPDATE_STUDENT_FIRST_NAME:
             return update(state, {
                 studentData: {
-                    first_name: { $set: action.payload }
+                    FirstName: { $set: action.payload }
                 }
             });
         case UPDATE_STUDENT_LAST_NAME:
             return update(state, {
                 studentData: {
-                    last_name: { $set: action.payload }
+                    LastName: { $set: action.payload }
                 }
             });
         case UPDATE_STUDENT_OBJECTIVE:
             return update(state, {
                 studentData: {
-                    objective: { $set: action.payload }
+                    CareerObjective: { $set: action.payload }
                 }
             });
         case ADD_SKILL:
             return update(state, {
                 studentData: {
-                    skills: { $push: [action.payload] }
+                    Skills: { $push: [action.payload] }
                 }
             });
         case DELETE_SKILL:
             return update(state, {
                 studentData: {
-                    skills: [
+                    Skills: [
                         ...state.items.slice(0, action.payload),
                         ...state.items.slice(action.payload + 1)
                     ],
@@ -96,13 +96,13 @@ const studentReducer = (state = initialState, action) => {
         case UPDATE_STUDENT_PHONENUMBER:
             return update(state, {
                 studentData: {
-                    phone_number: { $set: action.payload }
+                    PhoneNumber: { $set: action.payload }
                 }
             });
         case UPDATE_STUDENT_PROFILE_PIC:
             return update(state, {
                 studentData: {
-                    profile_picture: { $set: action.payload }
+                    ProfileUrl: { $set: action.payload }
                 }
             });
         default:

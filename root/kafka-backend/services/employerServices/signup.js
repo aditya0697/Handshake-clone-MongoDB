@@ -8,7 +8,7 @@ function handle_request(msg, callback) {
         callback("No Password", "no password");
         return;
     }
-    var address = {
+    const address = {
         Street: msg.street,
         Apt: msg.apt_name,
         City: msg.city,
@@ -16,7 +16,7 @@ function handle_request(msg, callback) {
         Zipcode: msg.zip_code,
     };
 
-    var newEmployer = new EmployerAuth({
+    var newEmployer = new Employer({
         Email: msg.email,
         EmployerName: msg.comapnay_name,
         Address: address,
@@ -30,7 +30,7 @@ function handle_request(msg, callback) {
         if (error) {
             callback(error, error)
         }
-        if (student) {
+        if (employer) {
             console.log("Employer: ", JSON.stringify(employer));
             callback("Employer already exists", "Employer already exists");
         }

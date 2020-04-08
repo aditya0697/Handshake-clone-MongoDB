@@ -5,8 +5,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { getEducationByID } from './../../redux/selectors';
-import {updateEducationById} from './../../redux/actions/studentActions'
+import { getEducationByID, getEducation } from './../../redux/selectors';
+import { updateStudentProfile} from './../../redux/actions/studentActions'
 
 class ModelEducation extends Component {
     constructor(props) {
@@ -62,30 +62,32 @@ class ModelEducation extends Component {
 
     getUpdatedState = () => {
         const education =  {
-            "edu_id": this.props.education.edu_id,
-            "school": this.props.education.school,
-            "edu_major": this.props.education.edu_major,
-            "level": this.props.education.level,
-            "grad_date": this.props.education.grad_date,
-            "gpa": this.props.education.gpa,
+            "_id": this.props.education._id,
+            "School": this.props.education.School,
+            "Major": this.props.education.Major,
+            "Level": this.props.education.Level,
+            "GradDate": this.props.education.GradDate,
+            "GPA": this.props.education.GPA,
         }
 
         if(this.state.school){
-            education.school = this.state.school;
+            education.School = this.state.school;
         }
         if(this.state.major){
-            education.edu_major = this.state.major;
+            education.Major = this.state.major;
         }
         if(this.state.level){
-            education.level = this.state.level;
+            education.Level = this.state.level;
         }
         if(this.state.grad_date){
-            education.grad_date = this.state.grad_date;
+            education.GradDate = this.state.grad_date;
         }
         if(this.state.gpa){
-            education.gpa = this.state.gpa;
+            education.GPA = this.state.gpa;
         }
-        return education;
+
+        this.props.educations[this.props.id] = education;
+        return {Educations: this.props.educations};
     }
 
     saveChangeHandler = (e) => {
@@ -93,9 +95,8 @@ class ModelEducation extends Component {
         this.setState({
             show: false,
         })
-        
-        this.props.updateEducationById(this.getUpdatedState(), this.props.id);
 
+        this.props.updateStudentProfile(this.props.studentData,this.getUpdatedState());
     }
 
     componentWillReceiveProps(nextProps){
@@ -120,28 +121,28 @@ class ModelEducation extends Component {
                     <Form>
                         <Form.Group controlId="school">
                             <Form.Label className="signup-form-lable">School</Form.Label>
-                            <Form.Control onChange={this.schoolChangeHandler} defaultValue={this.props.education.school} />
+                            <Form.Control onChange={this.schoolChangeHandler} defaultValue={this.props.education.School} />
                         </Form.Group>
                         <Form.Row>
                             <Form.Group as={Col} controlId="major">
                                 <Form.Label className="signup-form-lable">Major</Form.Label>
-                                <Form.Control onChange={this.majorChangeHandler} defaultValue={this.props.education.edu_major} />
+                                <Form.Control onChange={this.majorChangeHandler} defaultValue={this.props.education.Major} />
                             </Form.Group>
                             <Form.Group as={Col} controlId="level">
                                 <Form.Label className="signup-form-lable">Degree Level</Form.Label>
-                                <Form.Control onChange={this.levelChangeHandler} defaultValue={this.props.education.level} />
+                                <Form.Control onChange={this.levelChangeHandler} defaultValue={this.props.education.Level} />
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
                             <Form.Group as={Col} controlId="gradDate">
                                 <Form.Label className="signup-form-lable">Grad Date</Form.Label>
                                 <br />
-                                <DatePicker selected={new Date(this.props.education.grad_date)} className="date_picker" onChange={this.gradDateChangeHandler} />
+                                <DatePicker selected={new Date(this.props.education.GradDate)} className="date_picker" onChange={this.gradDateChangeHandler} />
                                 <br />
                             </Form.Group>
                             <Form.Group as={Col} controlId="gpa">
                                 <Form.Label className="signup-form-lable">GPA</Form.Label>
-                                <Form.Control onChange={this.gpaChangeHandler} type="number" defaultValue={this.props.education.gpa} />
+                                <Form.Control onChange={this.gpaChangeHandler} type="number" defaultValue={this.props.education.GPA} />
                             </Form.Group>
                         </Form.Row>
                     </Form>
@@ -159,7 +160,7 @@ class ModelEducation extends Component {
                 <div className="profile-education-school">
                     <Row>
                         <Col xs={11} md={11}>
-                            {this.props.education.school}
+                            {this.props.education.School}
                         </Col>
                         <Col xs={1} md={1}>
                             <Icon type="edit" onClick={this.handleShow}></Icon>
@@ -167,16 +168,16 @@ class ModelEducation extends Component {
                     </Row>
                 </div>
                 <div className="profile-education-level">
-                    {this.props.education.level}
+                    {this.props.education.Level}
                 </div>
                 <div className="profile-education-major">
-                    {"Major in " + this.props.education.edu_major}
+                    {"Major in " + this.props.education.Major}
                 </div>
                 <div className="profile-education-date">
-                    {"Graduation date: " + this.props.education.grad_date}
+                    {"Graduation date: " + this.props.education.GradDate}
                 </div>
                 <div className="profile-education-gpa">
-                    {"Cumulative GPA: " + this.props.education.gpa}
+                    {"Cumulative GPA: " + this.props.education.GPA}
                 </div>
             </div>
             <div className="profile-education-card-divider"></div>
@@ -190,7 +191,9 @@ const mapStateToProps = (state, ownProps) => {
     // console.log("Inside mapStateToProps of ModalEducattion: "+ JSON.stringify(ownProps));
     return { 
         education: getEducationByID(state.student.studentData, id),
+        educations: getEducation(state.student.studentData),
+        studentData: state.student.studentData,
     };
 };
 
-export default connect(mapStateToProps , {updateEducationById}) (ModelEducation);
+export default connect(mapStateToProps , { updateStudentProfile}) (ModelEducation);

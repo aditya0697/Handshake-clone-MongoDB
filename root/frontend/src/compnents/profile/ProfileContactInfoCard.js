@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { getPhoneNumber, getEmail, getAddress } from './../../redux/selectors';
-import { updateEmployerAddress, updateEmployerPhoneNumber} from './../../redux/actions/employerActions';
-import {updateStudentPhoneNumber} from './../../redux/actions/studentActions';
+import { updateEmployerProfile, } from './../../redux/actions/employerActions';
+import {updateStudentProfile} from './../../redux/actions/studentActions';
 
 
 const Styles = styled.div`
@@ -74,33 +74,34 @@ class ProfileContactInfoCard extends Component {
         if(this.props.user.user_type === "student"){
             return false;
         }
-        if (this.state.street || this.state.apt_name || this.state.city || this.state.state || this.state.zip_code){
+        if (this.state.Street || this.state.Apt || this.state.City || this.state.State || this.state.Zipcode){
             return true;
         }
         return false;
     }
     updatedAddress = () => {
         const address = {
-            "street": this.props.address.street,
-            "apt_name": this.props.address.apt_name,
-            "city":  this.props.address.city,
-            "state":  this.props.address.state,
-            "zip_code":  this.props.address.zip_code,
+            "_id": this.props.address._id,
+            "Street": this.props.address.Street,
+            "Apt": this.props.address.Apt,
+            "City":  this.props.address.City,
+            "State":  this.props.address.State,
+            "Zipcode":  this.props.address.Zipcode,
         }
-        if (this.state.street){
-            address.street = this.state.street;
+        if (this.state.Street){
+            address.Street = this.state.Street;
         }
-        if (this.state.apt_name){
-            address.apt_name = this.state.apt_name;
+        if (this.state.Apt){
+            address.Apt = this.state.Apt;
         }
-        if (this.state.city){
-            address.city = this.state.city;
+        if (this.state.City){
+            address.City = this.state.City;
         }
-        if (this.state.state){
-            address.state = this.state.state;
+        if (this.state.State){
+            address.State = this.state.State;
         }
-        if (this.state.zip_code){
-            address.zip_code = this.state.zip_code;
+        if (this.state.Zipcode){
+            address.Zipcode = this.state.Zipcode;
         }
         return address;
     }
@@ -112,18 +113,27 @@ class ProfileContactInfoCard extends Component {
         })
         if (this.state.phone_number) {
             if(this.props.user.user_type === "employer"){
-                this.props.updateEmployerPhoneNumber(this.state.phone_number);
+                const data = {
+                    PhoneNumber: this.state.phone_number
+                }
+                this.props.updateEmployerProfile(this.props.employerData,data);
             }
             else {
-                this.props.updateStudentPhoneNumber(this.state.phone_number);
+                const data = {
+                    PhoneNumber: this.state.phone_number
+                }
+                this.props.updateStudentProfile(this.props.studentData, data);
             }
         }
         if(this.props.user.user_type === "employer"){
             if (this.isAddressUpdated) {
-                this.props.updateEmployerAddress(this.updatedAddress());
+                const data = {
+                    Address: this.updatedAddress()
+                }
+                console.log("===-------------------------------=====",JSON.stringify(data));
+                this.props.updateEmployerProfile(this.props.employerData, data);
             }
-        }
-        
+        } 
     }
 
     render() {
@@ -148,7 +158,7 @@ class ProfileContactInfoCard extends Component {
                                         <Form.Group controlId="formGridAddress1">
                                             <Form.Label>Address</Form.Label>
                                             {
-                                                this.props.address && <Form.Control placeholder="1234 Main St" onChange={this.onChangeHandeler} name="street" defaultValue={this.props.address.street} />
+                                                this.props.address && <Form.Control placeholder="1234 Main St" onChange={this.onValueChangeHandler} name="Street" defaultValue={this.props.address.Street} />
 
                                             }
                                         </Form.Group>
@@ -156,7 +166,7 @@ class ProfileContactInfoCard extends Component {
                                         <Form.Group controlId="formGridAddress2">
                                             <Form.Label>Address 2</Form.Label>
                                             {
-                                                this.props.address && <Form.Control placeholder="Apartment, studio, or floor" onChange={this.onChangeHandeler} name="apt_name" defaultValue={this.props.address.apt_name} />
+                                                this.props.address && <Form.Control placeholder="Apartment, studio, or floor" onChange={this.onValueChangeHandler} name="Apt" defaultValue={this.props.address.Apt} />
 
                                             }
                                             
@@ -166,7 +176,7 @@ class ProfileContactInfoCard extends Component {
                                             <Form.Group as={Col} controlId="formGridCity">
                                                 <Form.Label>City</Form.Label>
                                                 {
-                                                    this.props.address &&  <Form.Control name="city" placeholder="San Jose" onChange={this.onChangeHandeler} defaultValue={this.props.address.city} />
+                                                    this.props.address &&  <Form.Control name="City" placeholder="San Jose" onChange={this.onValueChangeHandler} defaultValue={this.props.address.City} />
 
                                                 }
                                                
@@ -175,7 +185,7 @@ class ProfileContactInfoCard extends Component {
                                             <Form.Group as={Col} controlId="formGridState">
                                                 <Form.Label>State</Form.Label>
                                                 {
-                                                    this.props.address && <Form.Control placeholder="California" name="state" onChange={this.onChangeHandeler} defaultValue={this.props.address.state} />
+                                                    this.props.address && <Form.Control placeholder="California" name="State" onChange={this.onValueChangeHandler} defaultValue={this.props.address.State} />
 
                                                 }
                                                
@@ -184,7 +194,7 @@ class ProfileContactInfoCard extends Component {
                                             <Form.Group as={Col} controlId="formGridZip">
                                                 <Form.Label>Zip</Form.Label>
                                                 {
-                                                    this.props.address && <Form.Control placeholder="95192" name="zip_code" onChange={this.onChangeHandeler} defaultValue={this.props.address.zip_code} />
+                                                    this.props.address && <Form.Control placeholder="95192" name="Zipcode" onChange={this.onValueChangeHandler} defaultValue={this.props.address.Zipcode} />
 
                                                 }
                                                 
@@ -233,13 +243,13 @@ class ProfileContactInfoCard extends Component {
                             {this.props.address &&
                                 <div>
                                     <div className="profile-contact-value">
-                                        {this.props.address.street}
+                                        {this.props.address.Street}
                                     </div>
                                     <div className="profile-contact-value">
-                                        {this.props.address.apt_name}
+                                        {this.props.address.Apt}
                                     </div>
                                     <div className="profile-contact-value">
-                                        {this.props.address.city}, {this.props.address.state}, {this.props.address.zip_code}
+                                        {this.props.address.City}, {this.props.address.State}, {this.props.address.Zipcode}
                                     </div>
                                 </div>
                             }
@@ -258,7 +268,9 @@ const mapStateToProps = state => {
         email: getEmail(state),
         phone_number: getPhoneNumber(state),
         address: getAddress(state.employer.employerData),
+        studentData: state.student.studentData,
+        employerData: state.employer.employerData,
     };
 };
 
-export default connect(mapStateToProps, {updateEmployerAddress, updateStudentPhoneNumber, updateEmployerPhoneNumber })(ProfileContactInfoCard);
+export default connect(mapStateToProps, {updateEmployerProfile, updateStudentProfile })(ProfileContactInfoCard);

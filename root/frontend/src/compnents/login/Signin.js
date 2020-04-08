@@ -169,7 +169,7 @@ class Signin extends Component {
                         authFlag: true
                     })
                     this.props.login(null,this.state.employerEmail);
-                    this.props.history.push("/jobs");
+                    this.props.history.push("/profile");
                 }
             },
             (error) => {

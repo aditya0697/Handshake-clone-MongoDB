@@ -9,7 +9,7 @@ import { List } from 'antd';
 import { connect } from 'react-redux';
 import { getExperience } from './../../redux/selectors';
 import ModalExperience from './ModalExperience';
-import { addExperience } from './../../redux/actions/studentActions'
+import { updateStudentProfile } from './../../redux/actions/studentActions'
 
 const Styles = styled.div`
     .profile-experienceCard-card {
@@ -115,11 +115,11 @@ class ProfileExperienceCard extends Component {
         return false;
     }
     getUpdatedState = () => ({
-        employer: this.state.employer,
-        title: this.state.title,
-        start_date: this.state.start_date.toISOString(),
-        end_date: this.state.end_date.toISOString(),
-        discription: this.state.discription,
+        Employer: this.state.employer,
+        Title: this.state.title,
+        StartDate: this.state.start_date.toISOString(),
+        EndDate: this.state.end_date.toISOString(),
+        Description: this.state.discription,
     });
 
     saveChangeHandler = (e) => {
@@ -136,37 +136,18 @@ class ProfileExperienceCard extends Component {
             show: false,
         })
         console.log("getUpdatedState: " + JSON.stringify(this.getUpdatedState()));
-        this.props.addExperience(this.getUpdatedState(), this.props.user.email);
+        this.props.experiences.push(this.getUpdatedState());
+        this.props.updateStudentProfile(this.props.studentData, this.props.experiences);
     }
 
     render() {
         let experienceDetails = [];
-        if (this.props.experience) {
-            experienceDetails = this.props.experience.map((job,id) => {
+        if (this.props.experiences) {
+            experienceDetails = this.props.experiences.map((job,id) => {
                 if(!job){
                     return;
                 }
                 return (
-                    // <div>
-                    //     <div className="profile-experience-card">
-                    //         <div className="profile-education-school">
-                    //             {job.employer}
-                    //         </div>
-                    //         <div className="profile-experience-title">
-                    //             {job.title}
-                    //         </div>
-                    //         <div className="profile-experience-date">
-                    //             {"Start date: " + job.start_date}
-                    //         </div>
-                    //         <div className="profile-experience-date">
-                    //             {"End date: " + job.end_date}
-                    //         </div>
-                    //         <div className="profile-experience-discription">
-                    //             {job.discription}
-                    //         </div>
-                    //     </div>
-                    //     <div className="profile-experience-card-divider"></div>
-                    // </div>
                     <ModalExperience id={id}/>
                 )
             })
@@ -241,8 +222,9 @@ class ProfileExperienceCard extends Component {
 }
 const mapStateToProps = state => {
     return {
-        experience: getExperience(state.student.studentData),
+        experiences: getExperience(state.student.studentData),
+        studentData: state.student.studentData,
         user: state.auth,
     };
 };
-export default connect(mapStateToProps, {addExperience})(ProfileExperienceCard);
+export default connect(mapStateToProps, { updateStudentProfile})(ProfileExperienceCard);

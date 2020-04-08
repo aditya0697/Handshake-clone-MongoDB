@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { List } from 'antd';
 import { connect } from 'react-redux';
 import {getSkills} from './../../redux/selectors';
-import { addSkill } from './../../redux/actions/studentActions'
+import { updateStudentProfile } from './../../redux/actions/studentActions'
 
 const Styles = styled.div`
    .profile-skills-card {
@@ -57,7 +57,11 @@ class ProfileSkills extends Component {
         console.log("Inside saveChangeHandler: "+this.state.skill);
         e.preventDefault();
         if (this.state.skill){
-            this.props.addSkill(this.state.skill);
+            this.props.skills.push(this.state.skill);
+            const data = {
+                Skills: this.props.skills,
+            }
+            this.props.updateStudentProfile(this.props.studentData, data);
         }
         this.setState({
             skill:""
@@ -107,8 +111,9 @@ class ProfileSkills extends Component {
 
 const mapStateToProps = state => { 
     return { 
-        skills: getSkills(state.student.studentData)
+        skills: getSkills(state.student.studentData),
+        studentData: state.student.studentData,
     };
   };
 
-export default  connect(mapStateToProps,{addSkill})(ProfileSkills);
+export default  connect(mapStateToProps, { updateStudentProfile })(ProfileSkills);

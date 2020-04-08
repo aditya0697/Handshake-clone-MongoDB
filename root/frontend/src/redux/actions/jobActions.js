@@ -1,8 +1,8 @@
 import axios from "axios";
 import {ADD_JOB, UPDATE_JOB, GET_JOBS, FETCH_PROFILE_PICTURE_FOR_JOB} from './../actionTypes';
 
-const ROOT_URL = "http://52.8.254.75:3001/job";
-// const ROOT_URL = "http://localhost:3001/job";
+// const ROOT_URL = "http://52.8.254.75:3001/job";
+const ROOT_URL = "http://localhost:3001/job";
 export const fetchJobs = (user) => dispatch => {
     axios.defaults.withCredentials = true;
     console.log(" Inside fetchJobs :", user.email);
@@ -69,19 +69,18 @@ export const updateJobById = (job, index) => dispatch => {
         });
 }
 
-export const addJob = (job, employer_email) => dispatch => {
+export const addJob = (job, employerData) => dispatch => {
+    job.EmployerID = employerData.Email;
+    job.EmployerName = employerData.EmployerName;
+    job.EmployerProfileUrl = employerData.ProfileUrl;
+
     console.log(" Inside addJob :", JSON.stringify(job));
-    axios.defaults.withCredentials = true;
-    const data = {
-        job,
-        email: employer_email,
-    }
-    console.log(" Inside addJob :", JSON.stringify(data));
-    axios.post(`${ROOT_URL}/add_job`, data)
+
+    axios.post(`${ROOT_URL}/add_job`, job)
         .then(response => {
             console.log("job Data in actions", JSON.stringify(response));
             if (response.status == 200) {
-                job.job_id = response.data.job_id;
+                job._id = response.data._id;
                 dispatch({
                     type: ADD_JOB,
                     payload: job,

@@ -1,12 +1,10 @@
 import axios from "axios";
-import { EMPLOYER_DETAILS, UPDATE_EMPLOYER_ADDRESS, UPDATE_EMPLOYER_DISCRIPTION, ADD_EMPLOYER_DISCRIPTION, 
-    UPDATE_EMPLOYER_PHONENUMBER, UPDATE_EMPLOYER_NAME, UPDATE_EMPLOYER_PROFILE_PIC, FETCH_EMPLOPYER_PROFILE_PIC } from './../actionTypes';
+import { EMPLOYER_DETAILS, UPDATE_EMPLOYER_PROFILE, UPDATE_EMPLOYER_PROFILE_PIC } from './../actionTypes';
 
-const ROOT_URL = "http://52.8.254.75:3001/employer";
-const HOST_URL = "http://52.8.254.75:3001";
+// const ROOT_URL = "http://52.8.254.75:3001/employer";
 
-// const ROOT_URL = "http://localhost:3001/employer";
-// const HOST_URL = "http://localhost:3001";
+
+const ROOT_URL = "http://localhost:3001/employer";
 
 export const employerDetails = (email) => dispatch => {
     axios.defaults.withCredentials = true;
@@ -44,46 +42,52 @@ export const employerDetails = (email) => dispatch => {
             })
 }
 
-
-export const updateEmployerPhoneNumber = (phone_number) => dispatch => {
-    dispatch({
-        type: UPDATE_EMPLOYER_PHONENUMBER,
-        payload: phone_number,
-    })
-}
-
-export const updateEmployerDiscription = (discription) => dispatch => {
-    dispatch({
-        type: UPDATE_EMPLOYER_DISCRIPTION,
-        payload: discription,
-    })
-}
-
-export const updateEmployerAddress = (address) => dispatch => {
-    dispatch({
-        type: UPDATE_EMPLOYER_ADDRESS,
-        payload: address,
-    })
-}
-
-export const updateEmployerName = (name) => dispatch => {
-    dispatch({
-        type: UPDATE_EMPLOYER_NAME,
-        payload: name,
-    })
+export const updateEmployerProfile = (employerData, updatedData) => dispatch => {
+    console.log("EmployerData: ", JSON.stringify(employerData));
+    console.log("updatedData: ", JSON.stringify(updatedData));
+    for (const property in updatedData) {
+        employerData[property] = updatedData[property];
+    }
+    console.log("employerData: ", JSON.stringify(employerData));
+    const token = localStorage.getItem("token");
+    const config = {
+        headers: {
+            Authorization: "Bearer " + token
+        }
+    }
+    axios.post(`${ROOT_URL}/update_profile`, { data: employerData }, config)
+        .then(response => {
+            console.log(" Updated Student Data in actions", JSON.stringify(response));
+            if (response.status == 200) {
+                console.log("Updated Student Data in actions")
+                dispatch({
+                    type: UPDATE_EMPLOYER_PROFILE,
+                    payload: response.data
+                })
+            }
+        },
+            error => {
+                console.log(" Updated Student error:", JSON.stringify(error));
+            });
 }
 
 export const updateEmployerProfilePicture = (file, employer_email) => dispatch=> {
     const formData = new FormData();
-    formData.append('user_email', employer_email);
+    formData.append('email', employer_email);
     formData.append('user_type', "employer");
-    formData.append('profileImg', file);
-    // "http://localhost:3001/public/uploads/profile_pictures/IMAGE-1583906877260.jpg"
-    axios.post( `${HOST_URL}` + "/upload-profile", formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+    formData.append('profileImage', file);
+    const token = localStorage.getItem("token");
+    const config = {
+        headers: {
+            "Authorization": "Bearer " + token,
+            'Content-Type': 'multipart/form-data',
+        }
+    }
+    axios.post( `${ROOT_URL}` + "/upload-profile", formData, config)
     .then((response) => {
         dispatch({
             type: UPDATE_EMPLOYER_PROFILE_PIC,
-            payload: response.data.profile_url,
+            payload: response.data.ProfileUrl,
         })
     }).catch((error) => {
         console.log("upload-profile error: " + JSON.stringify(error));

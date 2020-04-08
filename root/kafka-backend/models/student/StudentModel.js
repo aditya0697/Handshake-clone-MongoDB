@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 const Schema = mongoose.Schema;
 
 var educationSchema = new Schema({
-    school: {type: String, required: true},
+    School: {type: String, required: true},
     Major: {type: String, required: true},
     Level: {type: String, required: true},
     GradDate: {type: Date, required: false},
@@ -30,6 +32,8 @@ var studentSchema = new Schema({
   Educations: [educationSchema],
   Experiences: [experienceSchema],
 });
+
+studentSchema.plugin(mongoosePaginate);
 
 const studentModel = mongoose.model('student', studentSchema);
 module.exports = studentModel;

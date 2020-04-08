@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var educationSchema = new Schema({
-    school: {type: String, required: true},
+    School: {type: String, required: true},
     Major: {type: String, required: true},
     Level: {type: String, required: true},
     GradDate: {type: Date, required: false},
