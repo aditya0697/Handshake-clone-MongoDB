@@ -1,4 +1,5 @@
 import axios from "axios";
+import {HOST_URL} from "./../../config/config";
 import { AUTHENTICATE_STUDENT, AUTHENTICATE_EMPLOYER, SIGN_OUT } from './../actionTypes';
 import storage from 'redux-persist/lib/storage';
 import store from './../store'
@@ -20,7 +21,8 @@ export const studentSignIn = (credentials) => dispatch => {
                 dispatch({
                     type: AUTHENTICATE_STUDENT,
                     payload: {
-                        'email': credentials.username,
+                        'email': decoded.Email,
+                        'id':decoded._id,
                         'message': "login successful",
                         'error_message': "",
                     }
@@ -33,8 +35,9 @@ export const studentSignIn = (credentials) => dispatch => {
                     type: AUTHENTICATE_STUDENT,
                     payload: {
                         'email': credentials.username,
+                        'id': "",
                         'message': "Invalid Username or Password",
-                        'error_message': "Login Failed",
+                        'error_message': "Invalid Username or Password",
                     }
 
                 })
@@ -54,11 +57,11 @@ export const studentSignUp = (student_data) => dispatch => {
                 dispatch({
                     type: AUTHENTICATE_STUDENT,
                     payload: {
-                        'email': student_data.email,
+                        'email': decoded.Email,
+                        'id': decoded._id,
                         'message': response.data,
                         'error_message': "",
                     }
-
                 });
             }
         },
@@ -67,9 +70,9 @@ export const studentSignUp = (student_data) => dispatch => {
                     type: AUTHENTICATE_STUDENT,
                     payload: {
                         'email': "",
-                        'message': "",
+                        'id': "",
                         'message': "Invalid Username or Password",
-                        'error_message': error.response.data.errMessage,
+                        'error_message': "User already present",
 
                     }
                 });
@@ -90,7 +93,8 @@ export const employerSignIn = (credentials) => dispatch => {
                 dispatch({
                     type: AUTHENTICATE_EMPLOYER,
                     payload: {
-                        'email': credentials.username,
+                        'email': decoded.Email,
+                        'id':decoded._id,
                         'message': "login successful",
                         'error_message': "",
                     }
@@ -103,8 +107,9 @@ export const employerSignIn = (credentials) => dispatch => {
                     type: AUTHENTICATE_EMPLOYER,
                     payload: {
                         'email': credentials.username,
+                        'id':"",
                         'message': "Invalid Username or Password",
-                        'error_message': error.response.data.message,
+                        'error_message': "Invalid Username or Password",
                     }
                 })
             });
@@ -124,7 +129,8 @@ export const employerSignUp = (employer_data) => dispatch => {
                 dispatch({
                     type: AUTHENTICATE_EMPLOYER,
                     payload: {
-                        'email': employer_data.email,
+                        'email': decoded.Email,
+                        'id':decoded._id,
                         'message': response.data,
                         'error_message': "",
                     }
@@ -136,9 +142,9 @@ export const employerSignUp = (employer_data) => dispatch => {
                     type: AUTHENTICATE_EMPLOYER,
                     payload: {
                         'email': "",
-                        'message': "",
+                        'id':"",
                         'message': "Invalid Username or Password",
-                        'error_message': error.response.data.errMessage,
+                        'error_message': "User already present",
                     }
                 });
             });

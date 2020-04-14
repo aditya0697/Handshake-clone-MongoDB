@@ -1,24 +1,32 @@
 import React, { Component } from 'react';
-import { Route , Redirect} from 'react-router-dom';
-import { Row, Col, Card, CardGroup, Container } from 'react-bootstrap';
+import { Route, Redirect } from 'react-router-dom';
+import { Row, Col, Modal, Form, Button, Container } from 'react-bootstrap';
 import Avatar from 'react-avatar';
 import { Icon } from 'antd';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { } from './../../redux/actions/jobActions';
-import { getProfileUrlForEmployerForJob } from '../../redux/selectors';
+import { changeApplicationStatus} from './../../redux/actions/applicationAction';
 
 const Styles = styled.div`
    .job-card-postion-name {
         font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-        font-size: 20px;
-        font-weight: 700;
+        font-size: 16px;
+        font-weight: 600;
    }
    .job-card-company-name {
-
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        font-size: 14px;
+        font-weight: 300;
    }
    .job-card-jobtype {
-
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        font-size: 12px;
+        font-weight: 300;
+   }
+   .application-card-status {
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        font-size: 12px;
+        font-weight: 400;
    }
    .application-card-holder{
        width: 450px,
@@ -38,65 +46,125 @@ class ApplicationCard extends Component {
         super(props);
         this.state = {
             show: false,
-            apply_show: false,
-            application_id: this.props.application.application_id,
-            job_id: this.props.application.job_id,
-            employer: this.props.application.employer,
-            job_title: this.props.application.job_title,
-            job_city: this.props.application.job_city,
-            job_state: this.props.application.job_state,
-            job_type: this.props.application.job_type,
-            resume: this.props.application.resume,
+            status_show: false,
+            application_id: this.props.application._id,
+            Job: this.props.application.Job,
+            Status: this.props.application.Status,
+            ResumeURL: this.props.application.ResumeURL,
+            selectedStatus: "Submitted",
         }
         this.clickHandler = this.clickHandler.bind();
     }
 
     resumeClickHandler = (e) => {
         e.preventDefault();
-        return( <Redirect to={this.state.resume} />);
+        return (<Redirect to={this.state.ResumeURL} />);
     }
     clickHandler = (e) => {
         e.preventDefault();
+    }
+    statusHandleClose = (e) => {
+        this.setState({
+            status_show: false,
+        })
+    };
+    statusHandleShow = (e) => {
+        this.setState({
+            status_show: true,
+        })
+    };
+    statusChangeHandler = (e) => {
+        e.preventDefault();
+        this.statusHandleClose();
+        this.props.changeApplicationStatus(this.props.application, this.state.Status);
+    }
+    onChangeHandeler = (e) => this.setState({ [e.target.name]: e.target.value });
+
+    getStatusOptionId = () => {
+        switch (this.state.Status) {
+            case "Submitted":
+                return 0;
+            case "Pending":
+                return 1;
+            case "Reviewed":
+                return 2;
+            case "Declined":
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.application) {
+            this.setState({
+                application_id: nextProps.application._id,
+                Job: nextProps.application.Job,
+                Status: nextProps.application.Status,
+                ResumeURL: nextProps.application.ResumeURL,
+            });
+        }
     }
 
     render() {
         return (
             <Styles>
+
+                <Modal show={this.state.status_show} onHide={this.statusHandleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Edit Application Status</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form.Group as={Col} controlId="exampleForm.ControlSelect1">
+                            <Form.Label>Status</Form.Label>
+                            <Form.Control as="select" name="Status" onChange={this.onChangeHandeler} defaultValue={this.getStatusOptionId()} >
+                                <option>Submitted</option>
+                                <option>Pending</option>
+                                <option>Reviewed</option>
+                                <option>Declined</option>
+                            </Form.Control>
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={this.statusHandleClose}>Close</Button>
+                        <Button variant="primary" onClick={this.statusChangeHandler}>Change</Button>
+                    </Modal.Footer>
+                </Modal>
                 <Container onClick={this.clickHandler} className="application-card-holder">
                     <div className="application-card-holder">
                         <Row>
                             <Col sd={2} md={2}>
-                                <Avatar name={this.state.employer} src="" size={75} round={false} />
+                                <Avatar name={this.state.Job.EmployerName} src={this.state.Job.EmployerProfileUrl} size={55} round={false} />
                             </Col>
 
                             <Col sd={8} md={8}>
                                 <Row className="job-card-postion-name">
                                     <Col sd={8} md={8}>
-                                        <span><b>{this.state.job_title}</b></span>
+                                        <span><b>{this.state.Job.Postion}</b></span>
                                     </Col>
                                     {this.props.user.user_type === "employer" &&
                                         <Col sd={1} md={1}>
-                                            <Icon type="edit" onClick={this.handleShow}></Icon>
+                                            <Icon type="edit" onClick={this.statusHandleShow}></Icon>
                                         </Col>
                                     }
                                 </Row>
                                 <div className="job-card-company-name">
-                                    <span><a href="">{this.state.employer} - {this.state.job_city}, {this.state.job_state}</a></span>
+                                    <span><a href="">{this.state.employer} - {this.state.Job.Address.City}, {this.state.Job.Address.State}</a></span>
                                 </div>
                                 <div className="job-card-jobtype">
-                                    <span>Full Time</span>
+                                    <span>{this.state.Job.Type}</span>
                                 </div>
                                 <div>
                                     <Row>
 
-                                        <Col sd={7} md={7}>
+                                        <Col sd={7} md={7} className="application-card-status">
                                             <Icon type="audit" onClick={this.handleShow}></Icon>
-                                            <span>Status: Submitted</span>
+                                            <span>Status: {this.state.Status}</span>
                                         </Col>
-                                 
+
                                         <Col sd={3} md={3}>
                                             <Icon type="audit" onClick={this.handleShow}></Icon>
-                                            <span> <a  href={ this.state.resume} target="_blank" rel="noopener noreferrer"> resume </a></span>
+                                            <span> <a href={this.state.ResumeURL} target="_blank" rel="noopener noreferrer"> resume </a></span>
                                         </Col>
                                     </Row>
                                 </div>
@@ -117,4 +185,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, {})(ApplicationCard);
+export default connect(mapStateToProps, {changeApplicationStatus})(ApplicationCard);

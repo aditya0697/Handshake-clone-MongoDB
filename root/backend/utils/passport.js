@@ -17,7 +17,7 @@ function auth() {
         console.log("Inside passport:", JSON.stringify(jwt_payload));
 
         if (jwt_payload.type == "student") {
-            StudentAuth.findOne({ Email: jwt_payload.email }, function (err, user) {
+            StudentAuth.findOne({ Email: jwt_payload.Email }, function (err, user) {
                 if (err) {
                     return done(err, false); 
                 }
@@ -30,7 +30,7 @@ function auth() {
             });
         }
         else {
-            EmployerAuth.findOne({ Email: jwt_payload.email }, function (err, user) {
+            EmployerAuth.findOne({ Email: jwt_payload.Email }, function (err, user) {
                 if (err) {
                     return done(err, false);
                 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Row, Col, Card, CardGroup, Button, Jumbotron, Modal, Form, ListGroup, Alert } from 'react-bootstrap';
+import { Row, Col, Button, Pagination, Modal, Form, ListGroup, Alert } from 'react-bootstrap';
 import { Icon } from 'antd';
 import styled from 'styled-components';
 import JobSidebar from './JobSidebar';
@@ -8,9 +8,10 @@ import JobDiscription from './JobDiscription';
 import DatePicker from "react-datepicker";
 import { connect } from 'react-redux';
 import { getJobs, getName } from './../../redux/selectors';
-import { addJob, fetchJobs, fetchProfileUrlForEmployerForJob } from './../../redux/actions/jobActions';
+import { addJob, fetchJobs } from './../../redux/actions/jobActions';
 import JobCard from './JobCard';
 const Styles = styled.div`
+
 .col-md-8, .col-md-4 {
     padding: 0px;
    
@@ -51,7 +52,7 @@ const Styles = styled.div`
    }
 .job-sidebar-container{
     margin: 0 auto;
-    overflow-y: scroll;
+    overflow-x: scroll;
     height: 585px;
 }
 .job-list-group {
@@ -64,29 +65,30 @@ const Styles = styled.div`
         background-color: #f2f2f2
     }
 }
+.jobs-pagination{
+    text-align: center;
+        overflow-x: scroll;
+        padding-left: 15px;
+}
+.job-sidebar-job-list{
+    height: 535px;
+    overflow-y: scroll;
+}
   `;
 
 class JobDashboard extends Component {
 
     constructor(props) {
         super(props);
-        // const initial_job = {
-        //     Postion: "",
-        //     EmployerName: "",
-        //     City: "",
-        //     State: "",
-        //     Zipcode: "",
-        //     Type: "",
-        //     Salary: "",
-        //     PostDate: new Date(),
-        //     Deadline: new Date(),
-        //     Description: "",
-        //     addJobModalAlertFlag: false,
-        // }
         this.state = {
             show: false,
             alertFlag: false,
             Type: "Full Time",
+            activePage: 1,
+            totalPages: 1,
+            limit:5,
+            totalDocs: null,
+            jobs: [],
             Deadline: new Date(),
             PostDate: new Date(),
             // discription_job: initial_job,
@@ -96,13 +98,33 @@ class JobDashboard extends Component {
         this.jobCardClickHandler = this.jobCardClickHandler.bind(this);
     }
 
-    // getJobForDiscription = () => {
-    //     if (!this.props.jobs) {
-    //         return 
-    //     }
-    //     return this.props.jobs[this.state.discription_job_id];
+    handlePageNext = (e) => {
+        e.preventDefault();
+        this.props.fetchJobs(this.props.user,this.props.jobData, this.state.nextPage, this.state.limit, this.props.user.id);
+    }
 
-    // };
+    handlePagePrevious = (e) => {
+        e.preventDefault();
+        this.props.fetchJobs(this.props.user,this.props.jobData, this.state.prevPage, this.state.limit, this.props.user.id);
+    }
+    handlePageLast = (e) => {
+        e.preventDefault();
+        this.props.fetchJobs(this.props.user,this.props.jobData, this.state.totalPages, this.state.limit, this.props.user.id);
+    }
+
+    handlePageFirst = (e) => {
+        e.preventDefault();
+        this.props.fetchJobs(this.props.user,this.props.jobData, 1, this.state.limit, this.props.user.id);
+    }
+    // componentDidMount() {
+    //     if (this.props.jobs === []) {
+    //         this.props.getAllStudents();
+    //     } 
+    // }
+    // componentWillReceiveProps(nextProps) {
+    //     console.log("nextProps.students_list: " + JSON.stringify(nextProps.allStudents.page));
+
+    // }
 
     handleClose = (e) => {
         this.setState({
@@ -196,8 +218,22 @@ class JobDashboard extends Component {
     }
     componentDidMount() {
         if (!this.props.jobs || this.props.jobs === []) {
-            this.props.fetchJobs(this.props.user);
-
+            this.props.fetchJobs(this.props.user, this.props.jobData, 1, this.state.limit, this.props.user.id);
+        } else {
+            this.setState({
+                jobs: this.props.jobs
+            })
+            if (this.props.jobData) {
+                this.setState({
+                    totalDocs: this.props.jobData.totalDocs,
+                    totalPages: this.props.jobData.totalPages,
+                    limit: this.props.jobData.limit,
+                    nextPage: this.props.jobData.nextPage,
+                    prevPage: this.props.jobData.prevPage,
+                    activePage: this.props.jobData.page,
+                });
+            }
+            this.props.fetchJobs(this.props.user, this.props.jobData, 1, this.state.limit, this.props.user.id);
         }
         if (this.props.jobs) {
             if (this.props.jobs.length > 0) {
@@ -212,18 +248,29 @@ class JobDashboard extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("nextProps.jobs: " + JSON.stringify(nextProps.jobs));
+        // console.log("nextProps.jobs: " + JSON.stringify(nextProps.jobs));
         if (nextProps.jobs) {
             this.setState({
                 discription_job: nextProps.jobs[0],
+            })
+        }
+        if (nextProps.jobData.page) {
+            this.setState({
+                totalDocs: nextProps.jobData.totalDocs,
+                totalPages: nextProps.jobData.totalPages,
+                limit: nextProps.jobData.limit,
+                nextPage: nextProps.jobData.nextPage,
+                prevPage: nextProps.jobData.prevPage,
+                activePage: nextProps.jobData.page,
+                jobs: nextProps.jobs,
             })
         }
     };
 
     render() {
         let jobSidebar = [];
-        if (this.props.jobs) {
-            jobSidebar = this.props.jobs.map((job, id) => {
+        if (this.state.jobs) {
+            jobSidebar = this.state.jobs.map((job, id) => {
                 if (!job) {
                     return;
                 }
@@ -316,14 +363,27 @@ class JobDashboard extends Component {
                         <Col sm={4} md={4} className="job-dashboard-sidebar-col">
                             <div className="sidebar-backgroung">
                                 <div className="job-sidebar-container">
-                                    <Col>
-                                        <div className="jobs-details">
-                                            <span><b>{this.props.jobs && this.props.jobs.length} jobs match your interests</b></span>
-                                        </div>
-                                    </Col>
-                                    <ListGroup as="ul" className="job-list-group">
-                                        {jobSidebar}
-                                    </ListGroup>
+                                    <div className="job-sidebar-job-list">
+                                        <Col>
+                                            <div className="jobs-details">
+                                                <span><b>{this.state.totalDocs && this.state.totalDocs} jobs match your interests</b></span>
+                                            </div>
+                                        </Col>
+                                        <ListGroup as="ul" className="job-list-group">
+                                            {jobSidebar}
+                                        </ListGroup>
+                                    </div>
+                                    <div className="jobs-pagination">
+                                        <Pagination >
+                                            <Pagination.First onClick={this.handlePageFirst} />
+                                            <Pagination.Prev onClick={this.handlePagePrevious} />
+                                            <Pagination.Item key={this.state.activePage} active={true}>
+                                                {this.state.activePage}
+                                            </Pagination.Item>
+                                            <Pagination.Next onClick={this.handlePageNext} />
+                                            <Pagination.Last onClick={this.handlePageLast} />
+                                        </Pagination>
+                                    </div>
                                 </div>
                             </div>
                         </Col>
@@ -360,10 +420,11 @@ class JobDashboard extends Component {
 const mapStateToProps = state => {
     return {
         jobs: getJobs(state),
+        jobData: state.jobs,
         user: state.auth,
         name: getName(state),
         employerData: state.employer.employerData,
         studentData: state.student.studentData,
     };
 };
-export default connect(mapStateToProps, { addJob, fetchJobs, fetchProfileUrlForEmployerForJob })(JobDashboard);
+export default connect(mapStateToProps, { addJob, fetchJobs })(JobDashboard);

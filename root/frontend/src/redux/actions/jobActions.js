@@ -1,48 +1,68 @@
 import axios from "axios";
+import {HOST_URL} from "./../../config/config";
 import {ADD_JOB, UPDATE_JOB, GET_JOBS, FETCH_PROFILE_PICTURE_FOR_JOB} from './../actionTypes';
 
-// const ROOT_URL = "http://52.8.254.75:3001/job";
-const ROOT_URL = "http://localhost:3001/job";
-export const fetchJobs = (user) => dispatch => {
+
+const ROOT_URL = HOST_URL + "job";
+export const fetchJobs = (user,jobData,page,limit, employer_id) => dispatch => {
     axios.defaults.withCredentials = true;
     console.log(" Inside fetchJobs :", user.email);
-    const jobData = {
+    const jobsData = {
         jobs: []
     }
+    const token = localStorage.getItem("token");
+    const config = {
+        headers: {
+            Authorization: "Bearer " + token
+        }
+    }
+
+    if(!page){
+        page = 1;
+    }
+    if(!limit){
+        limit = 5;
+    }
+    if(jobData){
+        if (page > jobData.totalPages){
+            page = 1;
+        }
+    }
+
     if (user.user_type == "student") {
-        axios.get(`${ROOT_URL}/student/${user.email}`)
+        axios.get(`${ROOT_URL}/student?email=${user.email}&page=${page}&limit=${limit}`,config)
             .then(response => {
-                console.log("job Data in actions", JSON.stringify(response));
+                // console.log("job Data in actions", JSON.stringify(response));
                 if (response.status == 200) {
                     console.log("job Data in actions")
                     dispatch({
                         type: GET_JOBS,
-                        payload: response.data.jobs,
+                        payload: response.data,
                     })
                 }
             }, error => {
                 console.log(" getJobs error:", JSON.stringify(error));
                 dispatch({
                     type: GET_JOBS,
-                    payload: jobData,
+                    payload: jobsData,
                 })
             });
     } else {
-        axios.get(`${ROOT_URL}/employer/${user.email}`)
+        axios.get(`${ROOT_URL}/employer?employer_id=${employer_id}&page=${page}&limit=${limit}`,config)
             .then(response => {
-                console.log("job Data in actions", JSON.stringify(response));
+                // console.log("job Data in actions", JSON.stringify(response));
                 if (response.status == 200) {
                     console.log("job Data in actions")
                     dispatch({
                         type: GET_JOBS,
-                        payload: response.data.jobs,
+                        payload: response.data,
                     })
                 }
             }, error => {
                 console.log(" getJobs error:", JSON.stringify(error));
                 dispatch({
                     type: GET_JOBS,
-                    payload: jobData,
+                    payload: jobsData,
                 })
             });
     }
@@ -51,7 +71,15 @@ export const fetchJobs = (user) => dispatch => {
 export const updateJobById = (job, index) => dispatch => {
     axios.defaults.withCredentials = true;
     console.log(" Inside updateJobById :", JSON.stringify(job));
-    axios.post(`${ROOT_URL}/update_job`,job)
+  
+    const token = localStorage.getItem("token");
+    const config = {
+        headers: {
+            Authorization: "Bearer " + token
+        }
+    }
+
+    axios.post(`${ROOT_URL}/update_job`,config,job)
         .then(response => {
             console.log("Student Data in actions",JSON.stringify(response));
             if (response.status == 200) {
@@ -74,9 +102,15 @@ export const addJob = (job, employerData) => dispatch => {
     job.EmployerName = employerData.EmployerName;
     job.EmployerProfileUrl = employerData.ProfileUrl;
 
+    const token = localStorage.getItem("token");
+    const config = {
+        headers: {
+            Authorization: "Bearer " + token
+        }
+    }
     console.log(" Inside addJob :", JSON.stringify(job));
 
-    axios.post(`${ROOT_URL}/add_job`, job)
+    axios.post(`${ROOT_URL}/add_job`, job, config)
         .then(response => {
             console.log("job Data in actions", JSON.stringify(response));
             if (response.status == 200) {
@@ -92,25 +126,6 @@ export const addJob = (job, employerData) => dispatch => {
         });
 }
 
-export const fetchProfileUrlForEmployerForJob = (job_id) => dispatch => {
-    console.log(" job_id:", job_id);
-    axios.get(`${ROOT_URL}/get_profile_picture/${job_id}`)
-    .then(response => {
-        console.log("job Data in actions", JSON.stringify(response));
-        if (response.status == 200) {
-            console.log("job Data in actions")
-            dispatch({
-                type: FETCH_PROFILE_PICTURE_FOR_JOB,
-                payload: {
-                    job_id:job_id,
-                    profile_picture: response.data.profile_picture,
-                }
-            })
-        }
-    }, error => {
-        console.log(" getJobs error:", JSON.stringify(error));
-    });
-}
 
 
 

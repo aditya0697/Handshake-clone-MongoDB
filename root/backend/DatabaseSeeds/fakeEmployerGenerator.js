@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const { mongoDB } = require('./../utils/config');
 var Employer = require('./../models/employer/EmployerModel');
 var EmployerAuth = require('../models/employer/EmployerAuthModel');
+var Job = require('./../models/job/JobModel');
 
 // faker.seed(309);
 
@@ -55,7 +56,7 @@ let generateEmployer = () => {
         Email: faker.internet.email(),
         EmployerName: faker.company.companyName(),
         PhoneNumber: faker.phone.phoneNumber(),
-        ProfileUrl: "http://satyr.io/80x60?brand=" + brand,
+        ProfileUrl: "http://satyr.io/80x60/"+(faker.random.number() %100)+"?brand=" + brand,
         EmployerDescription: faker.lorem.paragraph(),
         Address: {
             Street: faker.address.streetName(),
@@ -84,6 +85,7 @@ var employerPromises = () => {
                 Password: password,
             });
             var newEmployer = new Employer(employer);
+            // var newJob = new Job();
             // newStudent.save().then(
             //     studentAuth.save().then(res => resolve(res)).catch(err => reject(err))
             // ).catch(reject("Error"));
@@ -99,6 +101,7 @@ var employerPromises = () => {
                         }
                         else {
                             // console.log("signup successful");
+
                             resolve(null, loginData);
                         }
                     })

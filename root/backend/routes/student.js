@@ -31,33 +31,37 @@ const profilePicUpload = multer({
 /* GET users listing. */
 router.post('/signin', function (req, res) {
   console.log("Inside student signin", JSON.stringify(req.body), " Secret: ", secret);
-
   StudentAuth.findOne({ Email: req.body.username }, (error, studentAuth) => {
     if (error) {
       res.status(500).end("Error Occured");
     }
     if (studentAuth) {
       if (bcrypt.compareSync(req.body.password, studentAuth.Password)) {
-        const payload = {
-          email: studentAuth.Email,
-          type: "student"
-        };
-        const token = jwt.sign(payload, secret, {
-          expiresIn: 1008000
+        Student.findOne({ Email: req.body.username }).exec((err, student) => {
+          if (err) {
+            res.status(401).end("Invalid Credentials");
+            return;
+          }
+          const payload = {
+            Email: student.Email,
+            _id: student._id,
+            type: "student"
+          };
+          const token = jwt.sign(payload, secret, {
+            expiresIn: 1008000
+          });
+          res.status(200).end("JWT " + token);
+          return;
         });
-        res.status(200).end("JWT " + token);
-        return;
-      } else {
+      }
+      else {
         res.status(401).end("Invalid Credentials");
         return;
       }
     }
-    else {
-      res.status(401).end("Invalid Credentials");
-      return;
-    }
   });
 });
+
 
 router.post('/signup', function (req, res) {
   console.log("Inside Student Signup");
@@ -78,7 +82,8 @@ router.post('/signup', function (req, res) {
       // console.log("Inside data");
       // console.log("Data:", JSON.stringify(results));
       const payload = {
-        email: results.Email,
+        Email: results.Email,
+        _id: results._id,
         type: "student"
       };
       const token = jwt.sign(payload, secret, {

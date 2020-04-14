@@ -16,7 +16,7 @@ const rootReducer = combineReducers({
     student: studentReducer,
     employer: employerReducer,
     auth: authReducer,
-    job: jobReducer,
+    jobs: jobReducer,
     application: applicationReducer,
     profilePicture:profilPictureReducer,
     event: eventReducer,

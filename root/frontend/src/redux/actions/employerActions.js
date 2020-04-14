@@ -1,4 +1,5 @@
 import axios from "axios";
+import {HOST_URL} from "./../../config/config";
 import { EMPLOYER_DETAILS, UPDATE_EMPLOYER_PROFILE, UPDATE_EMPLOYER_PROFILE_PIC } from './../actionTypes';
 
 // const ROOT_URL = "http://52.8.254.75:3001/employer";
@@ -21,7 +22,13 @@ export const employerDetails = (email) => dispatch => {
         "address": "",
         "discription": "",
     }
-    axios.get(`${ROOT_URL}/${email}`)
+    const token = localStorage.getItem("token");
+    const config = {
+        headers: {
+            Authorization: "Bearer " + token
+        }
+    }
+    axios.get(`${ROOT_URL}/${email}`,config)
         .then(response => {
             console.log("Employer Data in actions", JSON.stringify(response));
             if (response.status == 200) {

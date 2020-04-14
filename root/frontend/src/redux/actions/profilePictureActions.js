@@ -1,8 +1,8 @@
 import { FETCH_EMPLOPYER_PROFILE_PIC, FETCH_STUDENT_PROFILE_PIC}  from './../actionTypes';
 import axios from "axios";
+import {HOST_URL} from "./../../config/config";
 
-const HOST_URL = "http://52.8.254.75:3001";
-// const HOST_URL = "http://localhost:3001";
+
 
 export const getProfileUrlForEmployer = (employer_email) => dispatch => {
     dispatch({

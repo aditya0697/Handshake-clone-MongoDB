@@ -1,4 +1,5 @@
 import axios from "axios";
+import {HOST_URL} from "./../../config/config";
 import {
     STUDENT_DETAILS, UPDATE_EXPERIENCE_BY_ID, UPDATE_EDUCATION_BY_ID, ADD_EDUCATION, ADD_EXPERIENCE, UPDATE_STUDENT_FIRST_NAME, UPDATE_STUDENT_LAST_NAME,
     UPDATE_STUDENT_OBJECTIVE, ADD_SKILL, DELETE_SKILL, UPDATE_STUDENT_PHONENUMBER, UPDATE_STUDENT_PROFILE_PIC, UPDATE_STUDENT_PROFILE
@@ -8,7 +9,7 @@ const jwt_decode = require('jwt-decode');
 // const ROOT_URL = "http://52.8.254.75:3001/student";
 
 
-const ROOT_URL = "http://localhost:3001/student";
+const ROOT_URL = HOST_URL + "student";
 
 export const studentDetails = (email) => dispatch => {
     axios.defaults.withCredentials = true;

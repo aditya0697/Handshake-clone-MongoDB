@@ -39,15 +39,22 @@ router.post('/signin', function (req, res) {
         }
         if (employerAuth) {
             if (bcrypt.compareSync(req.body.password, employerAuth.Password)) {
-                const payload = {
-                    email: employerAuth.Email,
-                    type: "employer" 
-                };
-                const token = jwt.sign(payload, secret, {
-                    expiresIn: 1008000
-                });
-                res.status(200).end("JWT " + token);
-                return;
+                Employer.findOne({Email:req.body.username}).exec((err,employer)=>{
+                    if(err){
+                        res.status(401).end("Invalid Credentials");
+                        return;
+                    }
+                    const payload = {
+                        Email: employerAuth.Email,
+                        _id: employer._id,
+                        type: "employer" 
+                    };
+                    const token = jwt.sign(payload, secret, {
+                        expiresIn: 1008000
+                    });
+                    res.status(200).end("JWT " + token);
+                    return;
+                })
             } else {
                 res.status(401).end("Invalid Credentials");
                 return;
@@ -78,8 +85,9 @@ router.post('/signup', function (req, res) {
             console.log("Inside data");
             console.log("Data:", JSON.stringify(results));
             const payload = {
-                email: results.Email,
-                type: "employer"
+                Email: results.Email,
+                type: "employer",
+                _id: results._id,
             };
             const token = jwt.sign(payload, secret, {
                 expiresIn: 1008000
@@ -91,7 +99,7 @@ router.post('/signup', function (req, res) {
     }); 
 });
 
-router.get("/:employer_email", function (req, res) {
+router.get("/:employer_email", checkAuth,function (req, res) {
 
     console.log("Inside employer Details: ", req.params.employer_email);
 
@@ -141,7 +149,7 @@ router.post("/update_profile", checkAuth, function (req, res) {
     });
 });
 
-router.get("/get_profile_picture/:_id", function (req, res) {
+router.get("/get_profile_picture/:_id", checkAuth,function (req, res) {
     console.log("Inside Employer get_profile_picture: ", req.params._id);
     Employer.findOne({ _id: req.params._id }).exec((err, results) => {
         if (err) {

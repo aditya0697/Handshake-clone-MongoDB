@@ -169,14 +169,10 @@ export const getJobs = (state) => {
         return;
     }
     if (state.auth.user_type === "student") {
-        if (state.job.jobData) {
-            return state.job.jobData.jobs;
-        }
+            return state.jobs.jobData;
     }
     if (state.auth.user_type === "employer") {
-        if (state.job.jobData) {
-            return state.job.jobData.jobs;
-        }
+            return state.jobs.jobData;
     }
 }
 
@@ -192,10 +188,7 @@ export const getApplications = (state) => {
     if (!state.auth) {
         return;
     }
-    if (state.application.applicationData) {
-        return state.application.applicationData.applications;
-    }
-
+   return state.application.applicationData;
 }
 
 export const getEvents = (state) => {

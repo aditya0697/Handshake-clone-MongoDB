@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { getAllStudentsList } from '../../redux/selectors';
 import { getAllStudents } from '../../redux/actions/studentTabAction';
 import StudentCard from './StudentCard';
-
+import StudentProfileDashBoard from './studentProfile/StudentProfileDashBoard';
 const Styles = styled.div`
     .job-sidebar-container{
         margin: 0 auto;
@@ -50,14 +50,27 @@ const Styles = styled.div`
         overflow-x: scroll;
         padding-left: 15px;
    }
+   .student-profile-back-button{
+        padding: 5px;
+        padding-left: 15px;
+        margin: 10px auto;
+        height: 35px;
+   }
+   .student-profile{
+        height: 525px;
+        margin: 10px auto;
+        overflow-y: scroll;
+   }
 `;
 
 
 class StudentDashBoard extends Component {
 
     constructor(props) {
-        super();
+        super(props);
         this.state = {
+            profileView: false,
+            selectedStudent: null,
             activePage: 1,
             totalDocs: 1,
             totalPages: 1,
@@ -87,28 +100,35 @@ class StudentDashBoard extends Component {
 
     }
 
+    backClickListner = (e) => {
+        e.preventDefault();
+        this.setState({
+            selectedStudent: "",
+            profileView: false,
+        });
+    }
+
+    studentCardClickHandler = (id) => {
+        // console.log("Job id: ", id);
+        this.setState({
+            selectedStudent: this.state.students_list[id],
+            profileView: true,
+        })
+        // console.log("discription_job: " + JSON.stringify(this.state.discription_job));
+    }
+
     handlePagePrevious = (e) => {
         e.preventDefault();
         this.props.getAllStudents(this.props.allStudents, this.state.prevPage, this.state.limit);
-        // var page = 1;
-        // var limit = 5;
-        // if (this.st.allStudents) {
-        //     if (this.props.allStudents.prevPage) {
-        //         page = this.props.allStudents.prevPage
-        //     }
-        //     if (this.props.allStudents.limit) {
-        //         limit = this.props.allStudents.limit;
-        //     }
-        // }
-        // this.props.getAllStudents(this.props.allStudents, page, limit);
-
     }
     handlePageLast = (e) => {
         e.preventDefault();
+        this.props.getAllStudents(this.props.allStudents, this.state.totalPages, this.state.limit);
     }
 
     handlePageFirst = (e) => {
         e.preventDefault();
+        this.props.getAllStudents(this.props.allStudents, 1, this.state.limit);
     }
 
     refreshClickListner = (e) => {
@@ -149,6 +169,23 @@ class StudentDashBoard extends Component {
         }
     }
     render() {
+        if (this.state.profileView) {
+            return (
+
+                <Styles>
+                    <div>
+                        <Row className="student-profile-back-button">
+                            <Col sm={3} md={3} className="job-dashboard-sidebar-col">
+                                <Icon type="arrow-left" style={{ fontSize: '28px' }} onClick={this.backClickListner} />
+                            </Col>
+                        </Row>
+                        <Row className = "student-profile">
+                            <StudentProfileDashBoard student={this.state.selectedStudent} />
+                        </Row>
+                    </div>
+                </Styles>
+            )
+        }
         let StudentListView = [];
         if (!this.props.students_list == []) {
             // console.log("Students: " + JSON.stringify(this.props.students_list));
@@ -161,7 +198,7 @@ class StudentDashBoard extends Component {
                 }
                 return (
                     <div className="student-card-container">
-                        <StudentCard student={student} id={id} jobCardClickHandler={this.jobCardClickHandler} />
+                        <StudentCard student={student} id={id} studentCardClickHandler={this.studentCardClickHandler} />
                     </div>
                 )
             });
@@ -212,7 +249,6 @@ class StudentDashBoard extends Component {
                                     <Pagination.Last onClick={this.handlePageLast} />
                                 </Pagination>
                             </div>
-
                         </Col>
                     </Row>
                 </div>

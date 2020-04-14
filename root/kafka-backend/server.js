@@ -1,6 +1,9 @@
 const {STUDENT_SIGNIN, STUDENT_SIGNUP, GET_STUDENT_DETAILS, UPDATE_STUDENT_PROFILE, GET_STUDENTS,
     EMPLOYER_SIGNIN, EMPLOYER_SIGNUP, GET_EMPLOYER_DETAILS, UPDATE_EMPLOYER_PROFILE,
-    CREATE_JOB, UPDATE_JOB, GET_JOBS_EMPLOYER, GET_JOBS_STUDENT,  } =  require('./topics/topic_names');
+    CREATE_JOB, UPDATE_JOB, GET_JOBS_EMPLOYER, GET_JOBS_STUDENT, 
+    APPLY_JOB, UPDATE_APPLICATION_STATUS, WITHDRAW_APPLICATION, GET_APPLICATIONS_FOR_EMPLOYER, GET_APPLICATIONS_FOR_STUDENT,
+    CREATE_CONVERSATION, CREATE_MESSAGE, ADD_MESSAGE_TO_CONVERSATION, GET_CONVERSATIONS, GET_CHAT,
+ } =  require('./topics/topic_names');
 
 var connection = new require('./kafka/Connection');
 const { mongoDB } = require('./Utils/config');
@@ -17,8 +20,18 @@ var UpdateJob = require('./services/jobServices/updateJob');
 var GetJobsForStudent = require('./services/jobServices/getJobsStudent');
 var GetJobsForEmployer = require('./services/jobServices/getJobsEmployer');
 var GetStudents = require('./services/studentServices/getStudents');
+var ApplyJob = require('./services/applicationServices/applyJob');
+var UpdateApplicationStatus = require('./services/applicationServices/updateApplicationStatus');
+var WithdrawApplication = require('./services/applicationServices/withdrawApplication');
+var GetApplicationsForStudent = require('./services/applicationServices/getApplicationsForStudent');
+var GetApplicationsForEmployer = require('./services/applicationServices/getApplicationsForEmployer');
+var CreateConversation = require('./services/messageServices/createConversation');
+var GetConversations = require('./services/messageServices/getConversations');
+var GetChat = require('./services/messageServices/getChat');
+var AddMessageToConversation = require('./services/messageServices/addMessagesToConversations');
 
-// const producer = connection.getProducer();
+
+// const producer = connection.getProducer(); 
 // const consumer = connection.getConsumer();
 const client = connection.getClient();
 var options = {
@@ -101,3 +114,12 @@ handleTopicRequest(UPDATE_JOB, UpdateJob);
 handleTopicRequest(GET_JOBS_STUDENT, GetJobsForStudent);
 handleTopicRequest(GET_JOBS_EMPLOYER, GetJobsForEmployer)
 handleTopicRequest(GET_STUDENTS,GetStudents);
+handleTopicRequest(APPLY_JOB,ApplyJob);
+handleTopicRequest(UPDATE_APPLICATION_STATUS,UpdateApplicationStatus);
+handleTopicRequest(WITHDRAW_APPLICATION,WithdrawApplication);
+handleTopicRequest(GET_APPLICATIONS_FOR_EMPLOYER,GetApplicationsForEmployer);
+handleTopicRequest(GET_APPLICATIONS_FOR_STUDENT,GetApplicationsForStudent);
+handleTopicRequest(CREATE_CONVERSATION, CreateConversation);
+handleTopicRequest(GET_CONVERSATIONS, GetConversations);
+handleTopicRequest(GET_CHAT,GetChat);
+handleTopicRequest(ADD_MESSAGE_TO_CONVERSATION, AddMessageToConversation);

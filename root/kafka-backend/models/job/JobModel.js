@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const Schema = mongoose.Schema;
 
 var addressSchema = new Schema({
@@ -20,5 +21,6 @@ var jobSchema = new Schema({
     Description: {type: String, required: true},
 });
 
+jobSchema.plugin(mongoosePaginate);
 const jobModel = mongoose.model('job', jobSchema);
 module.exports = jobModel;

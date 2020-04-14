@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import DatePicker from "react-datepicker";
 import axios from "axios";
+import { applyForJob, changeApplyError } from './../../redux/actions/applicationAction';
 // import {JobSidebar} from './jobsidebar/JobSidebar';
 
 const Styles = styled.div`
@@ -95,7 +96,7 @@ class JobDiscription extends Component {
                 apply_button_state: "primary",
                 apply_button_text: "Apply",
             }
-        }else{
+        } else {
             this.state = {
                 show: false,
                 apply_show: false,
@@ -190,33 +191,60 @@ class JobDiscription extends Component {
 
     applyClickeHandler = (e) => {
         e.preventDefault();
-        this.setState({
-            apply_show: false,
-            apply_button_state: "success",
-            apply_button_text: "Applied",
-        })
-        const formData = new FormData();
-        formData.append('student_email', this.props.user.email);
-        formData.append('job_id', this.props.job.job_id);
-        formData.append('resume_file', this.state.resume_file);
-        //  http://localhost:3001/application/apply
-        axios.post('http://52.8.254.75:3001/application/apply', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-            .then((response) => {
 
-                this.setState({
-                    application_confirmation_show: true,
-                });
+        if (this.state.resume_file) {
+            this.setState({
+                apply_show: false,
+                apply_button_state: "success",
+                apply_button_text: "Applied",
+                application_confirmation_show: true,
+            })
+            this.props.applyForJob(this.props.job, this.props.user, this.state.resume_file);
+        } else {
+            this.setState({
+                apply_error: "Resume is Required!",
+                apply_show: false,
+            })
+        }
+        return
 
-                console.log("Application id: " + response.data.application_id)
-            }).catch((error) => {
-                console.log("Application was not submitted.: " + JSON.stringify(error));
-            });
+        // const formData = new FormData();
+        // formData.append('student_email', this.props.user.email);
+        // formData.append('job_id', this.props.job.job_id);
+        // formData.append('resume_file', this.state.resume_file);
+        // //  http://localhost:3001/application/apply
+        // axios.post('http://52.8.254.75:3001/application/apply', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+        //     .then((response) => {
+
+        //         this.setState({
+        //             application_confirmation_show: true,
+        //         });
+
+        //         console.log("Application id: " + response.data.application_id)
+        //     }).catch((error) => {
+        //         console.log("Application was not submitted.: " + JSON.stringify(error));
+        //     });
     }
 
     componentWillReceiveProps(nextProps) {
+        if (nextProps.apply_error) {
+            console.log("apply error is Updated!!")
+            this.setState({
+                apply_error: nextProps.apply_error,
+                application_confirmation_show: false,
+            });
+        }
         if (nextProps.job) {
             console.log("Job Discription Updated!!")
-
+            if (this.state._id != nextProps.job._id) {
+                this.props.changeApplyError();
+                this.setState({
+                    apply_error: null,
+                    apply_button_state: "primary",
+                    apply_button_text: "Apply",
+                    application_confirmation_show: false,
+                });
+            }
             this.setState({
                 _id: nextProps.job._id,
                 EmployerID: nextProps.job.EmployerID,
@@ -234,8 +262,8 @@ class JobDiscription extends Component {
     }
 
     render() {
-        if(!this.props.job){
-            return(
+        if (!this.props.job) {
+            return (
                 <div>
                 </div>
             );
@@ -330,8 +358,13 @@ class JobDiscription extends Component {
                         </Modal>
                         {/* --------------------------------------------------------------------------------------------------------------------------------- */}
                         {this.state.application_confirmation_show &&
-                            <Alert variant="success" onClose={() => this.setShow(false)} dismissible>
+                            <Alert variant="success" onClose={() => {this.setShow(false)}} dismissible>
                                 <Alert.Heading>Application Submitted!</Alert.Heading>
+                            </Alert>
+                        }
+                        {this.state.apply_error &&
+                            <Alert variant="danger" onClose={() => this.setShow(false)} dismissible>
+                                <Alert.Heading>{this.state.apply_error}!</Alert.Heading>
                             </Alert>
                         }
 
@@ -406,7 +439,6 @@ class JobDiscription extends Component {
                                 }
                             </Row>
                         </div>
-
                         <div className="job-discription-discription-title">
                             Job Responsibilities:
                         </div>
@@ -417,14 +449,14 @@ class JobDiscription extends Component {
                     <div className="profile-experience-card-divider"></div>
                 </Container>
             </Styles>
-
         )
     }
 }
 const mapStateToProps = state => {
     return {
         user: state.auth,
+        apply_error: state.application.apply_error,
     };
 };
 //Export The Main Component
-export default connect(mapStateToProps, {})(JobDiscription);
+export default connect(mapStateToProps, { applyForJob, changeApplyError })(JobDiscription);

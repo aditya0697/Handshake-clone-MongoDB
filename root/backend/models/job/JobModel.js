@@ -16,7 +16,7 @@ var jobSchema = new Schema({
     Type: {type: String, required: true},
     PostDate: {type: Date, required: false},
     Deadline: {type: Date, required: false},
-    Address: {addressSchema},
+    Address: {type: addressSchema, required: true},
     Description: {type: String, required: true},
 });
 

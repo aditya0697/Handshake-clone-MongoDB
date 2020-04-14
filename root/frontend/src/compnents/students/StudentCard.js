@@ -62,12 +62,9 @@ class StudentCard extends Component {
         this.clickHandler = this.clickHandler.bind();
     }
 
-    resumeClickHandler = (e) => {
-        e.preventDefault();
-        return (<Redirect to={this.state.resume} />);
-    }
     clickHandler = (e) => {
         e.preventDefault();
+        this.props.studentCardClickHandler(this.props.id);
     }
 
     componentWillReceiveProps(nextProps) {

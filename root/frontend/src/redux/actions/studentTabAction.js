@@ -1,7 +1,8 @@
 import axios from "axios";
 import { GET_ALL_STUDENTS } from './../actionTypes';
+import {HOST_URL} from "./../../config/config";
 
-const ROOT_URL = "http://localhost:3001/student";
+const ROOT_URL = HOST_URL + "student";
 
 
 export const getAllStudents = (allStudents, page,limit) => dispatch => {
@@ -20,6 +21,11 @@ export const getAllStudents = (allStudents, page,limit) => dispatch => {
     }
     if(!limit){
         limit = 5;
+    }
+    if(allStudents){
+        if (page > allStudents.totalPages){
+            page = 1
+        }
     }
     axios.get(`${ROOT_URL}/students?page=${page}&limit=${limit}`,config)
         .then(response => {

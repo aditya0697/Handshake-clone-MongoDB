@@ -5,6 +5,7 @@ const initialState = {
         email: "",
         user_type: "student",
         success: "",
+        id: "",
         error: "Invalid Username or Password",
     } ,
   };
@@ -21,6 +22,7 @@ const authReducer = (state = initialState, action) => {
                     success: "",
                     error: action.payload.error_message,
                     email: "",
+                    id:"",
                 }
             } else {
                 return {
@@ -28,6 +30,7 @@ const authReducer = (state = initialState, action) => {
                     user_type: "student",
                     error: "",
                     email: action.payload.email,
+                    id: action.payload.id,
                 }
             }
         case AUTHENTICATE_EMPLOYER:
@@ -39,6 +42,7 @@ const authReducer = (state = initialState, action) => {
                     success: "",
                     error: action.payload.error_message,
                     email: "",
+                    id: "",
                 }
             } else {
                 return {
@@ -46,6 +50,7 @@ const authReducer = (state = initialState, action) => {
                     user_type: "employer",
                     error: "",
                     email: action.payload.email,
+                    id: action.payload.id,
                 }
             }
         default:

@@ -1,10 +1,9 @@
 import axios from "axios";
+import {HOST_URL} from "./../../config/config";
 import {GET_EVENTS, ADD_EVENT, UPDATE_EVENT, REGISTER_EVENT} from './../actionTypes';
 
-const ROOT_URL = "http://52.8.254.75:3001/event";
-const HOST_URL = "http://52.8.254.75:3001";
 
-// const ROOT_URL = "http://localhost:3001/event";
+ const ROOT_URL = HOST_URL + "event";
 // const HOST_URL = "http://localhost:3001";
 
 export const fetchEvents = (user) => dispatch => {
