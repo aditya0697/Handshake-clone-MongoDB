@@ -217,9 +217,8 @@ class JobDashboard extends Component {
 
     }
     componentDidMount() {
+        this.props.fetchJobs(this.props.user, this.props.jobData, 1, this.state.limit, this.props.user.id);
         if (!this.props.jobs || this.props.jobs === []) {
-            this.props.fetchJobs(this.props.user, this.props.jobData, 1, this.state.limit, this.props.user.id);
-        } else {
             this.setState({
                 jobs: this.props.jobs
             })

@@ -5,7 +5,7 @@ import { Icon } from 'antd';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import DatePicker from "react-datepicker";
-import {registerEvent} from './../../redux/actions/eventAction';
+import { registerEvent } from './../../redux/actions/eventAction';
 import axios from "axios";
 // import {JobSidebar} from './jobsidebar/JobSidebar';
 
@@ -86,15 +86,13 @@ class EventDiscription extends Component {
             show: false,
             apply_show: false,
             application_confirmation_show: false,
-            event_id: this.props.event.event_id,
-            employer: this.props.event.employer,
-            event_title: this.props.event.event_title,
-            event_city: this.props.event.event_city,
-            major: this.props.event.major,
-            post_date: new Date(),
-            deadline: new Date(),
-            event_detail: this.props.event.event_detail,
-            resume_file: null,
+            EmployerName: this.props.event.EmployerName,
+            EventName: this.props.event.EventName,
+            EmployerProfileUrl: this.props.event.EmployerProfileUrl,
+            Address: this.props.event.Address,
+            Majors: this.props.event.Majors,
+            Description: this.props.event.Description,
+            EventDate: new Date(this.props.event.EventDate),
             register_button_state: "primary",
             register_button_text: "Register",
         }
@@ -170,21 +168,26 @@ class EventDiscription extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.event) {
-            console.log("Job Discription Updated!!")
+            console.log("event Discription Updated!!")
             this.setState({
-                event_id: nextProps.event.event_id,
-                employer: nextProps.event.employer,
-                event_title: nextProps.event.event_title,
-                event_city: nextProps.event.event_city,
-                major: nextProps.event.major,
-                post_date: new Date(nextProps.event.post_date),
-                deadline: new Date(nextProps.event.deadline),
-                event_detail: nextProps.event.event_detail,
+                EmployerName: nextProps.event.EmployerName,
+                EventName: nextProps.event.EventName,
+                EmployerProfileUrl: nextProps.event.EmployerProfileUrl,
+                Address: nextProps.event.Address,
+                Majors: nextProps.event.Majors,
+                Description: nextProps.event.Description,
+                EventDate: new Date(nextProps.event.EventDate),
             });
         }
     }
 
     render() {
+        if (!this.props.event) {
+            return (
+                <div>
+                </div>
+            );
+        }
         return (
             <Styles>
                 <Container className="job-discription-container">
@@ -192,41 +195,128 @@ class EventDiscription extends Component {
                         {/* --------------------------------------------------------------------------------------------------------------------------------- */}
                         <Modal show={this.state.show} onHide={this.handleClose} >
                             <Modal.Header closeButton>
-                                <Modal.Title>Create Job</Modal.Title>
+                                <Modal.Title>Edit Event</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
+                                {this.state.addEventModalAlertFlag && <Alert variant="danger">Insert all values</Alert>}
                                 <Form>
                                     <Form.Group controlId="employer">
-                                        <Form.Label className="signup-form-lable">Job Title</Form.Label>
-                                        <Form.Control onChange={this.onValueChangeHandler} name="event_title" placeholder="job_title" defaultValue={this.state.event_title} />
+                                        <Form.Label className="signup-form-lable">Event Title</Form.Label>
+                                        <Form.Control onChange={this.onChangeHandeler} name="EventName" placeholder="Event Title" />
                                     </Form.Group>
                                     <Form.Row>
-                                        <Form.Group as={Col} >
-                                            <Form.Label className="signup-form-lable">Post Date</Form.Label>
-                                            <br />
-                                            <DatePicker selected={this.state.post_date} name="post_date" className="date_picker" onChange={this.postDateChangeHandler} />
-                                            <br />
-                                        </Form.Group>
-                                        <Form.Group as={Col} controlId="salary">
-                                            <Form.Label className="signup-form-lable">Salary</Form.Label>
-                                            <Form.Control onChange={this.onChangeHandeler} name="salary" type="number" placeholder="salary" defaultValue={this.state.major} />
-                                        </Form.Group>
-                                    </Form.Row>
-                                    <Form.Row>
-                                        <Form.Group as={Col}>
-                                            <Form.Label className="signup-form-lable">Application Deadline,</Form.Label>
+                                        <Form.Group as={Col} controlId="end_date">
+                                            <Form.Label className="signup-form-lable">Registration Deadline</Form.Label>
                                             <br />
                                             <DatePicker selected={this.state.deadline} name="deadline" className="date_picker" onChange={this.deadlineDateChangeHandler} />
                                             <br />
                                         </Form.Group>
                                         <Form.Group as={Col} controlId="formGridCity">
-                                            <Form.Label>Place</Form.Label>
-                                            <Form.Control name="event_city" placeholder="San Jose" onChange={this.onChangeHandeler} defaultValue={this.state.event_city} />
+                                            <Form.Label>Street</Form.Label>
+                                            <Form.Control name="Street" placeholder="San Jose" onChange={this.onChangeHandeler} />
+                                        </Form.Group>
+
+                                        <Form.Group as={Col} controlId="formGridCity">
+                                            <Form.Label>Building</Form.Label>
+                                            <Form.Control name="Apt" placeholder="CA" onChange={this.onChangeHandeler} />
                                         </Form.Group>
                                     </Form.Row>
                                     <Form.Row>
-                                        <Form.Label>Event Detail</Form.Label>
-                                        <Form.Control name="event_detail" as="textarea" placeholder="Detail..." defaultValue={this.state.event_detail} />
+                                        <Form.Group as={Col} controlId="formGridCity">
+                                            <Form.Label>City</Form.Label>
+                                            <Form.Control name="City" placeholder="San Jose" onChange={this.onChangeHandeler} />
+                                        </Form.Group>
+
+                                        <Form.Group as={Col} controlId="formGridCity">
+                                            <Form.Label>State</Form.Label>
+                                            <Form.Control name="State" placeholder="CA" onChange={this.onChangeHandeler} />
+                                        </Form.Group>
+                                        <Form.Group as={Col} controlId="formGridCity">
+                                            <Form.Label>Zip Code</Form.Label>
+                                            <Form.Control name="Zipcode" placeholder="12345" onChange={this.onChangeHandeler} />
+                                        </Form.Group>
+
+                                    </Form.Row>
+                                    <Form.Label>Majors</Form.Label>
+                                    <Form.Row>
+                                        <Form.Group as={Col} controlId="group-1">
+                                            <Form.Check
+                                                custom
+                                                inline
+                                                label="Computer Engineering"
+                                                type="checkbox"
+                                                name="Computer Engineering"
+                                                onChange={this.handleCheckBoxChange}
+                                                id={`checkbox-1`}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group as={Col} controlId="group-2">
+                                            <Form.Check
+                                                custom
+                                                inline
+                                                label="Software Engineerings"
+                                                type="checkbox"
+                                                name="Software Engineerings"
+                                                onChange={this.handleCheckBoxChange}
+                                                id={`checkbox-2`}
+                                            />
+
+                                        </Form.Group>
+                                    </Form.Row>
+                                    <Form.Row>
+                                        <Form.Group as={Col} controlId="group-3">
+                                            <Form.Check
+                                                custom
+                                                inline
+                                                label="Mechanical Engineering"
+                                                type="checkbox"
+                                                name="Mechanical Engineering"
+                                                onChange={this.handleCheckBoxChange}
+                                                id={`checkbox-3`}
+                                            />
+
+                                        </Form.Group>
+                                        <Form.Group as={Col} controlId="group-4">
+                                            <Form.Check
+                                                custom
+                                                inline
+                                                label="Civil Engineering"
+                                                type="checkbox"
+                                                name="Civil Engineering"
+                                                onChange={this.handleCheckBoxChange}
+                                                id={`checkbox-4`}
+                                            />
+                                        </Form.Group>
+
+                                    </Form.Row>
+                                    <Form.Row>
+                                        <Form.Group as={Col} controlId="group-5">
+
+                                            <Form.Check
+                                                custom
+                                                inline
+                                                label="Electrical Engineering"
+                                                type="checkbox"
+                                                name="Electrical Engineering"
+                                                onChange={this.handleCheckBoxChange}
+                                                id={`checkbox-5`}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group as={Col} controlId="group-6">
+                                            <Form.Check
+                                                custom
+                                                inline
+                                                label="Chemical Engineering"
+                                                type="checkbox"
+                                                name="Chemical Engineering"
+                                                onChange={this.handleCheckBoxChange}
+                                                id={`checkbox-6`}
+                                            />
+                                        </Form.Group>
+                                    </Form.Row>
+                                    <Form.Row>
+                                        <Form.Label> Event Detail</Form.Label>
+                                        <Form.Control name="event_detail" as="textarea" placeholder="Discription..." onChange={this.onChangeHandeler} />
                                     </Form.Row>
                                 </Form>
                             </Modal.Body>
@@ -234,18 +324,19 @@ class EventDiscription extends Component {
                                 <Button variant="secondary" onClick={this.handleClose}>
                                     Close
                         </Button>
-                                <Button variant="primary" onClick={this.addJobHandler}>
+                                <Button variant="primary" onClick={this.addEventHandler}>
                                     Save Changes
                         </Button>
                             </Modal.Footer>
                         </Modal>
+
                         {/* --------------------------------------------------------------------------------------------------------------------------------- */}
                         <div className="job-discription-heading">
-                            
+
                             <div className="job-discription-job-title">
                                 <Row>
                                     <Col xs={11} md={11}>
-                                        {this.state.event_title}
+                                        {this.state.EventName}
                                     </Col>
                                     {
                                         this.props.user.user_type === "employer" &&
@@ -257,7 +348,7 @@ class EventDiscription extends Component {
                                 <Row>
                                     <Col xs={11} md={11}>
                                         <div className="job-discription-job-employer">
-                                            {this.state.employer}
+                                            {this.state.EmployerName}
                                         </div>
                                     </Col>
                                 </Row>
@@ -265,20 +356,20 @@ class EventDiscription extends Component {
                             <div>
                                 <Row className="subheading-block">
                                     <Col xs={0.5} md={0.5}>
-                                    <Icon style={{ fontSize: '16px' }} type="calendar"></Icon>
+                                        <Icon style={{ fontSize: '16px' }} type="calendar"></Icon>
                                     </Col>
                                     <Col xs={3} md={3}>
                                         <div className="job-discription-subheading">
-                                            
-                                            {"On " + (new Date(this.state.post_date)).toDateString()}
+
+                                            {"On " + (new Date(this.state.EventDate)).toDateString()}
                                         </div>
                                     </Col>
                                     <Col xs={0.5} md={0.5}>
-                                    <Icon style={{ fontSize: '16px' }} type="global"></Icon>
+                                        <Icon style={{ fontSize: '16px' }} type="global"></Icon>
                                     </Col>
                                     <Col xs={3} md={3}>
                                         <div className="job-discription-subheading">
-                                            {this.state.event_city}
+                                            {this.state.Address.City}
                                         </div>
                                     </Col>
                                 </Row>
@@ -287,9 +378,11 @@ class EventDiscription extends Component {
                         <div className="job-discription-apply-box">
                             <Row>
                                 <Col xs={10} md={10}>
-                                    <div className="registration-block">
-                                        Registrations close on <b>{(new Date(this.state.deadline)).toDateString()} </b>
+                                    <div style={{ paddingLeft:"7px", paddingTop: "5px" }}>
+                                        Event {"is on " + (new Date(this.state.EventDate)).toDateString()} {"at " +
+                                            (this.state.Address.City) + ", " + (this.state.Address.State)}
                                     </div>
+
                                 </Col>
                                 {this.props.user.user_type === "student" &&
                                     <Col xs={2} md={2}>
@@ -302,7 +395,7 @@ class EventDiscription extends Component {
                             Event Detail:
                         </div>
                         <div className="job-discription-discription">
-                            {this.state.event_detail}
+                            {this.state.Description}
                         </div>
                     </div>
                     <div className="profile-experience-card-divider"></div>
@@ -318,4 +411,4 @@ const mapStateToProps = state => {
     };
 };
 //Export The Main Component
-export default connect(mapStateToProps, {registerEvent})(EventDiscription);
+export default connect(mapStateToProps, { registerEvent })(EventDiscription);

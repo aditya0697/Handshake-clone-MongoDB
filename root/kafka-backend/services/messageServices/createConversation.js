@@ -19,12 +19,7 @@ function handle_request(msg, callback) {
     //     PersonId: reciever._id,
     //     ConversationIds: [],
     // });
-    const newChatMessage = {
-        SenderId: sender.PersonId,
-        MessageTime: new Date(),
-        Message: message,
-    }
-    const person_1 = {
+    const person_1 = { 
         PersonType: sender.PersonType,
         Name: sender.Name,
         PersonProfileUrl: sender.PersonProfileUrl,
@@ -33,39 +28,42 @@ function handle_request(msg, callback) {
 
     const person_2 = {
         PersonType: reciever.PersonType,
-        Name: reciever.Name, 
+        Name: reciever.Name,
         PersonProfileUrl: reciever.PersonProfileUrl,
         PersonId: reciever.PersonId,
     };
     const newConversation = new Conversation({
-        Persons: [person_1,person_2],
+        Persons: [person_1, person_2],
         Time: new Date(),
-        Messages: [newChatMessage],
+        Messages: [],
     });
 
-    Conversation.findOne({"Persons.PersonId": [person_1.PersonId,person_2.PersonID] }, (err, conversation) => {
-        if(err){
-            console.log("Error in finding conversations",err);
-            callback(err,null);
+    Conversation.find({ "$and": [{ "Persons.PersonId": person_1.PersonId }, { "Persons.PersonId": person_2.PersonId }] }, (err, conversation) => {
+        if (err) {
+            console.log("Error in finding conversations", err);
+            callback(err, null);
         }
-        else if(conversation){
-            console.log("conversation already exists!!",conversation);
-            callback(null, conversation);
-        }
-        else{
-            newConversation.save((err,result)=>{
-                if(err){
-                    console.log("Error in saving conversations",err);
-                    callback(err,null);
-                }else{
-                    console.log("Conversation saved successfully!",result);
-                    callback(null,result);
-                }
-            });
+        else {
+            if (conversation.length == 0) {
+                console.log("conversation not exists!!", conversation);
+                newConversation.save((err, result) => {
+                    if (err) {
+                        console.log("Error in saving conversations", err);
+                        callback(err, null);
+                    } else {
+                        console.log("Conversation saved successfully!", result);
+                        callback(null, result);
+                    }
+                });
+            }else{
+                console.log("conversation already exists!!", conversation);
+                callback(null, null);
+            }
+          
         }
     });
-    
-    
+
+
 }
 
 exports.handle_request = handle_request;

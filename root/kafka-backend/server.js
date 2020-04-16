@@ -3,6 +3,8 @@ const {STUDENT_SIGNIN, STUDENT_SIGNUP, GET_STUDENT_DETAILS, UPDATE_STUDENT_PROFI
     CREATE_JOB, UPDATE_JOB, GET_JOBS_EMPLOYER, GET_JOBS_STUDENT, 
     APPLY_JOB, UPDATE_APPLICATION_STATUS, WITHDRAW_APPLICATION, GET_APPLICATIONS_FOR_EMPLOYER, GET_APPLICATIONS_FOR_STUDENT,
     CREATE_CONVERSATION, CREATE_MESSAGE, ADD_MESSAGE_TO_CONVERSATION, GET_CONVERSATIONS, GET_CHAT,
+    CREATE_EVENT, GET_EVENT_FOR_EMPLOYRE, GET_EVENT_FOR_STUDENT, UPDATE_EVENT,  REGISTER,
+    GET_REGISTRATION_FOR_EMPLOYRE, GET_REGISTRATION_FOR_STUDENT,
  } =  require('./topics/topic_names');
 
 var connection = new require('./kafka/Connection');
@@ -29,6 +31,14 @@ var CreateConversation = require('./services/messageServices/createConversation'
 var GetConversations = require('./services/messageServices/getConversations');
 var GetChat = require('./services/messageServices/getChat');
 var AddMessageToConversation = require('./services/messageServices/addMessagesToConversations');
+var CreateEvent = require('./services/eventServices/createEvent');
+var GetEventForStudent = require('./services/eventServices/getEventForStudent');
+var GetEventsForEmployer = require('./services/eventServices/getEventsForEmployer');
+var UpdateEvent = require('./services/eventServices/updateEvent');
+
+var Register = require('./services/registratitonServices/registerForEvent');
+var GetRegistrationsForStudent = require('./services/registratitonServices/getRegistrationsForStudent');
+var GetRegistrationsForEmployer = require('./services/registratitonServices/getRegistrationsForEmployer');
 
 
 // const producer = connection.getProducer(); 
@@ -102,7 +112,6 @@ function handleTopicRequest(topic_name, fname) {
     });
 }
 
-
 handleTopicRequest(STUDENT_SIGNUP,StudentSignup);
 handleTopicRequest(GET_STUDENT_DETAILS, GetStudentDetails);
 handleTopicRequest(UPDATE_STUDENT_PROFILE, UpdateStudentProfile);
@@ -123,3 +132,10 @@ handleTopicRequest(CREATE_CONVERSATION, CreateConversation);
 handleTopicRequest(GET_CONVERSATIONS, GetConversations);
 handleTopicRequest(GET_CHAT,GetChat);
 handleTopicRequest(ADD_MESSAGE_TO_CONVERSATION, AddMessageToConversation);
+handleTopicRequest(CREATE_EVENT, CreateEvent);
+handleTopicRequest(GET_EVENT_FOR_EMPLOYRE, GetEventsForEmployer);
+handleTopicRequest(GET_EVENT_FOR_STUDENT, GetEventForStudent);
+handleTopicRequest(UPDATE_EVENT, UpdateEvent);
+handleTopicRequest(REGISTER, Register);
+handleTopicRequest(GET_REGISTRATION_FOR_EMPLOYRE, GetRegistrationsForEmployer);
+handleTopicRequest(GET_REGISTRATION_FOR_STUDENT, GetRegistrationsForStudent);

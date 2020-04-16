@@ -6,6 +6,8 @@ var router = express.Router();
 var kafka = require('./../kafka/client');
 var Job = require('./../models/job/JobModel');
 const { checkAuth, auth } = require('./../utils/passport');
+
+
 auth();
 
 /* GET users listing. */
@@ -63,11 +65,11 @@ router.get("/get_convesations", checkAuth,function (req, res) {
   });
 });
 
-router.post('/create_conversation', checkAuth, function (req, res, next) {
+router.post('/add_message_to_conversation', checkAuth, function (req, res, next) {
   
   console.log("Data: ", JSON.stringify(req.body));
   
-  kafka.make_request(CREATE_CONVERSATION, req.body, function (err, results) {
+  kafka.make_request(ADD_MESSAGE_TO_CONVERSATION, req.body, function (err, results) {
     // console.log('in result', JSON.stringify(err));
     if (!results) {
       console.log("Inside err");

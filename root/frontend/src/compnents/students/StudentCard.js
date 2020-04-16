@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route , withRouter} from 'react-router-dom';
 import { Row, Col, Card, CardGroup, Container } from 'react-bootstrap';
 import Avatar from 'react-avatar';
 import { Icon } from 'antd';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { } from './../../redux/actions/jobActions';
+import {createConversation } from './../../redux/actions/messageAction';
+import {getName, getProfileUrl} from './../../redux/selectors';
 
 const Styles = styled.div`
    .student-card-name {
@@ -67,6 +68,12 @@ class StudentCard extends Component {
         this.props.studentCardClickHandler(this.props.id);
     }
 
+    startConversationHandler = (e) => {
+        e.preventDefault()
+        this.props.createConversation(this.props.user,this.props.student,this.props.userName,this.props.userProfileUrl);
+        this.props.history.push("/messages");
+    }
+
     componentWillReceiveProps(nextProps) {
         console.log("nextProps.student: " + JSON.stringify(nextProps.student));
         if (nextProps.student) {
@@ -85,11 +92,11 @@ class StudentCard extends Component {
     render() {
         return (
             <Styles>
-                <Container onClick={this.clickHandler} className="student-card-holder">
+                <Container  className="student-card-holder">
                     <div className="student-card-holder">
                         <Row>
                             <Col sd={2} md={2}>
-                                <Avatar name={this.state.FirstName + " " + this.state.LastName} src={this.state.ProfileUrl} size={75} round={true} />
+                                <Avatar onClick={this.clickHandler} name={this.state.FirstName + " " + this.state.LastName} src={this.state.ProfileUrl} size={75} round={true} />
                             </Col>
 
                             <Col sd={8} md={8}>
@@ -98,7 +105,7 @@ class StudentCard extends Component {
                                         <span><b>{this.state.FirstName + " " + this.state.LastName}</b></span>
                                     </Col>
                                     <Col sd={1} md={1}>
-                                        <Icon type="message" onClick={this.handleShow}></Icon>
+                                        <Icon type="message" onClick={this.startConversationHandler}></Icon>
                                     </Col>
                                 </Row>
                                 <div className="student-card-education">
@@ -126,8 +133,11 @@ class StudentCard extends Component {
 const mapStateToProps = state => {
     return {
         user: state.auth,
+        userName: getName(state),
+        userProfileUrl: getProfileUrl(state),
+
         // job_profile_pic: getProfileUrlForEmployerForJob(state.job),
     };
 };
 
-export default connect(mapStateToProps, {})(StudentCard);
+export default withRouter(connect(mapStateToProps, {createConversation})(StudentCard));

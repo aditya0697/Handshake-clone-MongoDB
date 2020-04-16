@@ -5,7 +5,7 @@ import Avatar from 'react-avatar';
 import { Icon } from 'antd';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { changeApplicationStatus} from './../../redux/actions/applicationAction';
+import { changeApplicationStatus } from './../../redux/actions/applicationAction';
 
 const Styles = styled.div`
    .job-card-postion-name {
@@ -29,7 +29,7 @@ const Styles = styled.div`
         font-weight: 400;
    }
    .application-card-holder{
-       width: 450px,
+       width: 650px,
        height: 80px;
        padding: 5px;
    }
@@ -163,8 +163,10 @@ class ApplicationCard extends Component {
                                         </Col>
 
                                         <Col sd={3} md={3}>
-                                            <Icon type="audit" onClick={this.handleShow}></Icon>
-                                            <span> <a href={this.state.ResumeURL} target="_blank" rel="noopener noreferrer"> resume </a></span>
+                                            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                                <Icon type="audit" onClick={this.handleShow} style={{padding: "5px"}}></Icon>
+                                                <span> <a href={this.state.ResumeURL} target="_blank" rel="noopener noreferrer"> resume </a></span>
+                                            </div>
                                         </Col>
                                     </Row>
                                 </div>
@@ -185,4 +187,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, {changeApplicationStatus})(ApplicationCard);
+export default connect(mapStateToProps, { changeApplicationStatus })(ApplicationCard);

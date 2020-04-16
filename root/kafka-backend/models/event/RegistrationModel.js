@@ -3,14 +3,12 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 var addressSchema = new Schema({
-    Street: {type: String, required: true},
-    Apt: {type: String, required: false},
     City: {type: String, required: true},
     State: {type: String, required: true},
     Zipcode: {type: String, required: true},
 });
-
 var eventSchema = new Schema({
+    _id: {type: String, required: true},
     EventName:{type: String, required: true},
     EmployerID: {type: String, required: true},
     EmployerName: {type: String, required: true},
@@ -20,7 +18,19 @@ var eventSchema = new Schema({
     Address: addressSchema,
     Description: {type: String, required: true},
 });
+var studentSchema = new Schema({
+    _id: {type: String, required: true},
+    Name: {type: String, required: true},
+    ProfileUrl: {type: String},
+});
 
-eventSchema.plugin(mongoosePaginate);
-const eventModel = mongoose.model('event', eventSchema);
-module.exports = eventModel;
+var registrationSchema = new Schema({
+    StudentID: {type: String, required: true},
+    Student: studentSchema,
+    Event: eventSchema,
+    Status: {type: String, required: true},
+});
+
+registrationSchema.plugin(mongoosePaginate);
+const registrationModel = mongoose.model('registration', registrationSchema);
+module.exports = registrationModel;

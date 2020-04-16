@@ -6,47 +6,77 @@ import {GET_EVENTS, ADD_EVENT, UPDATE_EVENT, REGISTER_EVENT} from './../actionTy
  const ROOT_URL = HOST_URL + "event";
 // const HOST_URL = "http://localhost:3001";
 
-export const fetchEvents = (user) => dispatch => {
+let getMajorsFromStudentData = (student) => {
+    if(!student){
+        return JSON.stringify([]);
+    }
+    var majors = [];
+    student.Educations.map((education) => {
+        if(education.Major){
+            majors.push(education.Major);
+        }
+    });
+    return JSON.stringify(majors);
+}
+
+export const fetchEvents = (user,student,eventData,page,limit) => dispatch => {
     axios.defaults.withCredentials = true;
     console.log(" Inside fetchApplications :", user.email);
-    const eventData = {
-        events: []
+
+    const token = localStorage.getItem("token");
+    const config = {
+        headers: {
+            Authorization: "Bearer " + token
+        }
     }
+
+    if(!page){
+        page = 1;
+    }
+    if(!limit){
+        limit = 5;
+    }
+    if(eventData){
+        if (page > eventData.totalPages){
+            page = 1;
+        }
+    }
+
     if (user.user_type == "student") {
-        axios.get(`${ROOT_URL}/student/${user.email}`)
+        axios.get(`${ROOT_URL}/student/?Majors=${getMajorsFromStudentData(student)}&page=${page}&limit=${limit}`,config)
             .then(response => {
-                console.log("application Data in actions", JSON.stringify(response));
+                console.log("events Data in actions", JSON.stringify(response));
                 if (response.status == 200) {
-                    console.log("application Data in actions")
+                    console.log("events Data in actions")
                     dispatch({
                         type: GET_EVENTS,
-                        payload: response.data.events,
+                        payload: response.data,
                     })
                 }
             }, error => {
-                console.log(" get application error:", JSON.stringify(error));
-                dispatch({
-                    type: GET_EVENTS,
-                    payload: eventData.events,
-                })
+                console.log(" get events error:", JSON.stringify(error));
+                // dispatch({
+                //     type: GET_EVENTS,
+                //     payload: eventData.events,
+                // })
             });
     } else {
-        axios.get(`${ROOT_URL}/employer/${user.email}`)
+        axios.get(`${ROOT_URL}/employer?employer_id=${user.id}&page=${page}&limit=${limit}`,config)
             .then(response => {
-                console.log("job Data in actions", JSON.stringify(response));
+                console.log("events Data in actions", JSON.stringify(response));
                 if (response.status == 200) {
-                    console.log("job Data in actions")
+                    console.log("events Data in actions")
                     dispatch({
                         type: GET_EVENTS,
-                        payload: response.data.events,
+                        payload: response.data,
                     })
                 }
             }, error => {
                 console.log(" fetchEvents error:", JSON.stringify(error));
-                dispatch({
-                    type: GET_EVENTS,
-                    payload: eventData.events,
-                })
+                // dispatch({
+                //     type: GET_EVENTS,
+                //     payload: eventData.events,
+                // })
             });
     }
 };

@@ -196,6 +196,9 @@ class StudentDashBoard extends Component {
                 if (!student) {
                     return;
                 }
+                if(student._id == this.props.user.id){
+                    return;
+                }
                 return (
                     <div className="student-card-container">
                         <StudentCard student={student} id={id} studentCardClickHandler={this.studentCardClickHandler} />

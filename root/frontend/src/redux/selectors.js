@@ -195,9 +195,10 @@ export const getEvents = (state) => {
     if (!state.auth) {
         return;
     }
-    if (state.event.eventData) {
-        return state.event.eventData.events;
+    if (state.eventData.events) {
+        return state.eventData.events;
     }
+    return [];
 }
 
 export const getProfilePicture = (state, user_type, email) => {
@@ -231,4 +232,11 @@ export const getAllStudentsList = (allStudent) => {
         return allStudent.students;
     }
     return [];
+}
+
+export const getConversationsForUser = (messageData) => {
+    if(messageData.messages){
+        return messageData.messages
+    }
+    return []
 }

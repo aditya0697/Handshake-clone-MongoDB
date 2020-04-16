@@ -10,6 +10,7 @@ import ProfileDashBoard from './profile/ProfileDashBoad';
 import ApplicationDashBoard from'./application/ApplicationDashBoard';
 import EventDashboard from './event/EventDashboard';
 import StudentDashBoard from './students/StudentDashBoard';
+import MessageDashBoard from './messages/MessageDashBoard';
 
 
 const Styles = styled.div`
@@ -67,6 +68,7 @@ const Main = withRouter(({ location }) => {
                         <Route path="/application" component={ApplicationDashBoard}/>
                         <Route path="/event" component={EventDashboard}/>
                         <Route path="/students" component={StudentDashBoard}/>
+                        <Route path="/messages" component={MessageDashBoard}/>
                     </Layout>
                 </Switch>
             </BrowserRouter>

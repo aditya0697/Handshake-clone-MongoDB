@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
+const http = require('http');
 var authRouter = require('./routes/auth');
 var studentRouter = require('./routes/student');
 var employerRouter = require('./routes/employer');
@@ -17,8 +18,14 @@ const passport = require('passport');
 const { auth } = require("./utils/passport");
 const mongoose = require('mongoose'); 
 var cors = require('cors');
+const socketio = require('socket.io');
+
 var app = express();
     
+
+const server = http.createServer(app);
+const io = socketio(server);
+
 // Passport middleware
 // app.use(passport.initialize());
  
@@ -99,4 +106,17 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
+// io.on('connect', (socket) => {
+//   console.log(' user connected');
+//   socket.on('disconnect', () => {
+//     console.log('user disconnected');
+//   });
+//   socket.on('create_conversation',({ name, room }, callback) => {
+
+//   });
+// });
+
+
 module.exports = app;
+// server.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));

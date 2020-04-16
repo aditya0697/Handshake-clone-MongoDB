@@ -3,7 +3,9 @@ const {STUDENT_SIGNIN, STUDENT_SIGNUP, GET_STUDENT_DETAILS, UPDATE_STUDENT_PROFI
     CREATE_JOB, UPDATE_JOB, GET_JOBS_EMPLOYER, GET_JOBS_STUDENT,
     APPLY_JOB, UPDATE_APPLICATION_STATUS, WITHDRAW_APPLICATION, GET_APPLICATIONS_FOR_EMPLOYER, GET_APPLICATIONS_FOR_STUDENT,
     CREATE_CONVERSATION, ADD_MESSAGE_TO_CONVERSATION,
-    CREATE_MESSAGE, GET_CONVERSATIONS, GET_CHAT } =  require('./topic_names');
+    CREATE_MESSAGE, GET_CONVERSATIONS, GET_CHAT,
+    CREATE_EVENT, GET_EVENT_FOR_EMPLOYRE, GET_EVENT_FOR_STUDENT, UPDATE_EVENT,  REGISTER,
+    GET_REGISTRATION_FOR_EMPLOYRE, GET_REGISTRATION_FOR_STUDENT } =  require('./topic_names');
 
 let topicsToCreate = [
     {
@@ -121,7 +123,41 @@ let topicsToCreate = [
         partitions: 1,
         replicationFactor: 1 
     },
-    
+    {
+        topic: CREATE_EVENT,
+        partitions: 1,
+        replicationFactor: 1 
+    },
+    {
+        topic: GET_EVENT_FOR_EMPLOYRE,
+        partitions: 1,
+        replicationFactor: 1 
+    },
+    {
+        topic: GET_EVENT_FOR_STUDENT,
+        partitions: 1,
+        replicationFactor: 1 
+    },
+    {
+        topic: UPDATE_EVENT,
+        partitions: 1,
+        replicationFactor: 1 
+    },
+    {
+        topic: REGISTER,
+        partitions: 1,
+        replicationFactor: 1 
+    },
+    {
+        topic: GET_REGISTRATION_FOR_EMPLOYRE,
+        partitions: 1,
+        replicationFactor: 1 
+    },
+    {
+        topic: GET_REGISTRATION_FOR_STUDENT,
+        partitions: 1,
+        replicationFactor: 1 
+    },
 ];
 
 module.exports = topicsToCreate;

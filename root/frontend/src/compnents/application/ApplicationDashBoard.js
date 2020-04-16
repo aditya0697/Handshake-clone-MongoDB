@@ -79,8 +79,9 @@ const Styles = styled.div`
    .application-list-view{
     margin: 0 auto;
     padding: 10px;
+    width: 800px;
     overflow-y: scroll;
-    height: 545px;
+    height: 535px;
    }
 `;
 

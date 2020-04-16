@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 var addressSchema = new Schema({
     Street: {type: String, required: true},
@@ -10,16 +11,16 @@ var addressSchema = new Schema({
 });
 
 var eventSchema = new Schema({
-    EventID: {type: String, required: true},
+    EventName:{type: String, required: true},
     EmployerID: {type: String, required: true},
-    Majors: [{type: String, required: true}],
-    Salary: {type: Number, required: true},
-    Type: {type: String, required: true},
+    EmployerName: {type: String, required: true},
+    EmployerProfileUrl: {type: String},
+    Majors: [{type: String}],
     EventDate: {type: Date, required: false},
-    Address: {addressSchema},
+    Address: addressSchema,
     Description: {type: String, required: true},
-    Registration : [{type: String, required: true}],
 });
 
+eventSchema.plugin(mongoosePaginate);
 const eventModel = mongoose.model('event', eventSchema);
 module.exports = eventModel;

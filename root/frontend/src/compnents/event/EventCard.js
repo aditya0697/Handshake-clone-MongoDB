@@ -5,7 +5,7 @@ import Avatar from 'react-avatar';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { getProfileUrlForEmployer } from './../../redux/actions/profilePictureActions';
-import { getProfilePicture } from '../../redux/selectors';
+import { getProfilePicture, getEvents } from '../../redux/selectors';
 
 const Styles = styled.div`
    .job-card-postion-name {
@@ -27,16 +27,13 @@ class EventCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            employer_email:this.props.event.employer_email,
-            employer: this.props.event.employer,
-            event_id: this.props.event_id,
-            event_title: this.props.event.event_title,
-            event_city: this.props.event.event_city,
-            major: this.props.event.major,
-            event_detail: this.props.event.event_detail,
-            employer: this.props.event.name,
-            post_date: this.props.event.post_date,
-            deadline: this.props.event.deadline,
+            EmployerName: this.props.event.EmployerName,
+            EventName: this.props.event.EventName,
+            EmployerProfileUrl: this.props.event.EmployerProfileUrl,
+            Address: this.props.event.Address,
+            Majors: this.props.event.Majors,
+            Description: this.props.event.Description,
+            EventDate: this.props.event.post_date,
             show: false,
             apply_show: false,
         }
@@ -46,9 +43,18 @@ class EventCard extends Component {
         e.preventDefault();
         this.props.eventCardClickHandler(this.props.id);
     }
-    componentDidMount() {
-        if(this.state.employer_email){
-            this.props.getProfileUrlForEmployer(this.state.employer_email);
+    componentWillReceiveProps(nextProps) {
+        // console.log("nextProps.job: " + JSON.stringify(nextProps.job));
+        if (nextProps.event) {
+            this.setState({
+                EmployerName: nextProps.event.EmployerName,
+                EventName: nextProps.event.EventName,
+                EmployerProfileUrl: nextProps.event.EmployerProfileUrl,
+                Address: nextProps.event.Address,
+                Majors: nextProps.event.Majors,
+                Description: nextProps.event.Description,
+                EventDate: nextProps.event.post_date,
+            })
         }
     }
     render() {
@@ -56,17 +62,17 @@ class EventCard extends Component {
             <Container onClick={this.clickHandler}>
                 <Row>
                     <Col sd={4} md={4}>
-                        <Avatar name={this.state.employer} src={this.props.event_employer_profile} size={50} round={true} />
+                        <Avatar name={this.state.EmployerName} src={this.state.EmployerProfileUrl} size={50} round={false} />
                     </Col>
                     <Col sd={8} md={8}>
                         <div className="job-card-postion-name">
-                            <span><b>{this.state.event_title}</b></span>
+                            <span><b>{this.state.EventName}</b></span>
                         </div>
                         <div className="job-card-company-name">
-                            <span><a href="">{this.state.employer}</a></span>
+                            <span><a href="">{this.state.EmployerName}</a></span>
                         </div>
                         <div className="job-card-jobtype">
-                            <span>On {(new Date(this.state.post_date)).toDateString()}</span>
+                            <span>On {(new Date(this.state.EventDate)).toDateString()}</span>
                         </div>
                     </Col>
                 </Row>
@@ -75,10 +81,10 @@ class EventCard extends Component {
     }
 }
 
-const mapStateToProps = (state,ownProps) => {
+const mapStateToProps = (state, ownProps) => {
     return {
         user: state.auth,
-        event_employer_profile: getProfilePicture(state,"employer",ownProps.event.employer_email)
+       
     };
 };
 

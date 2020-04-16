@@ -358,7 +358,7 @@ class JobDiscription extends Component {
                         </Modal>
                         {/* --------------------------------------------------------------------------------------------------------------------------------- */}
                         {this.state.application_confirmation_show &&
-                            <Alert variant="success" onClose={() => {this.setShow(false)}} dismissible>
+                            <Alert variant="success" onClose={() => { this.setShow(false) }} dismissible>
                                 <Alert.Heading>Application Submitted!</Alert.Heading>
                             </Alert>
                         }
@@ -391,17 +391,17 @@ class JobDiscription extends Component {
                                 </Row>
                             </div>
                             <div>
-                                <Row>
-                                    <Col xs={0.1} md={0.1}>
-                                        <Icon style={{ fontSize: '16px' }} type="bank" ></Icon>
+                                <Row style={{ display: "flex", justifyContent: "flex-center" }}>
+                                    <Col xs={1} md={1}>
+                                        <Icon style={{ fontSize: '16px' }} style={{ display: "flex", justifyContent: "flex-center" }, { paddingTop: "3px" }} type="bank" ></Icon>
                                     </Col>
                                     <Col xs={2} md={2}>
-                                        <div className="job-discription-subheading">
+                                        <div className="job-discription-subheading" >
                                             {this.state.Type}
                                         </div>
                                     </Col>
                                     <Col xs={0.1} md={0.1}>
-                                        <Icon style={{ fontSize: '16px' }} type="money-collect" ></Icon>
+                                        <Icon style={{ fontSize: '16px' }} style={{ display: "flex", justifyContent: "flex-center" }, { paddingTop: "3px" }} type="money-collect" ></Icon>
                                     </Col>
                                     <Col xs={2} md={2}>
                                         <div className="job-discription-subheading">
@@ -409,7 +409,7 @@ class JobDiscription extends Component {
                                         </div>
                                     </Col>
                                     <Col xs={0.1} md={0.1}>
-                                        <Icon style={{ fontSize: '16px' }} type="home" ></Icon>
+                                        <Icon style={{ fontSize: '16px' }} style={{ display: "flex", justifyContent: "flex-center" }, { paddingTop: "3px" }} type="home" ></Icon>
                                     </Col>
                                     <Col xs={2} md={2}>
                                         <div className="job-discription-subheading">
@@ -417,7 +417,7 @@ class JobDiscription extends Component {
                                         </div>
                                     </Col>
                                     <Col xs={0.1} md={0.1}>
-                                        <Icon style={{ fontSize: '16px' }} type="history"></Icon>
+                                        <Icon style={{ fontSize: '16px' }} style={{ display: "flex", justifyContent: "flex-center" }, { paddingTop: "3px" }} type="history"></Icon>
                                     </Col>
                                     <Col xs={4} md={4}>
                                         <div className="job-discription-subheading">
@@ -430,11 +430,16 @@ class JobDiscription extends Component {
                         <div className="job-discription-apply-box">
                             <Row>
                                 <Col xs={10} md={10}>
-                                    Applications close on <b>{(new Date(this.state.Deadline)).toDateString()} </b>
+                                    <div style={{ paddingLeft:"7px", paddingTop: "5px" }}>
+                                        Applications close on <b>{(new Date(this.state.Deadline)).toDateString()} </b>
+                                    </div>
+
                                 </Col>
                                 {this.props.user.user_type === "student" &&
                                     <Col xs={2} md={2}>
-                                        <Button variant={this.state.apply_button_state} onClick={this.applyHandleShow}>{this.state.apply_button_text}</Button>
+                                        <Button variant={this.state.apply_button_state} 
+                                        style={{ display: "flex", justifyContent: "flex-end" }}
+                                        onClick={this.applyHandleShow}>{this.state.apply_button_text}</Button>
                                     </Col>
                                 }
                             </Row>

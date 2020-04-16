@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Row, Col, Card, CardGroup, Button, Jumbotron, Modal, Form, ListGroup, Alert } from 'react-bootstrap';
+import { Row, Col, Nav, Navbar, FormControl, Button, Pagination, Modal, Form, ListGroup, Alert } from 'react-bootstrap';
 import { Icon } from 'antd';
 import styled from 'styled-components';
 import EventDiscription from './EventDiscription';
@@ -50,7 +50,7 @@ const Styles = styled.div`
    }
 .job-sidebar-container{
     margin: 0 auto;
-    overflow-y: scroll;
+    
     height: 585px;
 }
 .job-list-group {
@@ -63,35 +63,55 @@ const Styles = styled.div`
         background-color: #f2f2f2
     }
 }
+.event-list-group{
+    height: 470px;
+    overflow-y: scroll;
+}
   `;
 
 class EventDashboard extends Component {
 
     constructor(props) {
         super(props);
-        const initial_event = {
-            event_id: "",
-            employer: "",
-            event_title: "",
-            event_city: "",
-            major: "",
-            post_date: new Date(),
-            deadline: new Date(),
-            event_detail: "",
-            addEventModalAlertFlag: false,
-        }
         this.state = {
             show: false,
             alertFlag: false,
             deadline: new Date(),
             post_date: new Date(),
-            discription_event: initial_event,
+            discription_event: null,
+            checkedItems: new Map(),
+            events: [],
+            activePage: 1,
+            totalPages: 1,
+            limit: 5,
+            totalDocs: null,
         }
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.eventCardClickHandler = this.eventCardClickHandler.bind(this);
+        this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
     }
 
+
+
+    handlePageNext = (e) => {
+        e.preventDefault();
+        this.props.fetchEvents(this.props.user, this.props.studentData, this.props.eventData, this.state.nextPage, this.state.limit);
+    }
+
+    handlePagePrevious = (e) => {
+        e.preventDefault();
+        this.props.fetchEvents(this.props.user, this.props.studentData, this.props.eventData, this.state.prevPage, this.state.limit);
+    }
+    handlePageLast = (e) => {
+        e.preventDefault();
+        this.props.fetchEvents(this.props.user, this.props.studentData, this.props.eventData, this.state.totalPages, this.state.limit);
+    }
+
+    handlePageFirst = (e) => {
+        e.preventDefault();
+        this.props.fetchEvents(this.props.user, this.props.studentData, this.props.eventData, 1, this.state.limit);
+    }
     // getJobForDiscription = () => {
     //     if (!this.props.jobs) {
     //         return 
@@ -115,12 +135,21 @@ class EventDashboard extends Component {
     };
     onChangeHandeler = (e) => this.setState({ [e.target.name]: e.target.value });
 
+    handleCheckBoxChange(e) {
+        const item = e.target.name;
+        const isChecked = e.target.checked;
+        this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(item, isChecked) }));
+        // console.log("Majors:  ",this.state.checkedItems);
+        // console.log("Majors item:  ",item);
+        // console.log("Majors isChecked:  ",isChecked);
+    }
+
     eventCardClickHandler = (id) => {
         console.log("Job id: ", id);
         this.setState({
             discription_event: this.props.events[id],
         })
-        console.log("discription_event: " + JSON.stringify(this.state.discription_event));
+        // console.log("discription_event: " + JSON.stringify(this.state.discription_event));
     };
     postDateChangeHandler = (date) => {
         console.log(date);
@@ -154,7 +183,7 @@ class EventDashboard extends Component {
     }
 
     addEventHandler = (e) => {
-
+        // console.log("Major lists: " + JSON.stringify(this.getSelectedMajors()));
         e.preventDefault();
         if (!this.validation()) {
             this.setState({
@@ -172,6 +201,8 @@ class EventDashboard extends Component {
     }
 
     saveChangeHandler = (e) => {
+        // console.log("Major lists: " + JSON.stringify(this.getSelectedMajors()));
+
         if (!this.validation()) {
             this.setState({
                 alertFlag: true,
@@ -182,15 +213,14 @@ class EventDashboard extends Component {
         this.setState({
             show: false,
         })
-        console.log("getUpdatedState: " + JSON.stringify(this.getUpdatedState()));
-        this.props.addEducation(this.getUpdatedState(), this.props.user.email);
+
+        // console.log("getUpdatedState: " + JSON.stringify(this.getUpdatedState()));
+        // this.props.addEducation(this.getUpdatedState(), this.props.user.email);
 
     }
     componentDidMount() {
-        if (!this.props.events || this.props.events === []) {
-            this.props.fetchEvents(this.props.user);
+        this.props.fetchEvents(this.props.user, this.props.studentData, this.props.eventData, this.state.activePage, this.state.limit);
 
-        }
         if (this.props.events) {
             if (this.props.events.length > 0) {
                 this.setState({
@@ -208,15 +238,38 @@ class EventDashboard extends Component {
         if (nextProps.events) {
             this.setState({
                 discription_event: nextProps.events[0],
-                
+                events: nextProps.events,
             })
+        }
+        if (nextProps.eventData.page) {
+            this.setState({
+                events: nextProps.events,
+                totalDocs: nextProps.eventData.totalDocs,
+                totalPages: nextProps.eventData.totalPages,
+                limit: nextProps.eventData.limit,
+                nextPage: nextProps.eventData.nextPage,
+                prevPage: nextProps.eventData.prevPage,
+                activePage: nextProps.eventData.page,
+            });
         }
     };
 
+    getSelectedMajors = () => {
+        var majors = [];
+        this.state.checkedItems.forEach((value, key) => {
+            // console.log("Key: ",key);
+            // console.log("value: ",value);
+            if (value) {
+                majors.push(key);
+            }
+        });
+        return majors;
+    }
+
     render() {
         let eventSidebar = [];
-        if (this.props.events) {
-            eventSidebar = this.props.events.map((event, id) => {
+        if (this.state.events) {
+            eventSidebar = this.state.events.map((event, id) => {
                 if (!event) {
                     return;
                 }
@@ -230,6 +283,19 @@ class EventDashboard extends Component {
 
         return (
             <Styles>
+                <Navbar bg="light" variant="light">
+
+                    <Nav className="mr-auto">
+                        {/* <Nav.Link href="#home">Home</Nav.Link>
+                        <Nav.Link href="#features">Features</Nav.Link>
+                        <Nav.Link href="#pricing">Pricing</Nav.Link> */}
+                    </Nav>
+                    <Nav>
+                        <Nav.Link href="#deets">Events</Nav.Link>
+                        <Nav.Link eventKey={2} href="#memes">Registrations</Nav.Link>
+                    </Nav>
+
+                </Navbar>
                 <div className="dashboard-background" id="employer_modal">
                     {/* --------------------------------------------------------------------------------------------------------------------------------- */}
                     <Modal show={this.state.show} onHide={this.handleClose} >
@@ -241,20 +307,8 @@ class EventDashboard extends Component {
                             <Form>
                                 <Form.Group controlId="employer">
                                     <Form.Label className="signup-form-lable">Event Title</Form.Label>
-                                    <Form.Control onChange={this.onChangeHandeler} name="event_title" placeholder="Event Title" />
+                                    <Form.Control onChange={this.onChangeHandeler} name="EventName" placeholder="Event Title" />
                                 </Form.Group>
-                                <Form.Row>
-                                    <Form.Group as={Col} controlId="start_date">
-                                        <Form.Label className="signup-form-lable">Post Date</Form.Label>
-                                        <br />
-                                        <DatePicker selected={this.state.post_date} name="post_date" className="date_picker" onChange={this.postDateChangeHandler} />
-                                        <br />
-                                    </Form.Group>
-                                    <Form.Group as={Col} controlId="salary">
-                                        <Form.Label className="signup-form-lable">Major</Form.Label>
-                                        <Form.Control onChange={this.onChangeHandeler} name="major" placeholder="Major" />
-                                    </Form.Group>
-                                </Form.Row>
                                 <Form.Row>
                                     <Form.Group as={Col} controlId="end_date">
                                         <Form.Label className="signup-form-lable">Registration Deadline</Form.Label>
@@ -263,8 +317,106 @@ class EventDashboard extends Component {
                                         <br />
                                     </Form.Group>
                                     <Form.Group as={Col} controlId="formGridCity">
-                                        <Form.Label>Place</Form.Label>
-                                        <Form.Control name="event_city" placeholder="San Jose" onChange={this.onChangeHandeler} />
+                                        <Form.Label>Street</Form.Label>
+                                        <Form.Control name="Street" placeholder="San Jose" onChange={this.onChangeHandeler} />
+                                    </Form.Group>
+
+                                    <Form.Group as={Col} controlId="formGridCity">
+                                        <Form.Label>Building</Form.Label>
+                                        <Form.Control name="Apt" placeholder="CA" onChange={this.onChangeHandeler} />
+                                    </Form.Group>
+                                </Form.Row>
+                                <Form.Row>
+                                    <Form.Group as={Col} controlId="formGridCity">
+                                        <Form.Label>City</Form.Label>
+                                        <Form.Control name="City" placeholder="San Jose" onChange={this.onChangeHandeler} />
+                                    </Form.Group>
+
+                                    <Form.Group as={Col} controlId="formGridCity">
+                                        <Form.Label>State</Form.Label>
+                                        <Form.Control name="State" placeholder="CA" onChange={this.onChangeHandeler} />
+                                    </Form.Group>
+                                    <Form.Group as={Col} controlId="formGridCity">
+                                        <Form.Label>Zip Code</Form.Label>
+                                        <Form.Control name="Zipcode" placeholder="12345" onChange={this.onChangeHandeler} />
+                                    </Form.Group>
+
+                                </Form.Row>
+                                <Form.Label>Majors</Form.Label>
+                                <Form.Row>
+                                    <Form.Group as={Col} controlId="group-1">
+                                        <Form.Check
+                                            custom
+                                            inline
+                                            label="Computer Engineering"
+                                            type="checkbox"
+                                            name="Computer Engineering"
+                                            onChange={this.handleCheckBoxChange}
+                                            id={`checkbox-1`}
+                                        />
+                                    </Form.Group>
+                                    <Form.Group as={Col} controlId="group-2">
+                                        <Form.Check
+                                            custom
+                                            inline
+                                            label="Software Engineerings"
+                                            type="checkbox"
+                                            name="Software Engineerings"
+                                            onChange={this.handleCheckBoxChange}
+                                            id={`checkbox-2`}
+                                        />
+
+                                    </Form.Group>
+                                </Form.Row>
+                                <Form.Row>
+                                    <Form.Group as={Col} controlId="group-3">
+                                        <Form.Check
+                                            custom
+                                            inline
+                                            label="Mechanical Engineering"
+                                            type="checkbox"
+                                            name="Mechanical Engineering"
+                                            onChange={this.handleCheckBoxChange}
+                                            id={`checkbox-3`}
+                                        />
+
+                                    </Form.Group>
+                                    <Form.Group as={Col} controlId="group-4">
+                                        <Form.Check
+                                            custom
+                                            inline
+                                            label="Civil Engineering"
+                                            type="checkbox"
+                                            name="Civil Engineering"
+                                            onChange={this.handleCheckBoxChange}
+                                            id={`checkbox-4`}
+                                        />
+                                    </Form.Group>
+
+                                </Form.Row>
+                                <Form.Row>
+                                    <Form.Group as={Col} controlId="group-5">
+
+                                        <Form.Check
+                                            custom
+                                            inline
+                                            label="Electrical Engineering"
+                                            type="checkbox"
+                                            name="Electrical Engineering"
+                                            onChange={this.handleCheckBoxChange}
+                                            id={`checkbox-5`}
+                                        />
+                                    </Form.Group>
+                                    <Form.Group as={Col} controlId="group-6">
+                                        <Form.Check
+                                            custom
+                                            inline
+                                            label="Chemical Engineering"
+                                            type="checkbox"
+                                            name="Chemical Engineering"
+                                            onChange={this.handleCheckBoxChange}
+                                            id={`checkbox-6`}
+                                        />
                                     </Form.Group>
                                 </Form.Row>
                                 <Form.Row>
@@ -284,6 +436,8 @@ class EventDashboard extends Component {
                     </Modal>
 
                     {/* --------------------------------------------------------------------------------------------------------------------------------- */}
+
+
                     <Row>
                         <Col sm={4} md={4} className="job-dashboard-sidebar-col">
                             <div className="sidebar-backgroung">
@@ -293,10 +447,22 @@ class EventDashboard extends Component {
                                             <span><b>Events</b></span>
                                         </div>
                                     </Col>
-                                    <ListGroup as="ul" className="job-list-group">
+                                    <ListGroup as="ul" className="event-list-group">
                                         {eventSidebar}
                                     </ListGroup>
+                                    <div className="jobs-pagination">
+                                        <Pagination >
+                                            <Pagination.First onClick={this.handlePageFirst} />
+                                            <Pagination.Prev onClick={this.handlePagePrevious} />
+                                            <Pagination.Item key={this.state.activePage} active={true}>
+                                                {this.state.activePage}
+                                            </Pagination.Item>
+                                            <Pagination.Next onClick={this.handlePageNext} />
+                                            <Pagination.Last onClick={this.handlePageLast} />
+                                        </Pagination>
+                                    </div>
                                 </div>
+
                             </div>
                         </Col>
                         <Col sm={8} md={8}>
@@ -333,6 +499,9 @@ const mapStateToProps = state => {
     return {
         events: getEvents(state),
         user: state.auth,
+        eventData: state.eventData,
+        // employerData: state.employer.employerData,
+        studentData: state.student.studentData,
         name: getName(state),
     };
 };
