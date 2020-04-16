@@ -11,7 +11,7 @@ const Styles = styled.div`
    .job-card-postion-name {
         font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
         font-size: 16px;
-        font-weight: 600;
+        font-weight: 500;
    }
    .job-card-company-name {
         font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
@@ -144,7 +144,7 @@ class ApplicationCard extends Component {
                                     </Col>
                                     {this.props.user.user_type === "employer" &&
                                         <Col sd={1} md={1}>
-                                            <Icon type="edit" onClick={this.statusHandleShow}></Icon>
+                                            <Icon type="edit"  onClick={this.statusHandleShow}></Icon>
                                         </Col>
                                     }
                                 </Row>

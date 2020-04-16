@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Row, Col, Nav, Navbar, FormControl, Button, Pagination, Modal, Form, ListGroup, Alert } from 'react-bootstrap';
+import { Row, Col, Tab, Tabs, Button, Pagination, Modal, Form, ListGroup, Alert } from 'react-bootstrap';
 import { Icon } from 'antd';
 import styled from 'styled-components';
 import EventDiscription from './EventDiscription';
@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { getEvents, getName } from '../../redux/selectors';
 import { fetchEvents, addEvent, registerEvent } from '../../redux/actions/eventAction';
 import EventCard from './EventCard';
+import RegistrationDashBoard from './../registrations/RegistrationDashBoard';
 const Styles = styled.div`
 .col-md-8, .col-md-4 {
     padding: 0px;
@@ -283,211 +284,197 @@ class EventDashboard extends Component {
 
         return (
             <Styles>
-                <Navbar bg="light" variant="light">
+                <Tabs defaultActiveKey="Events" id="uncontrolled-tab-example">
+                    <Tab eventKey="Events" title="Events">
+                        <div className="dashboard-background" id="employer_modal">
+                            {/* --------------------------------------------------------------------------------------------------------------------------------- */}
+                            <Modal show={this.state.show} onHide={this.handleClose} >
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Create Event</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    {this.state.addEventModalAlertFlag && <Alert variant="danger">Insert all values</Alert>}
+                                    <Form>
+                                        <Form.Group controlId="employer">
+                                            <Form.Label className="signup-form-lable">Event Title</Form.Label>
+                                            <Form.Control onChange={this.onChangeHandeler} name="EventName" placeholder="Event Title" />
+                                        </Form.Group>
+                                        <Form.Row>
+                                            <Form.Group as={Col} controlId="end_date">
+                                                <Form.Label className="signup-form-lable">Registration Deadline</Form.Label>
+                                                <br />
+                                                <DatePicker selected={this.state.deadline} name="deadline" className="date_picker" onChange={this.deadlineDateChangeHandler} />
+                                                <br />
+                                            </Form.Group>
+                                            <Form.Group as={Col} controlId="formGridCity">
+                                                <Form.Label>Street</Form.Label>
+                                                <Form.Control name="Street" placeholder="San Jose" onChange={this.onChangeHandeler} />
+                                            </Form.Group>
 
-                    <Nav className="mr-auto">
-                        {/* <Nav.Link href="#home">Home</Nav.Link>
-                        <Nav.Link href="#features">Features</Nav.Link>
-                        <Nav.Link href="#pricing">Pricing</Nav.Link> */}
-                    </Nav>
-                    <Nav>
-                        <Nav.Link href="#deets">Events</Nav.Link>
-                        <Nav.Link eventKey={2} href="#memes">Registrations</Nav.Link>
-                    </Nav>
+                                            <Form.Group as={Col} controlId="formGridCity">
+                                                <Form.Label>Building</Form.Label>
+                                                <Form.Control name="Apt" placeholder="CA" onChange={this.onChangeHandeler} />
+                                            </Form.Group>
+                                        </Form.Row>
+                                        <Form.Row>
+                                            <Form.Group as={Col} controlId="formGridCity">
+                                                <Form.Label>City</Form.Label>
+                                                <Form.Control name="City" placeholder="San Jose" onChange={this.onChangeHandeler} />
+                                            </Form.Group>
 
-                </Navbar>
-                <div className="dashboard-background" id="employer_modal">
-                    {/* --------------------------------------------------------------------------------------------------------------------------------- */}
-                    <Modal show={this.state.show} onHide={this.handleClose} >
-                        <Modal.Header closeButton>
-                            <Modal.Title>Create Event</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            {this.state.addEventModalAlertFlag && <Alert variant="danger">Insert all values</Alert>}
-                            <Form>
-                                <Form.Group controlId="employer">
-                                    <Form.Label className="signup-form-lable">Event Title</Form.Label>
-                                    <Form.Control onChange={this.onChangeHandeler} name="EventName" placeholder="Event Title" />
-                                </Form.Group>
-                                <Form.Row>
-                                    <Form.Group as={Col} controlId="end_date">
-                                        <Form.Label className="signup-form-lable">Registration Deadline</Form.Label>
-                                        <br />
-                                        <DatePicker selected={this.state.deadline} name="deadline" className="date_picker" onChange={this.deadlineDateChangeHandler} />
-                                        <br />
-                                    </Form.Group>
-                                    <Form.Group as={Col} controlId="formGridCity">
-                                        <Form.Label>Street</Form.Label>
-                                        <Form.Control name="Street" placeholder="San Jose" onChange={this.onChangeHandeler} />
-                                    </Form.Group>
+                                            <Form.Group as={Col} controlId="formGridCity">
+                                                <Form.Label>State</Form.Label>
+                                                <Form.Control name="State" placeholder="CA" onChange={this.onChangeHandeler} />
+                                            </Form.Group>
+                                            <Form.Group as={Col} controlId="formGridCity">
+                                                <Form.Label>Zip Code</Form.Label>
+                                                <Form.Control name="Zipcode" placeholder="12345" onChange={this.onChangeHandeler} />
+                                            </Form.Group>
 
-                                    <Form.Group as={Col} controlId="formGridCity">
-                                        <Form.Label>Building</Form.Label>
-                                        <Form.Control name="Apt" placeholder="CA" onChange={this.onChangeHandeler} />
-                                    </Form.Group>
-                                </Form.Row>
-                                <Form.Row>
-                                    <Form.Group as={Col} controlId="formGridCity">
-                                        <Form.Label>City</Form.Label>
-                                        <Form.Control name="City" placeholder="San Jose" onChange={this.onChangeHandeler} />
-                                    </Form.Group>
+                                        </Form.Row>
+                                        <Form.Label>Majors</Form.Label>
+                                        <Form.Row>
+                                            <Form.Group as={Col} controlId="group-1">
+                                                <Form.Check
+                                                    custom
+                                                    inline
+                                                    label="Computer Engineering"
+                                                    type="checkbox"
+                                                    name="Computer Engineering"
+                                                    onChange={this.handleCheckBoxChange}
+                                                    id={`checkbox-1`}
+                                                />
+                                            </Form.Group>
+                                            <Form.Group as={Col} controlId="group-2">
+                                                <Form.Check
+                                                    custom
+                                                    inline
+                                                    label="Software Engineerings"
+                                                    type="checkbox"
+                                                    name="Software Engineerings"
+                                                    onChange={this.handleCheckBoxChange}
+                                                    id={`checkbox-2`}
+                                                />
 
-                                    <Form.Group as={Col} controlId="formGridCity">
-                                        <Form.Label>State</Form.Label>
-                                        <Form.Control name="State" placeholder="CA" onChange={this.onChangeHandeler} />
-                                    </Form.Group>
-                                    <Form.Group as={Col} controlId="formGridCity">
-                                        <Form.Label>Zip Code</Form.Label>
-                                        <Form.Control name="Zipcode" placeholder="12345" onChange={this.onChangeHandeler} />
-                                    </Form.Group>
+                                            </Form.Group>
+                                        </Form.Row>
+                                        <Form.Row>
+                                            <Form.Group as={Col} controlId="group-3">
+                                                <Form.Check
+                                                    custom
+                                                    inline
+                                                    label="Mechanical Engineering"
+                                                    type="checkbox"
+                                                    name="Mechanical Engineering"
+                                                    onChange={this.handleCheckBoxChange}
+                                                    id={`checkbox-3`}
+                                                />
 
-                                </Form.Row>
-                                <Form.Label>Majors</Form.Label>
-                                <Form.Row>
-                                    <Form.Group as={Col} controlId="group-1">
-                                        <Form.Check
-                                            custom
-                                            inline
-                                            label="Computer Engineering"
-                                            type="checkbox"
-                                            name="Computer Engineering"
-                                            onChange={this.handleCheckBoxChange}
-                                            id={`checkbox-1`}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group as={Col} controlId="group-2">
-                                        <Form.Check
-                                            custom
-                                            inline
-                                            label="Software Engineerings"
-                                            type="checkbox"
-                                            name="Software Engineerings"
-                                            onChange={this.handleCheckBoxChange}
-                                            id={`checkbox-2`}
-                                        />
+                                            </Form.Group>
+                                            <Form.Group as={Col} controlId="group-4">
+                                                <Form.Check
+                                                    custom
+                                                    inline
+                                                    label="Civil Engineering"
+                                                    type="checkbox"
+                                                    name="Civil Engineering"
+                                                    onChange={this.handleCheckBoxChange}
+                                                    id={`checkbox-4`}
+                                                />
+                                            </Form.Group>
 
-                                    </Form.Group>
-                                </Form.Row>
-                                <Form.Row>
-                                    <Form.Group as={Col} controlId="group-3">
-                                        <Form.Check
-                                            custom
-                                            inline
-                                            label="Mechanical Engineering"
-                                            type="checkbox"
-                                            name="Mechanical Engineering"
-                                            onChange={this.handleCheckBoxChange}
-                                            id={`checkbox-3`}
-                                        />
+                                        </Form.Row>
+                                        <Form.Row>
+                                            <Form.Group as={Col} controlId="group-5">
 
-                                    </Form.Group>
-                                    <Form.Group as={Col} controlId="group-4">
-                                        <Form.Check
-                                            custom
-                                            inline
-                                            label="Civil Engineering"
-                                            type="checkbox"
-                                            name="Civil Engineering"
-                                            onChange={this.handleCheckBoxChange}
-                                            id={`checkbox-4`}
-                                        />
-                                    </Form.Group>
+                                                <Form.Check
+                                                    custom
+                                                    inline
+                                                    label="Electrical Engineering"
+                                                    type="checkbox"
+                                                    name="Electrical Engineering"
+                                                    onChange={this.handleCheckBoxChange}
+                                                    id={`checkbox-5`}
+                                                />
+                                            </Form.Group>
+                                            <Form.Group as={Col} controlId="group-6">
+                                                <Form.Check
+                                                    custom
+                                                    inline
+                                                    label="Chemical Engineering"
+                                                    type="checkbox"
+                                                    name="Chemical Engineering"
+                                                    onChange={this.handleCheckBoxChange}
+                                                    id={`checkbox-6`}
+                                                />
+                                            </Form.Group>
+                                        </Form.Row>
+                                        <Form.Row>
+                                            <Form.Label> Event Detail</Form.Label>
+                                            <Form.Control name="event_detail" as="textarea" placeholder="Discription..." onChange={this.onChangeHandeler} />
+                                        </Form.Row>
+                                    </Form>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="secondary" onClick={this.handleClose}>Close</Button>
+                                    <Button variant="primary" onClick={this.addEventHandler}>Save Changes</Button>
+                                </Modal.Footer>
+                            </Modal>
 
-                                </Form.Row>
-                                <Form.Row>
-                                    <Form.Group as={Col} controlId="group-5">
-
-                                        <Form.Check
-                                            custom
-                                            inline
-                                            label="Electrical Engineering"
-                                            type="checkbox"
-                                            name="Electrical Engineering"
-                                            onChange={this.handleCheckBoxChange}
-                                            id={`checkbox-5`}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group as={Col} controlId="group-6">
-                                        <Form.Check
-                                            custom
-                                            inline
-                                            label="Chemical Engineering"
-                                            type="checkbox"
-                                            name="Chemical Engineering"
-                                            onChange={this.handleCheckBoxChange}
-                                            id={`checkbox-6`}
-                                        />
-                                    </Form.Group>
-                                </Form.Row>
-                                <Form.Row>
-                                    <Form.Label> Event Detail</Form.Label>
-                                    <Form.Control name="event_detail" as="textarea" placeholder="Discription..." onChange={this.onChangeHandeler} />
-                                </Form.Row>
-                            </Form>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={this.handleClose}>
-                                Close
-                        </Button>
-                            <Button variant="primary" onClick={this.addEventHandler}>
-                                Save Changes
-                        </Button>
-                        </Modal.Footer>
-                    </Modal>
-
-                    {/* --------------------------------------------------------------------------------------------------------------------------------- */}
+                            {/* --------------------------------------------------------------------------------------------------------------------------------- */}
 
 
-                    <Row>
-                        <Col sm={4} md={4} className="job-dashboard-sidebar-col">
-                            <div className="sidebar-backgroung">
-                                <div className="job-sidebar-container">
-                                    <Col>
-                                        <div className="jobs-details">
-                                            <span><b>Events</b></span>
+                            <Row>
+                                <Col sm={4} md={4} className="job-dashboard-sidebar-col">
+                                    <div className="sidebar-backgroung">
+                                        <div className="job-sidebar-container">
+                                            <ListGroup as="ul" className="event-list-group">
+                                                {eventSidebar}
+                                            </ListGroup>
+                                            <div className="jobs-pagination">
+                                                <Pagination >
+                                                    <Pagination.First onClick={this.handlePageFirst} />
+                                                    <Pagination.Prev onClick={this.handlePagePrevious} />
+                                                    <Pagination.Item key={this.state.activePage} active={true}>
+                                                        {this.state.activePage}
+                                                    </Pagination.Item>
+                                                    <Pagination.Next onClick={this.handlePageNext} />
+                                                    <Pagination.Last onClick={this.handlePageLast} />
+                                                </Pagination>
+                                            </div>
                                         </div>
-                                    </Col>
-                                    <ListGroup as="ul" className="event-list-group">
-                                        {eventSidebar}
-                                    </ListGroup>
-                                    <div className="jobs-pagination">
-                                        <Pagination >
-                                            <Pagination.First onClick={this.handlePageFirst} />
-                                            <Pagination.Prev onClick={this.handlePagePrevious} />
-                                            <Pagination.Item key={this.state.activePage} active={true}>
-                                                {this.state.activePage}
-                                            </Pagination.Item>
-                                            <Pagination.Next onClick={this.handlePageNext} />
-                                            <Pagination.Last onClick={this.handlePageLast} />
-                                        </Pagination>
-                                    </div>
-                                </div>
 
-                            </div>
-                        </Col>
-                        <Col sm={8} md={8}>
-                            {this.props.user.user_type === "employer" &&
-                                <div className="job-discription-card">
-                                    <div className="job-create-job">
-                                        <Row>
-                                            <Col xs={11} md={11}>
-                                                Create Event
-                                            </Col>
-                                            <Col xs={1} md={1}>
-                                                <Icon type="plus" onClick={this.handleShow}></Icon>
-                                            </Col>
-                                        </Row>
                                     </div>
-                                </div>
-                            }
-                            <div className="">
-                                {this.state.discription_event &&
-                                    <EventDiscription event={this.state.discription_event} />
-                                }
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
+                                </Col>
+                                <Col sm={8} md={8}>
+                                    {this.props.user.user_type === "employer" &&
+                                        <div className="job-discription-card">
+                                            <div className="job-create-job">
+                                                <Row>
+                                                    <Col xs={11} md={11}>
+                                                        Create Event
+                                            </Col>
+                                                    <Col xs={1} md={1}>
+                                                        <Icon type="plus" onClick={this.handleShow}></Icon>
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        </div>
+                                    }
+                                    <div className="">
+                                        {this.state.discription_event &&
+                                            <EventDiscription event={this.state.discription_event} />
+                                        }
+                                    </div>
+                                </Col>
+                            </Row>
+                        </div>
+                    </Tab>
+                    <Tab eventKey="Registrations" title="Registrations">
+                        <RegistrationDashBoard/>
+                    </Tab>
+                </Tabs>
+
             </Styles>
 
         )

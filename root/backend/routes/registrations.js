@@ -1,54 +1,50 @@
-const { CREATE_EVENT, GET_EVENT_FOR_EMPLOYRE, GET_EVENT_FOR_STUDENT, UPDATE_EVENT } = require('./../kafka/topics/topic_names');
-
+var { REGISTER, GET_REGISTRATION_FOR_EMPLOYRE, GET_REGISTRATION_FOR_STUDENT } = require('./../kafka/topics/topic_names');
 var express = require('express');
 var router = express.Router();
 var kafka = require('./../kafka/client');
-var Job = require('./../models/job/JobModel');
+var Registrations = require('./../models/event/RegistrationModel');
+const passport = require('passport');
 const { checkAuth, auth } = require('./../utils/passport');
 auth();
 
 
-/* GET users listing. */
-router.post('/create_event',checkAuth, function (req, res) {
-    console.log("Inside create job");
-    const event = req.body;
-    console.log("--------- Job data: ", JSON.stringify(req.body));
 
-    kafka.make_request(CREATE_EVENT, event, function (err, results) {
+router.post('/register', checkAuth, function(req, res){
+
+    const rigistrations = {
+        Event: req.body.Event,
+        Student: req.body.Student,
+    } 
+    console.log("--------- rigistrations data: ", JSON.stringify(rigistrations));
+
+    kafka.make_request(REGISTER, rigistrations, function (err, results) {
         console.log('in result');
-        console.log(results);
-        console.log(err);
+        console.log("Results: ", results);
+        console.log("Error: ", err);
         if (!results) {
             console.log("Inside err");
             res.status(404);
-            res.json({
-                status: "error",
-                msg: err,
-            })
-            res.end();
+            res.end("Rigistrations already exists");
             return;
         } else {
             console.log("Inside data");
-            console.log("Data:", JSON.stringify(results));
+            console.log(" rigistrations Data:", JSON.stringify(results));
             res.json(results)
             res.status(200).end();
-            res.end();
             return;
         }
     });
 });
 
-router.post('/update_event', function (req, res) {
-});
 
-router.get('/employer',checkAuth, function (req, res) {
+router.get('/employer', checkAuth, function (req, res) {
     const data = {
         employer_id: req.query.employer_id,
         page: req.query.page,
         limit: req.query.limit,
     }
-    console.log("Data: ", JSON.stringify(req.query));
-    kafka.make_request(GET_EVENT_FOR_EMPLOYRE, data, function (err, results) {
+    // console.log("Data: ", JSON.stringify(req.query));
+    kafka.make_request(GET_REGISTRATION_FOR_EMPLOYRE, data, function (err, results) {
         // console.log('in result', JSON.stringify(err));
         if (!results) {
             console.log("Inside err");
@@ -69,14 +65,14 @@ router.get('/employer',checkAuth, function (req, res) {
     });
 });
 
-router.get('/student', function (req, res) {
+router.get('/student', checkAuth, function (req, res) {
     const data = {
-        Majors: JSON.parse(req.query.Majors),
+        student_id: req.query.student_id,
         page: req.query.page,
         limit: req.query.limit,
     }
-    console.log("Data: ", JSON.stringify(req.query));
-    kafka.make_request(GET_EVENT_FOR_STUDENT, data, function (err, results) {
+    // console.log("Data: ", JSON.stringify(req.query));
+    kafka.make_request(GET_REGISTRATION_FOR_STUDENT, data, function (err, results) {
         // console.log('in result', JSON.stringify(err));
         if (!results) {
             console.log("Inside err");
@@ -96,8 +92,4 @@ router.get('/student', function (req, res) {
         }
     });
 });
-
-
-
-
 module.exports = router;

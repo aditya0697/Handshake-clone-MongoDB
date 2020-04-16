@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const mongoosePaginate = require('mongoose-paginate-v2');
+
 
 var addressSchema = new Schema({
     Street: {type: String, required: true},
@@ -21,6 +21,5 @@ var eventSchema = new Schema({
     Description: {type: String, required: true},
 });
 
-eventSchema.plugin(mongoosePaginate);
 const eventModel = mongoose.model('event', eventSchema);
 module.exports = eventModel;

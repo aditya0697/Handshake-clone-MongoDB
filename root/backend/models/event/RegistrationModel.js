@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const mongoosePaginate = require('mongoose-paginate-v2');
 
 var addressSchema = new Schema({
     City: {type: String, required: true},
@@ -24,11 +23,10 @@ var studentSchema = new Schema({
     ProfileUrl: {type: String},
 });
 
-var registrationSchema = new Schema({
+var registrationSchema = new Schema({   
     Student: studentSchema,
     Event: eventSchema,
 });
 
-registrationSchema.plugin(mongoosePaginate);
 const registrationModel = mongoose.model('registration', registrationSchema);
 module.exports = registrationModel;

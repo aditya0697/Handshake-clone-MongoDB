@@ -8,6 +8,7 @@ import eventReducer from './eventReducer';
 import profilPictureReducer from './profilePicturesReducer';
 import studentTabReducer from './studentTabReducer';
 import messageReducer from './messageReducer';
+import registrationReducer from './registrationReducers';
 import {combineReducers} from 'redux';
 import {SIGN_OUT} from './../actionTypes';
 import storage from 'redux-persist/lib/storage';
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
     eventData: eventReducer,
     allStudents: studentTabReducer,
     messageData: messageReducer,
+    registrationData: registrationReducer,
 });
 const allReducers = (state, action) => {
     if (action.type === SIGN_OUT) {

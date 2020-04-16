@@ -4,9 +4,9 @@ import { Row, Col, Card, CardGroup, Button, Jumbotron, Modal, Form, ListGroup, A
 import { Icon } from 'antd';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { getApplications } from '../../redux/selectors';
-import { fetchApplications } from '../../redux/actions/applicationAction';
-import ApplicationCard from './ApplicationCard';
+import { getRegistrationsFormStore } from '../../redux/selectors';
+import { getRegistrations } from '../../redux/actions/registrationActions';
+import RegistrationCard from './RegistrationCard';
 
 const Styles = styled.div`
 .col-md-8, .col-md-4 {
@@ -18,7 +18,7 @@ const Styles = styled.div`
   }
 
   .dashboard-background{
-      height: 585px;
+      height: 565px;
       padding-right: 15px;
       padding-left: 15px;
       box-shadow: 1px 1px 4px 1px rgba(0,0,0,.05), 2px 2px 2px 1px rgba(0,0,0,.05);
@@ -81,12 +81,12 @@ const Styles = styled.div`
     padding: 10px;
     width: 800px;
     overflow-y: scroll;
-    height: 535px;
+    height: 500px;
    }
 `;
 
 
-class ApplicationDashBoard extends Component {
+class RegistrationDashBoard extends Component {
 
     constructor(props) {
         super(props);
@@ -97,10 +97,8 @@ class ApplicationDashBoard extends Component {
             activePage: 1,
             totalPages: 1,
             limit: 5,
-            totalDocs: null,
-            applications: [],
-            Deadline: new Date(),
-            PostDate: new Date(),
+            totalDocs: 0,
+            registrations: [],
             // ApplicationsListView: [],
         }
         // this.handleShow = this.handleShow.bind(this);
@@ -110,52 +108,37 @@ class ApplicationDashBoard extends Component {
 
     handlePageNext = (e) => {
         e.preventDefault();
-        this.props.fetchApplications(this.props.user, this.props.applicationData, this.state.nextPage, this.state.limit, this.props.user.id);
+        this.props.getRegistrations(this.props.user, this.props.registrationData, this.state.nextPage, this.state.limit);
     }
 
     handlePagePrevious = (e) => {
         e.preventDefault();
-        this.props.fetchApplications(this.props.user, this.props.applicationData, this.state.prevPage, this.state.limit, this.props.user.id);
+        this.props.getRegistrations(this.props.user, this.props.registrationData, this.state.prevPage, this.state.limit);
     }
     handlePageLast = (e) => {
         e.preventDefault();
-        this.props.fetchApplications(this.props.user, this.props.applicationData, this.state.totalPages, this.state.limit, this.props.user.id);
+        this.props.getRegistrations(this.props.user, this.props.registrationData, this.state.totalPages, this.state.limit);
     }
 
     handlePageFirst = (e) => {
         e.preventDefault();
-        this.props.fetchApplications(this.props.user, this.props.applicationData, 1, this.state.limit, this.props.user.id);
+        this.props.getRegistrations(this.props.user, this.props.registrationData, 1, this.state.limit);
     }
 
     componentDidMount() {
-        this.props.fetchApplications(this.props.user, this.props.applicationData, this.state.activePage, this.state.limit);
-        if (this.props.applications) {
-            this.setState({
-                applications: this.props.applications
-            })
-            if (this.props.applicationData) {
-                this.setState({
-                    totalDocs: this.props.applicationData.totalDocs,
-                    totalPages: this.props.applicationData.totalPages,
-                    limit: this.props.applicationData.limit,
-                    nextPage: this.props.applicationData.nextPage,
-                    prevPage: this.props.applicationData.prevPage,
-                    activePage: this.props.applicationData.page,
-                });
-            }
-        }
+        this.props.getRegistrations(this.props.user, this.props.registrationData, this.state.activePage, this.state.limit);
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.applicationData.page) {
+        if (nextProps.registrationData.page) {
             this.setState({
-                applications: nextProps.applications,
-                totalDocs: nextProps.applicationData.totalDocs,
-                totalPages: nextProps.applicationData.totalPages,
-                limit: nextProps.applicationData.limit,
-                nextPage: nextProps.applicationData.nextPage,
-                prevPage: nextProps.applicationData.prevPage,
-                activePage: nextProps.applicationData.page,
+                registrations: nextProps.registrations,
+                totalDocs: nextProps.registrationData.totalDocs,
+                totalPages: nextProps.registrationData.totalPages,
+                limit: nextProps.registrationData.limit,
+                nextPage: nextProps.registrationData.nextPage,
+                prevPage: nextProps.registrationData.prevPage,
+                activePage: nextProps.registrationData.page,
             });
         }
     }
@@ -173,17 +156,25 @@ class ApplicationDashBoard extends Component {
                 return 0;
         }
     }
+    registrationCardClickHandler = (id) => {
+        console.log("Register id: ", id);
+        this.setState({
+            discription_event: this.props.events[id],
+        })
+        // console.log("discription_event: " + JSON.stringify(this.state.discription_event));
+    };
 
     render() {
-        let ApplicationsListView = [];
-        if (!this.props.applications == []) {
-            // console.log("Applications: " + JSON.stringify(this.state.applications));
-            ApplicationsListView  = this.state.applications.map((application, id) => {
-                if (!application) {
+        let RegistrationsListView = [];
+        if (this.state.registrations) {
+            console.log(" in registrations: " + JSON.stringify(this.props.registrations));
+            RegistrationsListView  = this.state.registrations.map((registration, id) => {
+                if (!registration) {
                     return;
                 }
+                console.log("registration: ",JSON.stringify(registration));
                 return (
-                    <ApplicationCard application={application} id={id} jobCardClickHandler={this.jobCardClickHandler} />
+                    <RegistrationCard registration={registration} id={id} jobCardClickHandler={this.jobCardClickHandler} />
                 )
             });
         };
@@ -198,18 +189,17 @@ class ApplicationDashBoard extends Component {
                                     <Col>
                                         <div className="jobs-details">
                                             <br></br>
-                                            <span><b> Applied for {this.state.totalDocs && this.state.totalDocs} Jobs </b></span>
+                                            <span><b> Registered for {this.state.totalDocs} Events </b></span>
                                         </div>
                                     </Col>
                                     <ListGroup as="ul" className="job-list-group">
-
                                     </ListGroup>
                                 </div>
                             </div>
                         </Col>
                         <Col sm={8} md={8}>
                             <div className="application-list-view">
-                                {ApplicationsListView}
+                                {RegistrationsListView}
                             </div>
                             <div className="jobs-pagination">
                                 <Pagination >
@@ -231,9 +221,9 @@ class ApplicationDashBoard extends Component {
 }
 const mapStateToProps = state => {
     return {
-        applications: getApplications(state),
+        registrations: getRegistrationsFormStore(state),
         user: state.auth,
-        applicationData: state.application
+        registrationData: state.registrationData,
     };
 };
-export default connect(mapStateToProps, { fetchApplications })(ApplicationDashBoard);
+export default connect(mapStateToProps, { getRegistrations })(RegistrationDashBoard);

@@ -12,6 +12,7 @@ var eventRouter = require('./routes/event');
 var jobRouter = require('./routes/job');
 var messageRouter = require('./routes/message');
 var applicationRouter = require('./routes/application');
+var registrationRouter = require('./routes/registrations');
 var session = require('express-session');
 const { mongoDB, frontendURL } = require('./Utils/config');
 const passport = require('passport');
@@ -89,6 +90,7 @@ app.use('/event', eventRouter);
 app.use('/job', jobRouter);
 app.use('/message', messageRouter);
 app.use('/application', applicationRouter);
+app.use('/registration', registrationRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -119,4 +121,4 @@ app.use(function(err, req, res, next) {
 
 
 module.exports = app;
-// server.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));
+// server.listen(process.env.PORT || 5000, () => console.log(`Server has started.`)); 

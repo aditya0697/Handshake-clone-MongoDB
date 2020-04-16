@@ -5,7 +5,7 @@ import { Icon } from 'antd';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import DatePicker from "react-datepicker";
-import { registerEvent } from './../../redux/actions/eventAction';
+import { registerEvent } from './../../redux/actions/registrationActions';
 import axios from "axios";
 // import {JobSidebar} from './jobsidebar/JobSidebar';
 
@@ -147,23 +147,7 @@ class EventDiscription extends Component {
             register_button_state: "success",
             register_button_text: "Registered"
         })
-        this.props.registerEvent(this.state.event_id, this.props.user.email);
-        // const formData = new FormData();
-        // formData.append('student_email', this.props.user.email);
-        // formData.append('job_id', this.props.job.job_id);
-        // formData.append('resume_file', this.state.resume_file);
-        // // http://52.8.254.75:3001/application/apply
-        // axios.post('http://localhost:3001/application/apply', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-        //     .then((response) => {
-
-        //         this.setState({
-        //             application_confirmation_show: true,
-        //         });
-
-        //         console.log("Application id: " + response.data.application_id)
-        //     }).catch((error) => {
-        //         console.log("Application was not submitted.: " + JSON.stringify(error));
-        //     });
+        this.props.registerEvent(this.props.event, this.props.studentData);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -401,13 +385,14 @@ class EventDiscription extends Component {
                     <div className="profile-experience-card-divider"></div>
                 </Container>
             </Styles>
-
         )
     }
 }
 const mapStateToProps = state => {
     return {
         user: state.auth,
+        studentData: state.student.studentData,
+        registration_error: state.eventData.registration_error,
     };
 };
 //Export The Main Component

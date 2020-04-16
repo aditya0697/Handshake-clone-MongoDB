@@ -190,6 +190,13 @@ export const getApplications = (state) => {
     }
    return state.application.applicationData;
 }
+export const getRegistrationsFormStore = (state) => {
+    if (!state.auth) {
+        return [];
+    }
+    return state.registrationData.registrations;
+    
+}
 
 export const getEvents = (state) => {
     if (!state.auth) {
