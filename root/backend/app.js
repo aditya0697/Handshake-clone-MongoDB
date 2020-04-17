@@ -19,13 +19,13 @@ const passport = require('passport');
 const { auth } = require("./utils/passport");
 const mongoose = require('mongoose'); 
 var cors = require('cors');
-const socketio = require('socket.io');
+// const socketio = require('socket.io');
 
 var app = express();
     
 
 const server = http.createServer(app);
-const io = socketio(server);
+// const io = socketio(server);
 
 // Passport middleware
 // app.use(passport.initialize());
@@ -41,7 +41,7 @@ app.use(session({
 }));
 
 //use cors to allow cross origin resource sharing
-app.use(cors({ origin: frontendURL, credentials: true }));
+// app.use(cors({ origin: frontendURL, credentials: true }));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

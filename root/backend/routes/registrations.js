@@ -22,7 +22,7 @@ router.post('/register', checkAuth, function(req, res){
         console.log("Results: ", results);
         console.log("Error: ", err);
         if (!results) {
-            console.log("Inside err");
+            console.log("Inside err"); 
             res.status(404);
             res.end("Rigistrations already exists");
             return;
@@ -67,7 +67,7 @@ router.get('/employer', checkAuth, function (req, res) {
 
 router.get('/student', checkAuth, function (req, res) {
     const data = {
-        student_id: req.query.student_id,
+        student_id: req.query.student_id, 
         page: req.query.page,
         limit: req.query.limit,
     }

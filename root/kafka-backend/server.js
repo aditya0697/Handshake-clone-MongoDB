@@ -10,7 +10,7 @@ const {STUDENT_SIGNIN, STUDENT_SIGNUP, GET_STUDENT_DETAILS, UPDATE_STUDENT_PROFI
 var connection = new require('./kafka/Connection');
 const { mongoDB } = require('./Utils/config');
 var mongoose = require('mongoose');
-var topicsToCreate =  require('./topics/topic');
+var topicsToCreate =  require('./topics/topic'); 
 var StudentSignup = require('./services/studentServices/signup');
 var GetStudentDetails = require('./services/studentServices/getStudentDetails');
 var UpdateStudentProfile = require('./services/studentServices/updateProfile');
@@ -44,7 +44,7 @@ var GetRegistrationsForEmployer = require('./services/registratitonServices/getR
 // const producer = connection.getProducer(); 
 // const consumer = connection.getConsumer();
 const client = connection.getClient();
-var options = {
+var options = { 
     useNewUrlParser: true,
     useUnifiedTopology: true,
     poolSize: 400,
@@ -62,23 +62,23 @@ mongoose.connect(mongoDB, options, (err, res) => {
 });
  
 
-// Create Topics
+// Create Topics 
 
-// var topicsToCreate = [{
-//     topic: 'student_signup',
+// var topicsToCreate = [{ 
+//     topic: 'test-4',
 //     partitions: 1,
-//     replicationFactor: 2
+//     replicationFactor: 0,
 //   }];
-  
-client.createTopics(topicsToCreate, function (err, data) {
+
+// console.log("Topics: ",JSON.stringify(topicsToCreate));
+client.createTopics(topicsToCreate, true, function (err, data) { 
     if(err){
         console.log("In Topic Creation: ",err);
         return;
-    }
+    } 
     console.log("Topics are created: ");
     console.log(data);
 });
-
 
 
 function handleTopicRequest(topic_name, fname) {
@@ -110,7 +110,7 @@ function handleTopicRequest(topic_name, fname) {
         });
 
     });
-}
+}  
 
 handleTopicRequest(STUDENT_SIGNUP,StudentSignup);
 handleTopicRequest(GET_STUDENT_DETAILS, GetStudentDetails);
@@ -126,7 +126,7 @@ handleTopicRequest(GET_STUDENTS,GetStudents);
 handleTopicRequest(APPLY_JOB,ApplyJob);
 handleTopicRequest(UPDATE_APPLICATION_STATUS,UpdateApplicationStatus);
 handleTopicRequest(WITHDRAW_APPLICATION,WithdrawApplication);
-handleTopicRequest(GET_APPLICATIONS_FOR_EMPLOYER,GetApplicationsForEmployer);
+handleTopicRequest(GET_APPLICATIONS_FOR_EMPLOYER,GetApplicationsForEmployer); 
 handleTopicRequest(GET_APPLICATIONS_FOR_STUDENT,GetApplicationsForStudent);
 handleTopicRequest(CREATE_CONVERSATION, CreateConversation);
 handleTopicRequest(GET_CONVERSATIONS, GetConversations);
@@ -134,7 +134,7 @@ handleTopicRequest(GET_CHAT,GetChat);
 handleTopicRequest(ADD_MESSAGE_TO_CONVERSATION, AddMessageToConversation);
 handleTopicRequest(CREATE_EVENT, CreateEvent);
 handleTopicRequest(GET_EVENT_FOR_EMPLOYRE, GetEventsForEmployer);
-handleTopicRequest(GET_EVENT_FOR_STUDENT, GetEventForStudent);
+handleTopicRequest(GET_EVENT_FOR_STUDENT, GetEventForStudent); 
 handleTopicRequest(UPDATE_EVENT, UpdateEvent);
 handleTopicRequest(REGISTER, Register);
 handleTopicRequest(GET_REGISTRATION_FOR_EMPLOYRE, GetRegistrationsForEmployer);

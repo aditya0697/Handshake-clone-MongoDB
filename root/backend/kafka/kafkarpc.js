@@ -89,7 +89,7 @@ KafkaRPC.prototype.setupResponseQueue = function(producer,topic_name, next){
             //callback, no err
             entry.callback(null, data.data);
         }
-    });
+    }); 
     self.response_queue = true;
     console.log('returning next');
     return next();
