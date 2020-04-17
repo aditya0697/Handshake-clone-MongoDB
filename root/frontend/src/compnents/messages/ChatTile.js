@@ -63,7 +63,7 @@ class ChatTile extends Component {
                     <ListGroup.Item as="li" className="chat-message-list-item">
                         <Row>
                             <Col sm={1} md={1}>
-                                <Avatar name={this.props.name} src={this.props.PersonProfileUrl} size={40} round={true} />
+                                <Avatar name={this.props.Name} src={this.props.PersonProfileUrl} size={40} round={true} />
                             </Col>
                             <Col sm={8} md={8}>
                                 <InputGroup>
@@ -95,7 +95,7 @@ class ChatTile extends Component {
                                 </InputGroup>
                             </Col>
                             <Col sm={2} md={2}>
-                                <Avatar name={this.props.name} src={this.props.PersonProfileUrl} size={40} round={true} />
+                                <Avatar name={this.props.Name} src={this.props.PersonProfileUrl} size={40} round={true} />
                             </Col>
                         </Row>
                         <div className="chat-divder"></div>
