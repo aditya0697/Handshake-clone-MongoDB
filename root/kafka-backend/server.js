@@ -8,7 +8,7 @@ const {STUDENT_SIGNIN, STUDENT_SIGNUP, GET_STUDENT_DETAILS, UPDATE_STUDENT_PROFI
  } =  require('./topics/topic_names');
 
 var connection = new require('./kafka/Connection');
-const { mongoDB } = require('./Utils/config');
+const { mongoDB } = require('./utils/config');
 var mongoose = require('mongoose');
 var topicsToCreate =  require('./topics/topic'); 
 var StudentSignup = require('./services/studentServices/signup');
