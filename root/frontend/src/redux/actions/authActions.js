@@ -1,12 +1,12 @@
 import axios from "axios";
-import {HOST_URL} from "./../../config/config";
+import { HOST_URL } from "./../../config/config";
 import { AUTHENTICATE_STUDENT, AUTHENTICATE_EMPLOYER, SIGN_OUT } from './../actionTypes';
 import storage from 'redux-persist/lib/storage';
 import store from './../store'
 const jwt_decode = require('jwt-decode');
 
 // const ROOT_URL = "http://52.8.254.75:3001";
-const ROOT_URL = HOST_URL ;
+const ROOT_URL = HOST_URL;
 export const studentSignIn = (credentials) => dispatch => {
     axios.defaults.withCredentials = true;
     console.log("Student signIn  in request");
@@ -23,7 +23,7 @@ export const studentSignIn = (credentials) => dispatch => {
                     type: AUTHENTICATE_STUDENT,
                     payload: {
                         'email': decoded.Email,
-                        'id':decoded._id,
+                        'id': decoded._id,
                         'message': "login successful",
                         'error_message': "",
                     }
@@ -47,14 +47,14 @@ export const studentSignIn = (credentials) => dispatch => {
 
 export const studentSignUp = (student_data) => dispatch => {
     axios.defaults.withCredentials = true
-    axios.post(`${ROOT_URL}/student_signup`, student_data)
+    axios.post(`${ROOT_URL}/student/signup`, student_data)
         .then((response) => {
             console.log("Status Code : ", response.status);
             if (response.status === 200) {
                 var token = response.data.split(' ')[1];
                 var decoded = jwt_decode(token);
                 console.log("Data: ", JSON.stringify(decoded));
-                localStorage.setItem("token", response.JWT);
+                localStorage.setItem("token", token);
                 dispatch({
                     type: AUTHENTICATE_STUDENT,
                     payload: {
@@ -67,6 +67,7 @@ export const studentSignUp = (student_data) => dispatch => {
             }
         },
             (error) => {
+                console.log("Student Signup Error : ", error);
                 dispatch({
                     type: AUTHENTICATE_STUDENT,
                     payload: {
@@ -74,7 +75,6 @@ export const studentSignUp = (student_data) => dispatch => {
                         'id': "",
                         'message': "Invalid Username or Password",
                         'error_message': "User already present",
-
                     }
                 });
             });
@@ -96,7 +96,7 @@ export const employerSignIn = (credentials) => dispatch => {
                     type: AUTHENTICATE_EMPLOYER,
                     payload: {
                         'email': decoded.Email,
-                        'id':decoded._id,
+                        'id': decoded._id,
                         'message': "login successful",
                         'error_message': "",
                     }
@@ -109,7 +109,7 @@ export const employerSignIn = (credentials) => dispatch => {
                     type: AUTHENTICATE_EMPLOYER,
                     payload: {
                         'email': credentials.username,
-                        'id':"",
+                        'id': "",
                         'message': "Invalid Username or Password",
                         'error_message': "Invalid Username or Password",
                     }
@@ -132,7 +132,7 @@ export const employerSignUp = (employer_data) => dispatch => {
                     type: AUTHENTICATE_EMPLOYER,
                     payload: {
                         'email': decoded.Email,
-                        'id':decoded._id,
+                        'id': decoded._id,
                         'message': response.data,
                         'error_message': "",
                     }
@@ -144,7 +144,7 @@ export const employerSignUp = (employer_data) => dispatch => {
                     type: AUTHENTICATE_EMPLOYER,
                     payload: {
                         'email': "",
-                        'id':"",
+                        'id': "",
                         'message': "Invalid Username or Password",
                         'error_message': "User already present",
                     }

@@ -9,7 +9,7 @@ function handle_request(msg, callback) {
         return;
     }
     var education = {
-        school: msg.school,
+        School: msg.school,
         Major: msg.major,
         Level: msg.level,
         GradDate: new Date(),

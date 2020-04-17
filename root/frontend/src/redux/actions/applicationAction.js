@@ -2,7 +2,7 @@ import axios from "axios";
 import { HOST_URL } from "./../../config/config";
 import { GET_APPLICATIONS, ADD_APPLICATION, UPDATE_APPLICATION, APPLY } from './../actionTypes';
 
-const ROOT_URL = HOST_URL + "application";
+const ROOT_URL = HOST_URL + "/application";
 
 
 export const applyForJob = (job, user, resume_file) => dispatch => {
