@@ -11,11 +11,11 @@ function handle_request(msg, callback) {
     console.log("Application data",JSON.stringify(msg))
     var newApplication = new Application({
         Job: msg.Job, 
-        StudentID: msg.StudentID,
+        Student: msg.Student,
         ResumeURL: msg.ResumeURL,
         Status: msg.Status,
     });
-    Application.findOne({"StudentID": newApplication.StudentID, "Job._id":newApplication.Job._id},(err, application) => {
+    Application.findOne({"Student._id": newApplication.StudentID, "Job._id":newApplication.Job._id},(err, application) => {
         if (err) {
             console.log("Error In Application find");
             callback(null, null)

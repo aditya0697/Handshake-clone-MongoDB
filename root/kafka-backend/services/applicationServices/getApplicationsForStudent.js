@@ -7,7 +7,7 @@ function handle_request(msg, callback) {
         limit: msg.limit,
     };
     console.log("msg: ", JSON.stringify(msg));
-    Application.paginate({ StudentID : msg.id}, options, function (err, result) {
+    Application.paginate({ "Student._id" : msg.id}, options, function (err, result) {
         if (err) {
             console.log("Error: ", err);
             callback(err, err)

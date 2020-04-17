@@ -48,6 +48,8 @@ class ApplicationCard extends Component {
             show: false,
             status_show: false,
             application_id: this.props.application._id,
+            StundetName: this.props.application.Student.Name,
+            StudentProfileUrl: this.props.application.Student.ProfileUrl,
             Job: this.props.application.Job,
             Status: this.props.application.Status,
             ResumeURL: this.props.application.ResumeURL,
@@ -100,6 +102,8 @@ class ApplicationCard extends Component {
             this.setState({
                 application_id: nextProps.application._id,
                 Job: nextProps.application.Job,
+                StundetName: nextProps.application.Student.Name,
+                StudentProfileUrl: nextProps.application.Student.ProfileUrl,
                 Status: nextProps.application.Status,
                 ResumeURL: nextProps.application.ResumeURL,
             });
@@ -107,6 +111,52 @@ class ApplicationCard extends Component {
     }
 
     render() {
+        if (this.props.user.user_type == "employer") {
+            return (
+                <Styles>
+                    <Container onClick={this.clickHandler} className="application-card-holder">
+                    <div className="application-card-holder">
+                        <Row>
+                            <Col sd={2} md={2}>
+                                <Avatar name={this.state.StundetName} src={this.state.StudentProfileUrl} size={55} round={false} />
+                            </Col>
+
+                            <Col sd={8} md={8}>
+                                <Row className="job-card-postion-name">
+                                    <Col sd={8} md={8}>
+                                        <span><b>{this.state.StundetName}</b></span>
+                                    </Col>
+                                </Row>
+                                <div className="job-card-company-name">
+                                    {this.state.Job.Postion}
+                                </div>
+                                <div className="job-card-jobtype">
+                                    <span>{this.state.Job.Type}</span>
+                                </div>
+                                <div>
+                                    <Row>
+
+                                        <Col sd={7} md={7} className="application-card-status">
+                                            <Icon type="audit" onClick={this.handleShow}></Icon>
+                                            <span>Status: {this.state.Status}</span>
+                                        </Col>
+
+                                        <Col sd={3} md={3}>
+                                            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                                <Icon type="audit" onClick={this.handleShow} style={{ padding: "5px" }}></Icon>
+                                                <span> <a href={this.state.ResumeURL} target="_blank" rel="noopener noreferrer"> resume </a></span>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            </Col>
+                        </Row>
+                    </div>
+                </Container>
+                </Styles>
+            )
+        }
+        else {
         return (
             <Styles>
 
@@ -144,7 +194,7 @@ class ApplicationCard extends Component {
                                     </Col>
                                     {this.props.user.user_type === "employer" &&
                                         <Col sd={1} md={1}>
-                                            <Icon type="edit"  onClick={this.statusHandleShow}></Icon>
+                                            <Icon type="edit" onClick={this.statusHandleShow}></Icon>
                                         </Col>
                                     }
                                 </Row>
@@ -164,7 +214,7 @@ class ApplicationCard extends Component {
 
                                         <Col sd={3} md={3}>
                                             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                                                <Icon type="audit" onClick={this.handleShow} style={{padding: "5px"}}></Icon>
+                                                <Icon type="audit" onClick={this.handleShow} style={{ padding: "5px" }}></Icon>
                                                 <span> <a href={this.state.ResumeURL} target="_blank" rel="noopener noreferrer"> resume </a></span>
                                             </div>
                                         </Col>
@@ -174,9 +224,9 @@ class ApplicationCard extends Component {
                         </Row>
                     </div>
                 </Container>
-
             </Styles>
         )
+    }
     }
 }
 

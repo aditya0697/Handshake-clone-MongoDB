@@ -5,9 +5,16 @@ import { GET_APPLICATIONS, ADD_APPLICATION, UPDATE_APPLICATION, APPLY } from './
 const ROOT_URL = HOST_URL + "/application";
 
 
-export const applyForJob = (job, user, resume_file) => dispatch => {
+export const applyForJob = (job, resume_file, student) => dispatch => {
+
+    var studentSchema = {
+        _id: student._id,
+        Name:  student.FirstName + " " + student.LastName,
+        ProfileUrl: student.ProfileUrl,
+    };
+
     const formData = new FormData();
-    formData.append('StudentID', user.id);
+    formData.append('Student', JSON.stringify(studentSchema));
     formData.append('Job', JSON.stringify(job));
     formData.append('Status', "Submitted");
     formData.append('resume_file', resume_file);
@@ -19,6 +26,7 @@ export const applyForJob = (job, user, resume_file) => dispatch => {
             'Content-Type': 'multipart/form-data'
         }
     }
+
 
     axios.post(`${ROOT_URL}/apply`, formData, config)
         .then(response => {

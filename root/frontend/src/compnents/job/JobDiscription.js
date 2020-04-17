@@ -199,7 +199,7 @@ class JobDiscription extends Component {
                 apply_button_text: "Applied",
                 application_confirmation_show: true,
             })
-            this.props.applyForJob(this.props.job, this.props.user, this.state.resume_file);
+            this.props.applyForJob(this.props.job, this.state.resume_file, this.props.studentData);
         } else {
             this.setState({
                 apply_error: "Resume is Required!",
@@ -462,6 +462,7 @@ const mapStateToProps = state => {
     return {
         user: state.auth,
         apply_error: state.application.apply_error,
+        studentData: state.student.studentData,
     };
 };
 //Export The Main Component

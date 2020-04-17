@@ -37,9 +37,10 @@ router.post('/apply', checkAuth, resumeUpload, (req, res, next) => {
     }
     const resume_url = HOST_URL + "/uploads/resume/" + req.file.filename;
     const job = JSON.parse(req.body.Job);
+    const student = JSON.parse(req.body.Student);
     const application = {
         Job: job,
-        StudentID: req.body.StudentID,
+        Student: student,
         ResumeURL: resume_url,
         Status: req.body.Status,
     } 

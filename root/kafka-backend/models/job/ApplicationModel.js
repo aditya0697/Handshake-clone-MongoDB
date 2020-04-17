@@ -22,8 +22,14 @@ var jobSchema = new Schema({
     Description: {type: String, required: true},
 });
 
+var studentSchema = new Schema({
+    _id: {type: String, required: true},
+    Name: {type: String, required: true},
+    ProfileUrl: {type: String},
+});
+
 var applicationSchema = new Schema({
-    StudentID: {type: String, required: true},
+    Student: studentSchema,
     Job: jobSchema,
     ResumeURL: {type: String, required: true},
     Status: {type: String, required: true},
