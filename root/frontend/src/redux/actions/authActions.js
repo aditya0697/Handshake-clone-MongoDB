@@ -6,9 +6,10 @@ import store from './../store'
 const jwt_decode = require('jwt-decode');
 
 // const ROOT_URL = "http://52.8.254.75:3001";
-const ROOT_URL = HOST_URL;
+const ROOT_URL = HOST_URL ;
 export const studentSignIn = (credentials) => dispatch => {
-    axios.defaults.withCredentials = true
+    axios.defaults.withCredentials = true;
+    console.log("Student signIn  in request");
     axios.post(`${ROOT_URL}/student/signin`, credentials)
         .then(response => {
             console.log("studentSignIn Status:", JSON.stringify(response.data));
@@ -81,6 +82,7 @@ export const studentSignUp = (student_data) => dispatch => {
 
 export const employerSignIn = (credentials) => dispatch => {
     axios.defaults.withCredentials = true
+    console.log("Employer signIn  in request");
     axios.post(`${ROOT_URL}/employer/signin`, credentials)
         .then(response => {
             console.log("employerSignIn Status:", JSON.stringify(response.data))
