@@ -6,7 +6,8 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 import { Redirect } from 'react-router';
 import { connect } from "react-redux";
-import {studentSignIn, employerSignIn} from './../../redux/actions/authActions'
+import {studentSignIn, employerSignIn} from './../../redux/actions/authActions';
+import {HOST_URL} from './../../config/config';
 import { getUser } from '../../redux/selectors';
 
 const Styles = styled.div``;
@@ -132,7 +133,7 @@ class Signin extends Component {
 
         //  'http://localhost:3001/student_signin'
 
-        axios.post('http://52.8.254.75:3001/student_signin', data)
+        axios.post(`${HOST_URL}/student_signin`, data)
             .then((response) => {
                 console.log("Status Code : ", response.status);
                 if (response.status === 200) {
@@ -161,7 +162,7 @@ class Signin extends Component {
         //make a post request with the user data
         //  http://localhost:3001/employer_signin
 
-        axios.post('http://52.8.254.75:3001/employer_signin', data)
+        axios.post(`${HOST_URL}/employer_signin`, data)
             .then((response) => {
                 console.log("Status Code : ", response.status);
                 if (response.status === 200) {

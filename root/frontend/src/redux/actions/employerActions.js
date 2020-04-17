@@ -5,7 +5,7 @@ import { EMPLOYER_DETAILS, UPDATE_EMPLOYER_PROFILE, UPDATE_EMPLOYER_PROFILE_PIC 
 // const ROOT_URL = "http://52.8.254.75:3001/employer";
 
 
-const ROOT_URL = "http://localhost:3001/employer";
+const ROOT_URL = HOST_URL + "/employer";
 
 export const employerDetails = (email) => dispatch => {
     axios.defaults.withCredentials = true;

@@ -6,7 +6,7 @@ import store from './../store'
 const jwt_decode = require('jwt-decode');
 
 // const ROOT_URL = "http://52.8.254.75:3001";
-const ROOT_URL = "http://localhost:3001";
+const ROOT_URL = HOST_URL;
 export const studentSignIn = (credentials) => dispatch => {
     axios.defaults.withCredentials = true
     axios.post(`${ROOT_URL}/student/signin`, credentials)
