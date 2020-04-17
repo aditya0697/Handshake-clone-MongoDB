@@ -3,7 +3,7 @@ import {HOST_URL} from "./../../config/config";
 import {ADD_JOB, UPDATE_JOB, GET_JOBS, FETCH_PROFILE_PICTURE_FOR_JOB} from './../actionTypes';
 
 
-const ROOT_URL = HOST_URL + "job";
+const ROOT_URL = HOST_URL + "/job";
 export const fetchJobs = (user,jobData,page,limit, employer_id) => dispatch => {
     axios.defaults.withCredentials = true;
     console.log(" Inside fetchJobs :", user.email);

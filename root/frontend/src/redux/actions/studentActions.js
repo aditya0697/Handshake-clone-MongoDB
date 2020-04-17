@@ -9,7 +9,7 @@ const jwt_decode = require('jwt-decode');
 // const ROOT_URL = "http://52.8.254.75:3001/student";
 
 
-const ROOT_URL = HOST_URL + "student";
+const ROOT_URL = HOST_URL + "/student";
 
 export const studentDetails = (email) => dispatch => {
     axios.defaults.withCredentials = true;

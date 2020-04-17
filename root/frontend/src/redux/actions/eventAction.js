@@ -3,7 +3,7 @@ import {HOST_URL} from "./../../config/config";
 import {GET_EVENTS, ADD_EVENT, UPDATE_EVENT, REGISTER_EVENT} from './../actionTypes';
 
 
- const ROOT_URL = HOST_URL + "event";
+ const ROOT_URL = HOST_URL + "/event";
 // const HOST_URL = "http://localhost:3001";
 
 let getMajorsFromStudentData = (student) => {

@@ -2,7 +2,7 @@ import axios from "axios";
 import { HOST_URL } from "./../../config/config";
 import { REGISTER_FOR_EVENT, GET_REGISTRATIONS, ADD_REGISTRATION } from './../actionTypes';
 
-const ROOT_URL = HOST_URL + "registration";
+const ROOT_URL = HOST_URL + "/registration";
 
 export const getRegistrations = (user, registrationData, page, limit) => dispatch => {
     axios.defaults.withCredentials = true;

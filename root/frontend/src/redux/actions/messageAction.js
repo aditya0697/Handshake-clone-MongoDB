@@ -3,7 +3,7 @@ import { HOST_URL , ENDPOINT} from "./../../config/config";
 import { GET_CONVERSATIONS, CREATE_CONVERSATION, ADD_MESSAGE_TO_CONVERSATION } from './../actionTypes';
 import io from "socket.io-client";
 
-const ROOT_URL = HOST_URL + "message";
+const ROOT_URL = HOST_URL + "/message";
 
 let socket;
 
