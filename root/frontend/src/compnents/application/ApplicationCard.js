@@ -114,6 +114,26 @@ class ApplicationCard extends Component {
         if (this.props.user.user_type == "employer") {
             return (
                 <Styles>
+                    <Modal show={this.state.status_show} onHide={this.statusHandleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Edit Application Status</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form.Group as={Col} controlId="exampleForm.ControlSelect1">
+                            <Form.Label>Status</Form.Label>
+                            <Form.Control as="select" name="Status" onChange={this.onChangeHandeler} defaultValue={this.getStatusOptionId()} >
+                                <option>Submitted</option>
+                                <option>Pending</option>
+                                <option>Reviewed</option>
+                                <option>Declined</option>
+                            </Form.Control>
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={this.statusHandleClose}>Close</Button>
+                        <Button variant="primary" onClick={this.statusChangeHandler}>Change</Button>
+                    </Modal.Footer>
+                </Modal>
                     <Container onClick={this.clickHandler} className="application-card-holder">
                     <div className="application-card-holder">
                         <Row>
@@ -164,27 +184,6 @@ class ApplicationCard extends Component {
         else {
         return (
             <Styles>
-
-                <Modal show={this.state.status_show} onHide={this.statusHandleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Edit Application Status</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form.Group as={Col} controlId="exampleForm.ControlSelect1">
-                            <Form.Label>Status</Form.Label>
-                            <Form.Control as="select" name="Status" onChange={this.onChangeHandeler} defaultValue={this.getStatusOptionId()} >
-                                <option>Submitted</option>
-                                <option>Pending</option>
-                                <option>Reviewed</option>
-                                <option>Declined</option>
-                            </Form.Control>
-                        </Form.Group>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.statusHandleClose}>Close</Button>
-                        <Button variant="primary" onClick={this.statusChangeHandler}>Change</Button>
-                    </Modal.Footer>
-                </Modal>
                 <Container onClick={this.clickHandler} className="application-card-holder">
                     <div className="application-card-holder">
                         <Row>
