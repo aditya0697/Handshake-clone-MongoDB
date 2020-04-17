@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Row, Col, Button, Pagination, Modal, Form, ListGroup, Alert } from 'react-bootstrap';
+import { Row, Col, Button, Pagination, Modal, Form, ListGroup, Alert, Navbar, Nav, FormControl } from 'react-bootstrap';
 import { Icon } from 'antd';
 import styled from 'styled-components';
 import JobSidebar from './JobSidebar';
@@ -71,7 +71,7 @@ const Styles = styled.div`
         padding-left: 15px;
 }
 .job-sidebar-job-list{
-    height: 535px;
+    height: 505px;
     overflow-y: scroll;
 }
   `;
@@ -86,35 +86,56 @@ class JobDashboard extends Component {
             Type: "Full Time",
             activePage: 1,
             totalPages: 1,
-            limit:5,
+            limit: 5,
             totalDocs: null,
             jobs: [],
             Deadline: new Date(),
             PostDate: new Date(),
+            Ascending_order : -1
             // discription_job: initial_job,
         }
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.jobCardClickHandler = this.jobCardClickHandler.bind(this);
+        this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
+    }
+    handleCheckBoxChange = (e) => {
+        e.preventDefault();
+        const item = e.target.name;
+        const isChecked = e.target.checked;
+        if(isChecked){
+            console.log("IsChecked: ",isChecked);
+            this.setState({
+                Ascending_order: 1
+            });
+            this.props.fetchJobs(this.props.user, this.props.jobData, 1, this.state.limit, this.props.user.id, 1);
+        }else{
+            console.log("IsChecked: ",isChecked);
+            this.setState({
+                Ascending_order: -1
+            });
+            this.props.fetchJobs(this.props.user, this.props.jobData, 1, this.state.limit, this.props.user.id, -1);
+        }
+        
     }
 
     handlePageNext = (e) => {
         e.preventDefault();
-        this.props.fetchJobs(this.props.user,this.props.jobData, this.state.nextPage, this.state.limit, this.props.user.id);
+        this.props.fetchJobs(this.props.user, this.props.jobData, this.state.nextPage, this.state.limit, this.props.user.id, this.state.Ascending_order);
     }
 
     handlePagePrevious = (e) => {
         e.preventDefault();
-        this.props.fetchJobs(this.props.user,this.props.jobData, this.state.prevPage, this.state.limit, this.props.user.id);
+        this.props.fetchJobs(this.props.user, this.props.jobData, this.state.prevPage, this.state.limit, this.props.user.id, this.state.Ascending_order);
     }
     handlePageLast = (e) => {
         e.preventDefault();
-        this.props.fetchJobs(this.props.user,this.props.jobData, this.state.totalPages, this.state.limit, this.props.user.id);
+        this.props.fetchJobs(this.props.user, this.props.jobData, this.state.totalPages, this.state.limit, this.props.user.id, this.state.Ascending_order);
     }
 
     handlePageFirst = (e) => {
         e.preventDefault();
-        this.props.fetchJobs(this.props.user,this.props.jobData, 1, this.state.limit, this.props.user.id);
+        this.props.fetchJobs(this.props.user, this.props.jobData, 1, this.state.limit, this.props.user.id, this.state.Ascending_order);
     }
     // componentDidMount() {
     //     if (this.props.jobs === []) {
@@ -217,7 +238,7 @@ class JobDashboard extends Component {
 
     }
     componentDidMount() {
-        this.props.fetchJobs(this.props.user, this.props.jobData, 1, this.state.limit, this.props.user.id);
+        this.props.fetchJobs(this.props.user, this.props.jobData, 1, this.state.limit, this.props.user.id, -1);
         if (!this.props.jobs || this.props.jobs === []) {
             this.setState({
                 jobs: this.props.jobs
@@ -232,7 +253,6 @@ class JobDashboard extends Component {
                     activePage: this.props.jobData.page,
                 });
             }
-            this.props.fetchJobs(this.props.user, this.props.jobData, 1, this.state.limit, this.props.user.id);
         }
         if (this.props.jobs) {
             if (this.props.jobs.length > 0) {
@@ -247,10 +267,11 @@ class JobDashboard extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        // console.log("nextProps.jobs: " + JSON.stringify(nextProps.jobs));
+         console.log("nextProps.jobs: " );
         if (nextProps.jobs) {
             this.setState({
                 discription_job: nextProps.jobs[0],
+                jobs: nextProps.jobs,
             })
         }
         if (nextProps.jobData.page) {
@@ -283,6 +304,21 @@ class JobDashboard extends Component {
 
         return (
             <Styles>
+                <Navbar bg="light" expand="lg">
+                    <Nav>
+
+                    </Nav>
+                    <Nav>
+                        <Form inline>
+                            <Form.Check type="checkbox"
+                                name="A"
+                                onChange={this.handleCheckBoxChange}
+                                id={`default-checkbox`}
+                                label="Ascending order of post"
+                            />
+                        </Form>
+                    </Nav>
+                </Navbar>
                 <div className="dashboard-background" id="employer_modal">
                     {/* --------------------------------------------------------------------------------------------------------------------------------- */}
                     <Modal show={this.state.show} onHide={this.handleClose} >

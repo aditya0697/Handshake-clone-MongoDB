@@ -102,7 +102,7 @@ class ModelExperience extends Component {
         if (this.state.title) {
             experience.title = this.state.title;
         }
-        if (this.state.start_date) {
+        if (this.state.StartDate) {
             experience.start_date = this.state.start_date;
         }
         if (this.state.end_date) {
@@ -132,6 +132,18 @@ class ModelExperience extends Component {
         const d = new Date(date);
         return d.toLocaleString('US').split(',')[0];
     }
+    startDateChangeHandler = (date) => {
+        console.log(date);
+        this.setState({
+            start_date: date,
+        })
+    }
+    endDateChangeHandler = (date) => {
+        console.log(date);
+        this.setState({
+            end_date: date,
+        })
+    }
 
     componentWillReceiveProps(nextProps) {
         console.log("nextProps recieved in ModalEducation: " + JSON.stringify(nextProps.education));
@@ -155,31 +167,31 @@ class ModelExperience extends Component {
                         <Form>
                             <Form.Group controlId="employer">
                                 <Form.Label className="signup-form-lable">Employer</Form.Label>
-                                <Form.Control onChange={this.onValueChangeHandler} name="employer" defaultValue={this.props.experience.employer} />
+                                <Form.Control onChange={this.onValueChangeHandler} name="employer" defaultValue={this.props.experience.Employer} />
                             </Form.Group>
                             <Form.Row>
                                 <Form.Group as={Col} controlId="title">
                                     <Form.Label className="signup-form-lable">Title</Form.Label>
-                                    <Form.Control onChange={this.onValueChangeHandler} name="title" defaultValue={this.props.experience.title} />
+                                    <Form.Control onChange={this.onValueChangeHandler} name="title" defaultValue={this.props.experience.Title} />
                                 </Form.Group>
                             </Form.Row>
                             <Form.Row>
-                                <Form.Group as={Col} controlId="start_date">
+                                <Form.Group as={Col} controlId="">
                                     <Form.Label className="signup-form-lable">Start Date</Form.Label>
                                     <br />
-                                    <DatePicker selected={new Date(this.props.experience.start_date)} name="start_date" className="date_picker" onChange={this.onValueChangeHandler} />
+                                    <DatePicker selected={new Date(this.props.experience.StartDate)} name="start_date" className="date_picker" onChange={this.startDateChangeHandler} />
                                     <br />
                                 </Form.Group>
-                                <Form.Group as={Col} controlId="end_date">
+                                <Form.Group as={Col} controlId="">
                                     <Form.Label className="signup-form-lable">End Date</Form.Label>
                                     <br />
-                                    <DatePicker selected={new Date(this.props.experience.end_date)} name="end_date" className="date_picker" onChange={this.onValueChangeHandler} />
+                                    <DatePicker selected={new Date(this.props.experience.EndDate)} name="end_date" className="date_picker" onChange={this.endDateChangeHandler} />
                                     <br />
                                 </Form.Group>
                             </Form.Row>
                             <Form.Row>
                                     <Form.Label>Discription</Form.Label>
-                                    <Form.Control name="discription" as="textarea"  defaultValue={this.props.experience.discription} onChange={this.onValueChangeHandler} />
+                                    <Form.Control name="discription" as="textarea"  defaultValue={this.props.experience.Description} onChange={this.onValueChangeHandler} />
                             </Form.Row>
                         </Form>
                     </Modal.Body>

@@ -13,9 +13,6 @@ auth();
 router.post('/add_job', checkAuth, function (req, res) {
     console.log("Inside create job");
     const job = req.body;
-    job.PostDate = new Date();
-    job.Deadline = new Date();
-    job.Salary = 120000;
     console.log("--------- Job data: ", JSON.stringify(req.body));
 
     kafka.make_request(CREATE_JOB, job, function (err, results) {
@@ -69,6 +66,7 @@ router.get('/employer', checkAuth, function (req, res) {
         employer_id: req.query.employer_id,
         page: req.query.page,
         limit: req.query.limit,
+        sort_order: req.query.sort_order,
     }
     console.log("Data: ", JSON.stringify(req.query));
     kafka.make_request(GET_JOBS_EMPLOYER, data, function (err, results) {
@@ -97,6 +95,7 @@ router.get('/student', checkAuth, function (req, res) {
         email: req.query.email,
         page: req.query.page,
         limit: req.query.limit,
+        sort_order: req.query.sort_order,
     }
     console.log("Data: ", JSON.stringify(req.query));
     kafka.make_request(GET_JOBS_STUDENT, data, function (err, results) {

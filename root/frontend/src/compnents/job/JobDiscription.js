@@ -248,6 +248,7 @@ class JobDiscription extends Component {
             this.setState({
                 _id: nextProps.job._id,
                 EmployerID: nextProps.job.EmployerID,
+                EmployerName: nextProps.job.EmployerName,
                 Postion: nextProps.job.Postion,
                 City: nextProps.job.Address.City,
                 State: nextProps.job.Address.State,

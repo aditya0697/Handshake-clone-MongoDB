@@ -7,9 +7,9 @@ function handle_request(msg, callback) {
         return;
     }
     var address = {
-        City: msg.school,
-        State: msg.major,
-        Zipcode: msg.level,
+        City: msg.Address.City,
+        State: msg.Address.State,
+        Zipcode: msg.Address.Zipcode,
     };
 
     var newJob = new Job({
@@ -21,11 +21,11 @@ function handle_request(msg, callback) {
         Type: msg.Type,
         PostDate: msg.PostDate,
         Deadline: msg.Deadline,
-        Address: address,
+        Address: msg.Address,
         Description: msg.Description
     });
 
-    newJob.save((error, jobData) => {
+    newJob.save((error, jobData) => {  
         if (error) {
             callback(error, error)
         }

@@ -5,6 +5,7 @@ function handle_request(msg, callback) {
     const options = {
         page: msg.page,
         limit: msg.limit,
+        sort :{PostDate: msg.sort_order},
     };
     console.log("msg: ",JSON.stringify(msg));
     Job.paginate({ EmployerID: msg.employer_id,},options,function (err, result) {

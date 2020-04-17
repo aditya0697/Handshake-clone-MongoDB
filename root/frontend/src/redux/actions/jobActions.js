@@ -4,7 +4,7 @@ import {ADD_JOB, UPDATE_JOB, GET_JOBS, FETCH_PROFILE_PICTURE_FOR_JOB} from './..
 
 
 const ROOT_URL = HOST_URL + "/job";
-export const fetchJobs = (user,jobData,page,limit, employer_id) => dispatch => {
+export const fetchJobs = (user,jobData,page,limit, employer_id, sort_order) => dispatch => {
     axios.defaults.withCredentials = true;
     console.log(" Inside fetchJobs :", user.email);
     const jobsData = {
@@ -16,7 +16,9 @@ export const fetchJobs = (user,jobData,page,limit, employer_id) => dispatch => {
             Authorization: "Bearer " + token
         }
     }
-
+    if(!sort_order){
+        sort_order = -1;
+    }
     if(!page){
         page = 1;
     }
@@ -30,7 +32,7 @@ export const fetchJobs = (user,jobData,page,limit, employer_id) => dispatch => {
     }
 
     if (user.user_type == "student") {
-        axios.get(`${ROOT_URL}/student?email=${user.email}&page=${page}&limit=${limit}`,config)
+        axios.get(`${ROOT_URL}/student?email=${user.email}&page=${page}&limit=${limit}&sort_order=${sort_order}`,config)
             .then(response => {
                 // console.log("job Data in actions", JSON.stringify(response));
                 if (response.status == 200) {
@@ -48,7 +50,7 @@ export const fetchJobs = (user,jobData,page,limit, employer_id) => dispatch => {
                 })
             });
     } else {
-        axios.get(`${ROOT_URL}/employer?employer_id=${employer_id}&page=${page}&limit=${limit}`,config)
+        axios.get(`${ROOT_URL}/employer?employer_id=${employer_id}&page=${page}&limit=${limit}&sort_order=${sort_order}`,config)
             .then(response => {
                 // console.log("job Data in actions", JSON.stringify(response));
                 if (response.status == 200) {
@@ -98,7 +100,7 @@ export const updateJobById = (job, index) => dispatch => {
 }
 
 export const addJob = (job, employerData) => dispatch => {
-    job.EmployerID = employerData.Email;
+    job.EmployerID = employerData._id;
     job.EmployerName = employerData.EmployerName;
     job.EmployerProfileUrl = employerData.ProfileUrl;
 
