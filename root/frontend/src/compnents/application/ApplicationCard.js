@@ -126,6 +126,11 @@ class ApplicationCard extends Component {
                                     <Col sd={8} md={8}>
                                         <span><b>{this.state.StundetName}</b></span>
                                     </Col>
+                                    {this.props.user.user_type === "employer" &&
+                                        <Col sd={1} md={1}>
+                                            <Icon type="edit" onClick={this.statusHandleShow}></Icon>
+                                        </Col>
+                                    }
                                 </Row>
                                 <div className="job-card-company-name">
                                     {this.state.Job.Postion}
