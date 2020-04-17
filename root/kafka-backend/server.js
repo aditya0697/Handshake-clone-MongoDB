@@ -23,7 +23,7 @@ var GetJobsForStudent = require('./services/jobServices/getJobsStudent');
 var GetJobsForEmployer = require('./services/jobServices/getJobsEmployer');
 var GetStudents = require('./services/studentServices/getStudents');
 var ApplyJob = require('./services/applicationServices/applyJob');
-var UpdateApplicationStatus = require('./services/applicationServices/updateApplicationStatus');
+var UpdateApplicationStatus = require('./services/applicationServices/updateApplicationStatus'); 
 var WithdrawApplication = require('./services/applicationServices/withdrawApplication');
 var GetApplicationsForStudent = require('./services/applicationServices/getApplicationsForStudent');
 var GetApplicationsForEmployer = require('./services/applicationServices/getApplicationsForEmployer');
@@ -70,7 +70,7 @@ mongoose.connect(mongoDB, options, (err, res) => {
 //     replicationFactor: 0,
 //   }];
 
-// console.log("Topics: ",JSON.stringify(topicsToCreate));
+console.log("Topics: ",JSON.stringify(topicsToCreate));
 client.createTopics(topicsToCreate, true, function (err, data) { 
     if(err){
         console.log("In Topic Creation: ",err);
