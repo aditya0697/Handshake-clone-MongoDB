@@ -11,7 +11,7 @@ var chatMessageSchems =  new Schema({
 var personSchema = new Schema({
     PersonType: {type: String, required: true},
     Name: {type: String, required: true},
-    PersonProfileUrl: {type: String, required: true},
+    PersonProfileUrl: {type: String, required: false},
     PersonId: {type: String, required: true},
 
 });
