@@ -4,24 +4,24 @@
 
 ### Goal: 
 
-Develop Handshake-clone-MongoDb single page web application to lear concepts like Kafka, Passport Js, Redux and mongoDb.In this project I have developed Frontend using React and Redux. To support the backend Mysql database is used.
+Develop Handshake-clone-MongoDb single page web application to learn concepts like Kafka, Passport Js, Redux and mongoDb. In this project I have developed Frontend using React and Redux. To support the backend MongoDB database is used.
 
 ### Operations:
 
-Sign In and Sign Up for student
-Sign In for Sign Up Company
+SignIn and SignUp for student
+SignIn and SignUp for Company
 Profile update for student and company 
 Job posting by Company
 Job apply for Student
 View Application for students and company
 Event posting by Company
-Event register by student
-Upload resume while applying for job for student
+Event registration by student
+Upload resume while applying for job by student
 Upload profile photo for both company and student
 Student can message other student
 Employer can message student
-After contacting by employer student can reply
-Student and employer can view other students  profiles.
+After contacting by employer student can reply to Employer
+Student and employer can view other students' profiles.
 Pagination is implemented for all tabs
 
 ### Purpose of the System: 
