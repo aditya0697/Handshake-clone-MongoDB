@@ -40,7 +40,11 @@ System Design:
 
 Below diagram explain the system design of above handshke application.
  
-  
+[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png
+
+
+Demo:
+
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=6ExiG9cqJ2c" target="_blank"><img src="http://img.youtube.com/vi/6ExiG9cqJ2c/0.jpg" 
 alt="Handshake-clone Demo" width="240" height="180" border="10" /></a>
