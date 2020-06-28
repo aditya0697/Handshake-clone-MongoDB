@@ -1,12 +1,12 @@
 # Handshake-clone-MongoDB
 
-Introduction: 
+## Introduction: 
 
-Goal: 
+### Goal: 
 
 Develop Handshake-clone-MongoDb single page web application to lear concepts like Kafka, Passport Js, Redux and mongoDb.In this project I have developed Frontend using React and Redux. To support the backend Mysql database is used.
 
-Operations:
+### Operations:
 
 Sign In and Sign Up for student
 Sign In for Sign Up Company
@@ -24,7 +24,7 @@ After contacting by employer student can reply
 Student and employer can view other students  profiles.
 Pagination is implemented for all tabs
 
-Purpose of the System: 
+### Purpose of the System: 
 
 To connect Student and Employer at one platform where they can connect to each other
 Employer can post job openings 
@@ -36,14 +36,15 @@ Student can register for events
 
 
 
-System Design:
+### System Design:
 
 Below diagram explain the system design of above handshke application.
- 
-[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png
 
+![alt text][logo]
 
-Demo:
+[logo]: https://github.com/aditya0697/Handshake-clone-MongoDB/blob/master/Project_Architecture.png
+
+### Demo:
 
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=6ExiG9cqJ2c" target="_blank"><img src="http://img.youtube.com/vi/6ExiG9cqJ2c/0.jpg" 
